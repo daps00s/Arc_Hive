@@ -1,0 +1,425 @@
+/* my-report.css - Styles for my-report.php */
+
+/* Custom Properties for Theming */
+:root {
+    --primary-color: #50c878;
+    --primary-hover: #40a867;
+    --secondary-color: #2c3e50;
+    --secondary-hover: #1a252f;
+    --background-color: #f7fafc;
+    --card-background: #ffffff;
+    --text-color: #2d3748;
+    --text-secondary: #718096;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --danger-color: #e53e3e;
+    --success-color: #68d391;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    margin-left: 260px;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: margin-left var(--transition);
+}
+
+.main-content.resized {
+    margin-left: 60px;
+}
+
+/* Top Navigation */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 260px;
+    width: calc(100% - 260px);
+    height: 64px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    transition: width var(--transition), left var(--transition);
+}
+
+.top-nav.resized {
+    left: 60px;
+    width: calc(100% - 60px);
+}
+
+.top-nav h2 {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 600;
+    margin: 0;
+}
+
+.filter-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 24px;
+    flex-wrap: wrap;
+}
+
+.filter-container select,
+.filter-container input {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-container select:focus,
+.filter-container input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+    outline: none;
+}
+
+.filter-container select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'><path d='M5 7l5 5 5-5H5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+#dateRange {
+    display: none;
+    gap: 12px;
+}
+
+#dateRange label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.filter-container button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.filter-container button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.filter-container button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.toggle-btn:hover,
+.toggle-btn:focus {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+    outline: none;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 32px;
+    padding-top: 96px;
+    margin-left: 260px;
+    transition: margin-left var(--transition);
+    overflow-y: auto;
+}
+
+/* Print Header */
+#print-header {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    background: var(--secondary-color);
+    color: white;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+#print-header h2 {
+    font-size: 1.25rem;
+    margin: 10px 0;
+}
+
+/* Chart Container */
+.chart-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    contain: layout;
+}
+
+#fileActivityChart {
+    width: 100%;
+    max-height: 400px;
+}
+
+.chart-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.chart-actions button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.chart-actions button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.chart-actions button:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Files Table */
+.files-table {
+    width: 80%;
+    max-width: 900px;
+    margin: 30px auto;
+    overflow-x: auto;
+}
+
+.files-table h3 {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    margin: 0 0 16px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+}
+
+.files-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-background);
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.files-table th,
+.files-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.files-table th {
+    background: var(--secondary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.files-table td {
+    word-break: break-word;
+    max-width: 200px;
+}
+
+.files-table tr:hover {
+    background: #f5f5f5;
+}
+
+.files-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Table Controls */
+.table-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.table-controls select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-width: 150px;
+    transition: var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'><path d='M5 7l5 5 5-5H5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+}
+
+.table-controls select:hover {
+    border-color: var(--primary-color);
+}
+
+.table-controls select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+    outline: none;
+}
+
+.table-controls option {
+    color: var(--text-color);
+    background: var(--card-background);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .top-nav {
+        width: calc(100% - 60px);
+        left: 60px;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-left: 60px;
+    }
+
+    .top-nav {
+        left: 60px;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+
+    .chart-container,
+    .files-table {
+        width: 90%;
+    }
+
+    .files-table table {
+        font-size: 0.8rem;
+    }
+
+    .files-table th,
+    .files-table td {
+        padding: 10px;
+    }
+
+    .table-controls select {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin-left: 0;
+    }
+
+    .top-nav {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 70px 10px 10px;
+    }
+
+    .chart-container,
+    .files-table {
+        width: 100%;
+    }
+
+    .filter-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-container select,
+    .filter-container input,
+    .filter-container button {
+        width: 100%;
+    }
+
+    #dateRange {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .table-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-controls select {
+        width: 100%;
+    }
+
+    .chart-actions {
+        flex-direction: column;
+    }
+
+    .chart-actions button {
+        width: 100%;
+    }
+}
