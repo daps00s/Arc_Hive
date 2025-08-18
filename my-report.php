@@ -172,30 +172,26 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Report - Document Archival</title>
+
     <?php
-     include 'user_head.php';
-    ?> 
-
-
+    include 'user_head.php';
+    ?>
 
 </head>
 
 <body>
-    
-    <?php
-    include 'user_menu.php';
-    ?>
-
-    
     <?php if ($errorMessage): ?>
         <div class="error-message" style="color: red; padding: 20px; text-align: center;">
             <p><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?></p>
         </div>
     <?php else: ?>
-
-
-
+    
+    <?php 
+    include 'user_menu.php'; ?>
+    ?>
 
         <div class="top-nav" id="topNav">
             <button class="toggle-btn" id="toggleNavSidebar" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
