@@ -737,3 +737,373 @@ Stack trace:
 [18-Aug-2025 17:15:59 Europe/Berlin] [2025-08-18 17:15:59] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
 [18-Aug-2025 17:16:01 Europe/Berlin] [2025-08-18 17:16:01] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
 [18-Aug-2025 17:16:01 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:34 Europe/Berlin] [2025-08-18 17:17:34] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:34 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:36 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:17:36 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:17:36 Europe/Berlin] [2025-08-18 17:17:36] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:17:50 Europe/Berlin] [2025-08-18 17:17:50] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:50 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:52 Europe/Berlin] [2025-08-18 17:17:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:53 Europe/Berlin] [2025-08-18 17:17:53] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:53 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:55 Europe/Berlin] [2025-08-18 17:17:55] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:55 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:57 Europe/Berlin] [2025-08-18 17:17:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:57 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:17:58 Europe/Berlin] [2025-08-18 17:17:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:17:58 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:00 Europe/Berlin] [2025-08-18 17:18:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:18:00 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:01 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:01 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:01 Europe/Berlin] [2025-08-18 17:18:01] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:18:04 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:04 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:04 Europe/Berlin] [2025-08-18 17:18:04] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:18:53 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:53 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:53 Europe/Berlin] [2025-08-18 17:18:53] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:18:53 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:54 Europe/Berlin] [2025-08-18 17:18:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:18:54 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:55 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:55 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:55 Europe/Berlin] [2025-08-18 17:18:55] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:18:55 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:56 Europe/Berlin] [2025-08-18 17:18:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:18:56 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:18:57 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:57 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:18:57 Europe/Berlin] [2025-08-18 17:18:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:18:57 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:44 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:44 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:44 Europe/Berlin] [2025-08-18 17:20:44] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:44 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:45 Europe/Berlin] [2025-08-18 17:20:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:20:45 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:45 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:45 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:45 Europe/Berlin] [2025-08-18 17:20:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:45 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:46 Europe/Berlin] [2025-08-18 17:20:46] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:20:46 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:48 Europe/Berlin] [2025-08-18 17:20:48] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:20:48 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:48 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:48 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:48 Europe/Berlin] [2025-08-18 17:20:48] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:48 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:49 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:20:50 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:50 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:50 Europe/Berlin] [2025-08-18 17:20:50] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:50 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:52 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:52 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:52 Europe/Berlin] [2025-08-18 17:20:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:52 Europe/Berlin] [2025-08-18 17:20:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:20:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:20:54 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:54 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:54 Europe/Berlin] [2025-08-18 17:20:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:20:58 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:58 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:20:58 Europe/Berlin] [2025-08-18 17:20:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:20:58 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:01 Europe/Berlin] [2025-08-18 17:21:01] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:21:01 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:04 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:21:06 Europe/Berlin] [2025-08-18 17:21:06] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:21:06 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:09 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:09 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:09 Europe/Berlin] [2025-08-18 17:21:09] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:21:09 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:10 Europe/Berlin] [2025-08-18 17:21:10] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:21:10 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:14 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:14 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:14 Europe/Berlin] [2025-08-18 17:21:14] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:21:14 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:18 Europe/Berlin] [2025-08-18 17:21:18] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:21:18 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:21:37 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:37 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:37 Europe/Berlin] [2025-08-18 17:21:37] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:21:58 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:58 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:21:58 Europe/Berlin] [2025-08-18 17:21:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:21:58 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:22:00 Europe/Berlin] [2025-08-18 17:22:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:22:00 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:22:00 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:00 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:00 Europe/Berlin] [2025-08-18 17:22:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:22:00 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:22:01 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:22:03 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:03 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:03 Europe/Berlin] [2025-08-18 17:22:03] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:22:03 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:22:06 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:06 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:22:06 Europe/Berlin] [2025-08-18 17:22:06] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:23:17 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:17 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:17 Europe/Berlin] [2025-08-18 17:23:17] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:23:17 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:17 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:23:23 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:23 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:23 Europe/Berlin] [2025-08-18 17:23:23] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:23:23 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:25 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:25 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:25 Europe/Berlin] [2025-08-18 17:23:25] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:23:25 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:25 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:23:46 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:46 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:46 Europe/Berlin] [2025-08-18 17:23:46] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:23:52 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:52 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:52 Europe/Berlin] [2025-08-18 17:23:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:23:52 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:54 Europe/Berlin] [2025-08-18 17:23:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:23:54 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:54 Europe/Berlin] [2025-08-18 17:23:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:23:54 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:56 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:56 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:56 Europe/Berlin] [2025-08-18 17:23:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:23:56 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:57 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:57 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:57 Europe/Berlin] [2025-08-18 17:23:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:23:58 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:58 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:23:58 Europe/Berlin] [2025-08-18 17:23:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:23:58 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:23:59 Europe/Berlin] [2025-08-18 17:23:59] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:23:59 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:24:07 Europe/Berlin] [2025-08-18 17:24:07] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:24:07 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:24:09 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:09 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:09 Europe/Berlin] [2025-08-18 17:24:09] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:24:09 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:24:10 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:10 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:10 Europe/Berlin] [2025-08-18 17:24:10] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:24:13 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:13 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:24:13 Europe/Berlin] [2025-08-18 17:24:13] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:24:13 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:24:14 Europe/Berlin] [2025-08-18 17:24:14] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:24:14 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:25:03 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:03 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:03 Europe/Berlin] [2025-08-18 17:25:03] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:25:03 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:25:03 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:25:12 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:12 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:12 Europe/Berlin] [2025-08-18 17:25:12] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:25:12 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:25:12 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:25:14 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:14 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:14 Europe/Berlin] [2025-08-18 17:25:14] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:25:14 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:25:14 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:25:54 Europe/Berlin] [2025-08-18 17:25:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:25:54 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:25:58 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:58 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:58 Europe/Berlin] [2025-08-18 17:25:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:25:58 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:25:59 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:59 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:25:59 Europe/Berlin] [2025-08-18 17:25:59] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:26:00 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:00 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:00 Europe/Berlin] [2025-08-18 17:26:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:26:00 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:00 Europe/Berlin] [2025-08-18 17:26:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:26:00 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:05 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:05 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:05 Europe/Berlin] [2025-08-18 17:26:05] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:26:05 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:06 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:06 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:06 Europe/Berlin] [2025-08-18 17:26:06] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:26:17 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:17 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:17 Europe/Berlin] [2025-08-18 17:26:17] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:26:17 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:18 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:18 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:18 Europe/Berlin] [2025-08-18 17:26:18] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:26:21 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:21 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:21 Europe/Berlin] [2025-08-18 17:26:21] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:26:21 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:22 Europe/Berlin] [2025-08-18 17:26:22] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:26:22 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:52 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:52 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:52 Europe/Berlin] [2025-08-18 17:26:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:26:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:26:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:52 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:52 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:26:52 Europe/Berlin] [2025-08-18 17:26:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:26:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:26:52 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:26:56 Europe/Berlin] [2025-08-18 17:26:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:26:56 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:26:56 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 30
+[18-Aug-2025 17:26:59 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:27:00 Europe/Berlin] [2025-08-18 17:27:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:27:00 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:00 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 30
+[18-Aug-2025 17:27:25 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:25 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:25 Europe/Berlin] [2025-08-18 17:27:25] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:25 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:25 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:26 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:26 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:26 Europe/Berlin] [2025-08-18 17:27:26] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:26 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:26 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:27 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:27 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:27 Europe/Berlin] [2025-08-18 17:27:27] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:27 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:27 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:29 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:29 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:29 Europe/Berlin] [2025-08-18 17:27:29] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:29 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:29 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:33 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:33 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:33 Europe/Berlin] [2025-08-18 17:27:33] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:33 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:33 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:37 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:37 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:37 Europe/Berlin] [2025-08-18 17:27:37] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:27:37 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:37 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:27:47 Europe/Berlin] [2025-08-18 17:27:47] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:27:47 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:47 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 30
+[18-Aug-2025 17:27:57 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:57 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:27:57 Europe/Berlin] [2025-08-18 17:27:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:27:57 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:27:57 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 30
+[18-Aug-2025 17:28:05 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:28:05 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:28:05 Europe/Berlin] [2025-08-18 17:28:05] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:28:05 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 17:28:05 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 30
+[18-Aug-2025 17:29:42 Europe/Berlin] [2025-08-18 17:29:42] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:29:42 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:29:42 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:29:43 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:29:43 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:29:43 Europe/Berlin] [2025-08-18 17:29:43] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:29:43 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:29:43 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:30:01 Europe/Berlin] [2025-08-18 17:30:01] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:30:05 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:30:05 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:30:05 Europe/Berlin] [2025-08-18 17:30:05] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:30:10 Europe/Berlin] [2025-08-18 17:30:10] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:30:12 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:30:12 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:30:12 Europe/Berlin] [2025-08-18 17:30:12] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:30:17 Europe/Berlin] [2025-08-18 17:30:17] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:12 Europe/Berlin] [2025-08-18 17:31:12] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:12 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:12 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:21 Europe/Berlin] [2025-08-18 17:31:21] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:21 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:21 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:22 Europe/Berlin] [2025-08-18 17:31:22] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:22 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:22 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:23 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:23 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:23 Europe/Berlin] [2025-08-18 17:31:23] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:31:23 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:23 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:24 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:31:25 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:25 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:25 Europe/Berlin] [2025-08-18 17:31:25] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:31:25 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:25 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:26 Europe/Berlin] Department ID missing in department_folder.php.
+[18-Aug-2025 17:31:27 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:27 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:31:27 Europe/Berlin] [2025-08-18 17:31:27] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:31:27 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:27 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:27 Europe/Berlin] [2025-08-18 17:31:27] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:27 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:27 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:39 Europe/Berlin] [2025-08-18 17:31:39] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:39 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:31:39 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:31:48 Europe/Berlin] [2025-08-18 17:31:48] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:31:48 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:32:14 Europe/Berlin] [2025-08-18 17:32:14] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:14 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:32:14 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:32:37 Europe/Berlin] [2025-08-18 17:32:37] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:37 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:32:37 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 31
+[18-Aug-2025 17:32:37 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:32:45 Europe/Berlin] [2025-08-18 17:32:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:45 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 20
+[18-Aug-2025 17:32:45 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:32:52 Europe/Berlin] [2025-08-18 17:32:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:52 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:32:54 Europe/Berlin] [2025-08-18 17:32:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:54 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:32:54 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:32:54 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:32:54 Europe/Berlin] [2025-08-18 17:32:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:32:57 Europe/Berlin] [2025-08-18 17:32:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:32:57 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:32:58 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:32:58 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:32:58 Europe/Berlin] [2025-08-18 17:32:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:33:20 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:20 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:20 Europe/Berlin] [2025-08-18 17:33:20] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:33:20 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 288
+[18-Aug-2025 17:33:24 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:24 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:24 Europe/Berlin] [2025-08-18 17:33:24] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:33:38 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:38 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:38 Europe/Berlin] [2025-08-18 17:33:38] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 17:33:44 Europe/Berlin] [2025-08-18 17:33:44] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 17:33:44 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 198
+[18-Aug-2025 17:33:45 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:45 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:45 Europe/Berlin] [2025-08-18 17:33:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 17:33:45 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 288
+[18-Aug-2025 17:33:46 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:46 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 17:33:46 Europe/Berlin] [2025-08-18 17:33:46] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10

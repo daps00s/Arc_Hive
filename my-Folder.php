@@ -240,18 +240,12 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>    
-    
     <title><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?>'s Folder - Document Archival</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/client-sidebar.css">
-    <link rel="stylesheet" href="style/folder-page.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    
+    <?php  
+    include 'user_head.php';
+    ?>
+
 </head>
 
 <body>
@@ -284,14 +278,23 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
         </div>
 
         <div class="main-content">
-            <div class="sorting-buttons">
-                <button class="sort-btn <?= $sortFilter === 'all' ? 'active' : '' ?>" data-filter="all" aria-label="Show all files">All Files</button>
-                <button class="sort-btn <?= $sortFilter === 'uploaded-by-me' ? 'active' : '' ?>" data-filter="uploaded-by-me" aria-label="Show files uploaded by me">Uploaded by Me</button>
-                <button class="sort-btn <?= $sortFilter === 'received' ? 'active' : '' ?>" data-filter="received" aria-label="Show received files">Files Received</button>
-                <button class="sort-btn <?= $sortFilter === 'hardcopy' ? 'active' : '' ?>" data-filter="hardcopy" aria-label="Show hardcopy files">Hardcopy</button>
-                <button class="sort-btn <?= $sortFilter === 'softcopy' ? 'active' : '' ?>" data-filter="softcopy" aria-label="Show softcopy files">Softcopy</button>
-            </div>
+            
+        <?php
+        include 'user_menu.php';
+        ?>
 
+            <?php foreach ($userDepartments as $dept): ?>
+                <a href="department_folder.php?department_id=<?= htmlspecialchars($dept['id'], ENT_QUOTES, 'UTF-8') ?>"
+                    class="<?= $dept['id'] == $departmentId ? 'active' : '' ?>"
+                    data-tooltip="<?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?>">
+                    <i class="fas fa-folder"></i><span class="link-text"><?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?></span>
+                </a>
+            <?php endforeach; ?>
+
+        <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
+        </a>
+    </aside>
             <div class="ftypes">
                 <?php foreach ($documentTypes as $type):
                     $fileCount = count(array_filter($filteredFiles, fn($file) => $file['document_type'] === $type['name']));

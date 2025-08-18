@@ -204,6 +204,25 @@ function getFileIcon(string $fileName): string
     include 'user_menu.php';
 ?>
 
+
+
+        <?php foreach ($userDepartments as $dept): ?>
+            <a href="department_folder.php?department_id=<?= htmlspecialchars(filter_var($dept['department_id'], FILTER_SANITIZE_NUMBER_INT)) ?>"
+                class="<?= isset($_GET['department_id']) && (int)$_GET['department_id'] === $dept['department_id'] ? 'active' : '' ?>"
+                data-tooltip="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?>"
+                aria-label="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?> Folder">
+                <i class="fas fa-folder"></i>
+                <span class="link-text"><?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?></span>
+            </a>
+        <?php endforeach; ?>
+
+
+        <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
+        </a>
+    </aside>
+
+
     <header class="top-nav" role="banner">
         <h2>Dashboard</h2>
         <form action="search.php" method="GET" class="search-container" id="search-form">

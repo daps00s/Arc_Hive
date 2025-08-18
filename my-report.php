@@ -190,8 +190,21 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     <?php else: ?>
     
     <?php 
-    include 'user_menu.php'; ?>
+    include 'user_menu.php'; 
     ?>
+    
+                    <?php foreach ($userDepartments as $dept): ?>
+                <a href="department_folder.php?department_id=<?= htmlspecialchars($dept['id'], ENT_QUOTES, 'UTF-8') ?>"
+                    class="<?= $dept['id'] == $departmentId ? 'active' : '' ?>"
+                    data-tooltip="<?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?>">
+                    <i class="fas fa-folder"></i><span class="link-text"><?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?></span>
+                </a>
+            <?php endforeach; ?>
+
+            <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
+        </a>
+    </aside>
 
         <div class="top-nav" id="topNav">
             <button class="toggle-btn" id="toggleNavSidebar" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>

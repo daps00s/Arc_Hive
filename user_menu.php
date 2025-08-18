@@ -15,16 +15,5 @@
         <a href="my-folder.php" class="<?= htmlspecialchars(basename($_SERVER['PHP_SELF']) === 'my-folder.php' ? 'active' : '') ?>" data-tooltip="My Folder" aria-label="My Folder">
             <i class="fas fa-folder"></i><span class="link-text">My Folder</span>
         </a>
-        <?php foreach ($userDepartments as $dept): ?>
-            <a href="department_folder.php?department_id=<?= htmlspecialchars(filter_var($dept['department_id'], FILTER_SANITIZE_NUMBER_INT)) ?>"
-                class="<?= isset($_GET['department_id']) && (int)$_GET['department_id'] === $dept['department_id'] ? 'active' : '' ?>"
-                data-tooltip="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?>"
-                aria-label="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?> Folder">
-                <i class="fas fa-folder"></i>
-                <span class="link-text"><?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?></span>
-            </a>
-        <?php endforeach; ?>
-        <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
-            <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
-        </a>
-    </aside>
+        
+

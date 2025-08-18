@@ -415,7 +415,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
             <button id="hardcopyStorageButton" aria-label="Recommend Storage"><i class="fas fa-archive"></i> Recommend Storage</button>
         </div>
 
-        <div class="sidebar">
+<!--         <div class="sidebar">
             <h2 class="sidebar-title">Document Archival</h2>
             <?php if ($userRole === 'admin'): ?>
                 <a href="admin_dashboard.php" class="<?= basename($_SERVER['PHP_SELF']) == 'admin_dashboard.php' ? 'active' : '' ?>" data-tooltip="Admin Dashboard">
@@ -442,6 +442,24 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
                 <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
             </a>
         </div>
+ -->
+
+    <?php
+    include 'user_menu.php'; // Include the sidebar menu
+    ?>
+
+        <?php foreach ($userDepartments as $dept): ?>
+                <a href="department_folder.php?department_id=<?= htmlspecialchars($dept['id'], ENT_QUOTES, 'UTF-8') ?>"
+                    class="<?= $dept['id'] == $departmentId ? 'active' : '' ?>"
+                    data-tooltip="<?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?>">
+                    <i class="fas fa-folder"></i><span class="link-text"><?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?></span>
+                </a>
+        <?php endforeach; ?>
+        
+        <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
+            <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
+        </a>
+    </aside>
 
         <main class="main-content">
             <div class="sorting-buttons">
