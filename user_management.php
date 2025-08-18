@@ -235,15 +235,38 @@ $csrfToken = generateCsrfToken();
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <title>User Management - ArcHive</title>
-    <?php
-        include 'admin_head.php';
-    ?>
-
-
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/admin-interface.css">
+    <link rel="stylesheet" href="style/admin-sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
-
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar.minimized {
+            width: 60px;
+        }
         .main-content {
             margin-left: 290px;
             padding: 20px;
@@ -251,9 +274,9 @@ $csrfToken = generateCsrfToken();
             overflow-y: auto;
             transition: margin-left 0.3s ease;
         }
-/*         .main-content.sidebar-minimized {
+        .main-content.sidebar-minimized {
             margin-left: 60px;
-        } */
+        }
         .error, .success {
             font-weight: bold;
             padding: 10px;
@@ -426,11 +449,49 @@ $csrfToken = generateCsrfToken();
     </style>
 </head>
 <body class="admin-dashboard">
-    
     <!-- Admin Sidebar -->
-    <?php
-        include 'admin_menu.php';
-    ?>
+    <div class="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h2 class="sidebar-title">Admin Panel</h2>
+        <a href="dashboard.php" class="client-btn">
+            <i class="fas fa-exchange-alt"></i>
+            <span class="link-text">Switch to Client View</span>
+        </a>
+        <a href="admin_dashboard.php">
+            <i class="fas fa-home"></i>
+            <span class="link-text">Dashboard</span>
+        </a>
+        <a href="admin_search.php">
+            <i class="fas fa-search"></i>
+            <span class="link-text">View All Files</span>
+        </a>
+        <a href="user_management.php" class="active">
+            <i class="fas fa-users"></i>
+            <span class="link-text">User Management</span>
+        </a>
+        <a href="department_management.php">
+            <i class="fas fa-building"></i>
+            <span class="link-text">Department Management</span>
+        </a>
+        <a href="physical_storage_management.php">
+            <i class="fas fa-archive"></i>
+            <span class="link-text">Physical Storage</span>
+        </a>
+        <a href="document_type_management.php">
+            <i class="fas fa-file-alt"></i>
+            <span class="link-text">Document Type Management</span>
+        </a>
+        <a href="backup.php">
+            <i class="fas fa-file-alt"></i>
+            <span class="link-text">System Backup</span>
+        </a>
+        <a href="logout.php" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="link-text">Logout</span>
+        </a>
+    </div>
 
     <div class="main-content">
         <h2>User Management</h2>
