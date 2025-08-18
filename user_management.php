@@ -1,7 +1,6 @@
 <?php
 session_start();
 require 'db_connection.php';
-require 'admin_menu.php';
 
 // Security headers
 header('X-Content-Type-Options: nosniff');
@@ -474,6 +473,9 @@ $csrfToken = generateCsrfToken();
             margin-bottom: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
+        }
+        .modal-content select[multiple] {
+            height: 100px;
         }
         .modal-content button {
             padding: 8px 16px;
