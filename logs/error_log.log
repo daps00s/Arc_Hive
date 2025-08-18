@@ -428,3 +428,37 @@ Stack trace:
   thrown in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 211
 [18-Aug-2025 16:08:38 Europe/Berlin] [2025-08-18 16:08:38] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
 >>>>>>> bef18462a3767ba0b7ffb322666e4d5b41d60b87
+[18-Aug-2025 16:29:26 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:26 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:26 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 351
+[18-Aug-2025 16:29:26 Europe/Berlin] [2025-08-18 16:29:26] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 16:29:32 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:32 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:32 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:29:32 Europe/Berlin] [2025-08-18 16:29:32] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:29:33 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:33 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:33 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 351
+[18-Aug-2025 16:29:33 Europe/Berlin] [2025-08-18 16:29:33] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
+[18-Aug-2025 16:29:34 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:34 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:34 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:29:34 Europe/Berlin] [2025-08-18 16:29:34] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:29:34 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:29:34 Europe/Berlin] [2025-08-18 16:29:34] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:29:34 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:29:34 Europe/Berlin] [2025-08-18 16:29:34] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:29:39 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:39 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:39 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:29:39 Europe/Berlin] [2025-08-18 16:29:39] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:29:46 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:29:46 Europe/Berlin] [2025-08-18 16:29:46] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:29:49 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:49 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:49 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:29:49 Europe/Berlin] [2025-08-18 16:29:49] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:29:54 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:54 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:29:54 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 351
+[18-Aug-2025 16:29:54 Europe/Berlin] [2025-08-18 16:29:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
