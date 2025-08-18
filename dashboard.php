@@ -3,12 +3,14 @@ session_start();
 require 'db_connection.php';
 require 'log_activity.php';
 
+// Security: Validate session and regenerate ID
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 session_regenerate_id(true);
 
+// CSRF Token Generation
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -16,6 +18,7 @@ if (empty($_SESSION['csrf_token'])) {
 $userId = filter_var($_SESSION['user_id'], FILTER_SANITIZE_NUMBER_INT);
 $userRole = filter_var($_SESSION['role'] ?? 'user', FILTER_SANITIZE_STRING);
 
+// Fetch user details including department
 $stmt = $pdo->prepare("
     SELECT u.user_id, u.username, u.role, u.profile_pic, u.position, 
            d.department_id, d.department_name
@@ -33,6 +36,7 @@ if (!$user) {
     exit;
 }
 
+// Fetch user departments
 $stmt = $pdo->prepare("
     SELECT d.department_id, d.department_name
     FROM departments d
@@ -42,10 +46,12 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $userDepartments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch document types
 $stmt = $pdo->prepare("SELECT DISTINCT type_name AS name FROM document_types ORDER BY type_name ASC");
 $stmt->execute();
 $docTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch recent files (owned by user)
 $stmt = $pdo->prepare("
     SELECT f.file_id, f.file_name, f.file_type, f.upload_date, f.copy_type, dtf.type_name AS document_type
     FROM files f
@@ -57,6 +63,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $recentFiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch notifications (transaction_type = 'notification')
 $stmt = $pdo->prepare("
     SELECT t.transaction_id AS id, t.file_id, t.transaction_type, t.transaction_time AS timestamp, t.description AS message,
            COALESCE(f.file_name, 'Unknown File') AS file_name
@@ -70,6 +77,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $notificationLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch activity logs (only user-initiated actions)
 $stmt = $pdo->prepare("
     SELECT t.transaction_id, t.description AS action, t.transaction_time AS timestamp
     FROM transactions t
@@ -83,6 +91,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $activityLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch all user files
 $stmt = $pdo->prepare("
     SELECT f.file_id, f.file_name, f.file_type, f.upload_date, f.copy_type, dtf.type_name AS document_type
     FROM files f
@@ -93,6 +102,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $filesUploaded = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch files sent to user (transaction_type = 'file_sent')
 $stmt = $pdo->prepare("
     SELECT DISTINCT f.file_id, f.file_name, f.file_type, f.upload_date, f.copy_type, dtf.type_name AS document_type
     FROM files f
@@ -106,6 +116,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $filesSentToMe = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch files requested by user (transaction_type = 'file_request')
 $stmt = $pdo->prepare("
     SELECT DISTINCT f.file_id, f.file_name, f.file_type, f.upload_date, f.copy_type, dtf.type_name AS document_type
     FROM files f
@@ -119,6 +130,7 @@ $stmt = $pdo->prepare("
 $stmt->execute([$userId]);
 $filesRequested = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch department files
 $departmentFiles = [];
 foreach ($userDepartments as $dept) {
     $deptId = $dept['department_id'];
@@ -139,24 +151,30 @@ foreach ($userDepartments as $dept) {
     $departmentFiles[$deptId] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Returns Font Awesome icon class based on file extension.
+ *
+ * @param string $fileName
+ * @return string
+ */
 function getFileIcon(string $fileName): string
 {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $iconMap = [
-        'pdf' => 'fas fa-file-pdf',
-        'doc' => 'fas fa-file-word',
-        'docx' => 'fas fa-file-word',
-        'xls' => 'fas fa-file-excel',
-        'xlsx' => 'fas fa-file-excel',
-        'jpg' => 'fas fa-file-image',
-        'png' => 'fas fa-file-image',
-        'jpeg' => 'fas fa-file-image',
-        'gif' => 'fas fa-file-image',
-        'txt' => 'fas fa-file-alt',
-        'zip' => 'fas fa-file-archive',
-        'other' => 'fas fa-file'
-    ];
-    return $iconMap[$extension] ?? $iconMap['other'];
+    switch ($extension) {
+        case 'pdf':
+            return 'fas fa-file-pdf';
+        case 'doc':
+        case 'docx':
+            return 'fas fa-file-word';
+        case 'xls':
+        case 'xlsx':
+            return 'fas fa-file-excel';
+        case 'jpg':
+        case 'png':
+            return 'fas fa-file-image';
+        default:
+            return 'fas fa-file';
+    }
 }
 ?>
 
@@ -172,11 +190,22 @@ function getFileIcon(string $fileName): string
     <title>Dashboard - Document Archival</title>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link href="arXiv.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style/dashboard.css">
     <link rel="stylesheet" href="style/client-sidebar.css">
+    <style>
+        .notification-log .no-notifications {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 
 <body>
@@ -262,7 +291,6 @@ function getFileIcon(string $fileName): string
             </div>
             <div class="upload-file" id="fileUpload">
                 <h3>Upload File</h3>
-                <!-- Ensure backend PHP validates file types, sizes, and stores in `files` table -->
                 <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png,.txt,.zip" style="display: none;" aria-label="Upload File">
                 <button type="button" id="uploadFileButton" aria-label="Upload File">Upload File</button>
             </div>
@@ -475,7 +503,6 @@ function getFileIcon(string $fileName): string
                 </select>
                 <label for="cabinet">Cabinet:</label>
                 <input type="text" id="cabinet" name="cabinet" aria-label="Cabinet">
-                <!-- Dynamic fields should be populated based on document_types table -->
                 <div id="dynamicFields"></div>
                 <div class="hardcopy-options">
                     <label class="checkbox-container">
@@ -566,7 +593,6 @@ function getFileIcon(string $fileName): string
             <button class="exit-button" onclick="closePopup('fileAcceptancePopup')" aria-label="Close Popup">×</button>
             <h3 id="fileAcceptanceTitle">Review File</h3>
             <p id="fileAcceptanceMessage"></p>
-            <!-- JavaScript should populate file preview -->
             <div class="file-preview" id="filePreview"></div>
             <div class="button-group">
                 <button id="acceptFileButton" aria-label="Accept File">Accept</button>
@@ -600,10 +626,6 @@ function getFileIcon(string $fileName): string
         </div>
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         const notyf = new Notyf();
         let selectedFile = null;
@@ -764,9 +786,9 @@ function getFileIcon(string $fileName): string
                                             break;
                                     }
                                     dynamicFields.append(`
-                                        <label for="${field.field_name}">${field.field_label}${field.is_required ? ' *' : ''}:</label>
-                                        ${inputField}
-                                    `);
+                                    <label for="${field.field_name}">${field.field_label}${field.is_required ? ' *' : ''}:</label>
+                                    ${inputField}
+                                `);
                                 });
                             } else {
                                 dynamicFields.append(`<p>${data.message || 'No metadata fields defined for this document type.'}</p>`);
@@ -778,12 +800,6 @@ function getFileIcon(string $fileName): string
                         }
                     });
                 }
-            });
-
-            // Form Submission
-            $('#fileDetailsForm').on('submit', function(e) {
-                e.preventDefault();
-                proceedToHardcopy();
             });
 
             // File Selection
@@ -812,35 +828,6 @@ function getFileIcon(string $fileName): string
                 $('#fileAcceptanceMessage').text(message);
                 $('#fileAcceptancePopup').data('notification-id', notificationId).data('file-id', fileId).show();
                 showFilePreview(fileId);
-            });
-
-            // Load file content for search
-            $('#fileDisplay .file-item').each(function() {
-                const fileId = $(this).data('file-id');
-                $.ajax({
-                    url: 'get_file_content.php',
-                    method: 'GET',
-                    data: {
-                        file_id: fileId
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            $(`#fileDisplay .file-item[data-file-id="${fileId}"]`).data('content', response.extracted_text || '');
-                        }
-                    },
-                    error: function() {
-                        console.error('Failed to load content for file ID:', fileId);
-                    }
-                });
-            });
-
-            $('#fileSearch').on('input', filterFiles);
-            $('#documentTypeFilter').on('change', filterFiles);
-            $('.sort-personal-name, .sort-personal-type, .sort-personal-source').on('change', sortPersonalFiles);
-            $('.hard-copy-department-filter').on('change', function() {
-                const deptId = $(this).closest('.file-subsection').find('.file-grid').attr('id').replace('departmentFiles-', '');
-                filterDepartmentFilesByHardCopy(deptId);
             });
 
             fetchNotifications();
@@ -1320,12 +1307,14 @@ function getFileIcon(string $fileName): string
             });
 
             if (isHardCopy) {
-                $files.forEach(function(el) {
-                    $(el).toggle($(el).data('hard-copy'));
+                $files.filter(function() {
+                    return !$(this).data('hard-copy');
+                }).forEach(function(item) {
+                    $(item).hide();
                 });
             } else {
-                $files.forEach(function(el) {
-                    $(el).show();
+                $files.forEach(function(item) {
+                    $(item).show();
                 });
             }
 
@@ -1361,12 +1350,14 @@ function getFileIcon(string $fileName): string
             });
 
             if (isHardCopy) {
-                $files.forEach(function(el) {
-                    $(el).toggle($(el).data('hard-copy'));
+                $files.filter(function() {
+                    return !$(this).data('hard-copy');
+                }).forEach(function(item) {
+                    $(item).hide();
                 });
             } else {
-                $files.forEach(function(el) {
-                    $(el).show();
+                $files.forEach(function(item) {
+                    $(item).show();
                 });
             }
 
@@ -1382,14 +1373,9 @@ function getFileIcon(string $fileName): string
 
         function filterFiles() {
             const searchTerm = $('#fileSearch').val().toLowerCase();
-            const typeFilter = $('#documentTypeFilter').val().toLowerCase();
             $('#fileDisplay .file-item').each(function() {
-                const fileName = $(this).data('file-name').toLowerCase();
-                const docType = $(this).data('document-type').toLowerCase();
-                const content = $(this).data('content') || '';
-                const matchesSearch = fileName.includes(searchTerm) || content.toLowerCase().includes(searchTerm);
-                const matchesType = !typeFilter || docType === typeFilter;
-                $(this).toggle(matchesSearch && matchesType);
+                const fileName = $(this).find('p').text().toLowerCase();
+                $(this).toggle(fileName.includes(searchTerm));
             });
         }
 
