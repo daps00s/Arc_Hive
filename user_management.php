@@ -235,38 +235,15 @@ $csrfToken = generateCsrfToken();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <title>User Management - ArcHive</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/admin-interface.css">
-    <link rel="stylesheet" href="style/admin-sidebar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <?php
+        include 'admin_head.php';
+    ?>
+
+
+
     <style>
-        body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 250px;
-            transition: width 0.3s ease;
-            z-index: 1000;
-        }
-        .sidebar.minimized {
-            width: 60px;
-        }
+
         .main-content {
             margin-left: 290px;
             padding: 20px;
@@ -274,9 +251,9 @@ $csrfToken = generateCsrfToken();
             overflow-y: auto;
             transition: margin-left 0.3s ease;
         }
-        .main-content.sidebar-minimized {
+/*         .main-content.sidebar-minimized {
             margin-left: 60px;
-        }
+        } */
         .error, .success {
             font-weight: bold;
             padding: 10px;

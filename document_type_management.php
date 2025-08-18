@@ -246,17 +246,18 @@ $documentTypes = $documentTypesStmt ? $documentTypesStmt->fetchAll(PDO::FETCH_AS
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head>    
+    <title>Document Type Management - Arc-Hive</title>
     <?php
         include 'admin_head.php';
     ?>
-    <title>Document Type Management - Arc-Hive</title>
 
+</head>   
 
 
 
     <style>
-        body.document-type-management {
+        .document-type-management {
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #e0e7ff, #f4f4f9);
             color: #34495e;

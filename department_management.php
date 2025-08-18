@@ -178,25 +178,25 @@ $totalPages = $itemsPerPage === -1 ? 1 : max(1, ceil($totalItems / $itemsPerPage
     <link rel="stylesheet" href="style/admin-interface.css">
     <link rel="stylesheet" href="style/admin-sidebar.css">
     <style>
-        body {
+/*         body {
             margin: 0;
             font-family: 'Montserrat', sans-serif;
             display: flex;
             height: 100vh;
-            overflow: hidden; /* Prevent body scrolling */
+            overflow: hidden; 
         }
         .sidebar {
-            position: fixed; /* Fix sidebar to the left */
+            position: fixed; 
             top: 0;
             left: 0;
             height: 100%;
-            width: 250px; /* Expanded width */
+            width: 250px; 
             transition: width 0.3s ease;
             z-index: 1000;
         }
         .sidebar.minimized {
-            width: 60px; /* Minimized width */
-        }
+            width: 60px;
+        } */
         .main-content {
             margin-left: 290px; /* Align with expanded sidebar */
             padding: 20px;

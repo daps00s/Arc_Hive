@@ -1,7 +1,7 @@
 <div class="sidebar">
-        <button class="toggle-btn" title="Toggle Sidebar">
+<!--         <button class="toggle-btn" title="Toggle Sidebar">
             <i class="fas fa-bars"></i>
-        </button>
+        </button> -->
         <h2 class="sidebar-title">Admin Panel</h2>
         <a href="dashboard.php" class="client-btn">
             <i class="fas fa-exchange-alt"></i>
