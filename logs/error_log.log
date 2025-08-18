@@ -428,3 +428,29 @@ Stack trace:
   thrown in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 211
 [18-Aug-2025 16:08:38 Europe/Berlin] [2025-08-18 16:08:38] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
 >>>>>>> bef18462a3767ba0b7ffb322666e4d5b41d60b87
+[18-Aug-2025 16:23:43 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:23:43 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:23:43 Europe/Berlin] [2025-08-18 16:23:43] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:23:45 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:23:45 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:23:45 Europe/Berlin] [2025-08-18 16:23:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:23:48 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:23:48 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php on line 297
+[18-Aug-2025 16:28:44 Europe/Berlin] [2025-08-18 16:28:44] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:28:47 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:28:47 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub.com\Arc_Hive\Department_folder.php on line 297
+[18-Aug-2025 16:28:49 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:28:49 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:28:49 Europe/Berlin] [2025-08-18 16:28:49] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:28:54 Europe/Berlin] [2025-08-18 16:28:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:29:51 Europe/Berlin] [2025-08-18 16:29:51] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:29:59 Europe/Berlin] [2025-08-18 16:29:59] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:32:44 Europe/Berlin] [2025-08-18 16:32:44] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
