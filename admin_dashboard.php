@@ -228,7 +228,6 @@ $accessHistoryStmt = executeQuery($pdo, "
     WHERE t.transaction_type = 'accept'
     ORDER BY t.transaction_time DESC");
 $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -240,10 +239,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
     ?>
 </head>   
 
-
-
 <body class="admin-dashboard">
-
     <?php
         include 'admin_menu.php';
     ?>
@@ -276,7 +272,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             <div class="chart-container" data-chart-type="FileUploadTrends">
                 <h3>File Upload Trends (Last 7 Days)</h3>
                 <canvas id="fileUploadTrendsChart"></canvas>
-                <div class="chart-data-table" style="display: none;"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('FileUploadTrends')">Print Report</button>
                     <button onclick="downloadReport('FileUploadTrends')">Download Report</button>
@@ -285,7 +280,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             <div class="chart-container" data-chart-type="FileDistribution">
                 <h3>File Distribution by Document Type</h3>
                 <canvas id="fileDistributionChart"></canvas>
-                <div class="chart-data-table" style="display: none;"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('FileDistribution')">Print Report</button>
                     <button onclick="downloadReport('FileDistribution')">Download Report</button>
@@ -294,7 +288,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             <div class="chart-container" data-chart-type="UsersPerDepartment">
                 <h3>Users Per Department</h3>
                 <canvas id="usersPerDepartmentChart"></canvas>
-                <div class="chart-data-table" style="display: none;"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('UsersPerDepartment')">Print Report</button>
                     <button onclick="downloadReport('UsersPerDepartment')">Download Report</button>
@@ -303,7 +296,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             <div class="chart-container" data-chart-type="DocumentCopies">
                 <h3>Document Copies Details</h3>
                 <canvas id="documentCopiesChart"></canvas>
-                <div class="chart-data-table" style="display: none;"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('DocumentCopies')">Print Report</button>
                     <button onclick="downloadReport('DocumentCopies')">Download Report</button>
@@ -311,7 +303,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             </div>
             <div class="chart-container" data-chart-type="PendingRequests">
                 <h3>Pending Requests</h3>
-                <div class="chart-data-table"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('PendingRequests')">Print Report</button>
                     <button onclick="downloadReport('PendingRequests')">Download Report</button>
@@ -319,12 +310,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             </div>
             <div class="chart-container" data-chart-type="RetrievalHistory">
                 <h3>Retrieval History</h3>
-                <div class="chart-data-table">
-                    <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                        <button onclick="generateReport('RetrievalHistory')">Print Report</button>
-                        <button onclick="downloadReport('RetrievalHistory')">Download Report</button>
-                    </div>
-                </div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('RetrievalHistory')">Print Report</button>
                     <button onclick="downloadReport('RetrievalHistory')">Download Report</button>
@@ -332,20 +317,29 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             </div>
             <div class="chart-container" data-chart-type="AccessHistory">
                 <h3>Access History</h3>
-                <div class="chart-data-table"></div>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('AccessHistory')">Print Report</button>
                     <button onclick="downloadReport('AccessHistory')">Download Report</button>
                 </div>
             </div>
 
-
-            <div class="popup-overlay" id="popupOverlay">
-                <div class="popup-content" id="popupContent">
-                    <button class="popup-close" onclick="closePopup()">×</button>
-                    <h3 id="popupTitle"></h3>
-                    <canvas id="popupChart" style="display: none;"></canvas>
-                    <div id="popupTable"></div>
+            <div class="modal-overlay" id="dataTableModal" style="display: none;">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                    <h3 id="modalTitle"></h3>
+                    <div class="pagination-controls" style="margin-bottom: 10px;">
+                        <label for="itemsPerPage">Items per page:</label>
+                        <select id="itemsPerPage" onchange="updatePagination()">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="all">All</option>
+                        </select>
+                        <button onclick="previousPage()" id="prevPage" disabled>Previous</button>
+                        <span id="pageInfo"></span>
+                        <button onclick="nextPage()" id="nextPage">Next</button>
+                    </div>
+                    <div id="modalTable" style="overflow-x: auto;"></div>
                 </div>
             </div>
         </div>
@@ -365,6 +359,12 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 div.textContent = str ?? '';
                 return div.innerHTML;
             }
+
+            // Pagination variables
+            let currentPage = 1;
+            let itemsPerPage = 5;
+            let currentData = [];
+            let currentChartType = '';
 
             // Initialize charts
             function initializeCharts() {
@@ -562,18 +562,15 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 }
             }
 
-            // Initialize data tables for expandable chart containers
-            function initializeDataTables() {
-                const chartContainers = document.querySelectorAll('.chart-container');
-                chartContainers.forEach(container => {
-                    const chartType = container.getAttribute('data-chart-type');
-                    let tableContent = '';
-                    let data;
+            // Generate table content with pagination
+            function generateTableContent(chartType, page = 1, itemsPerPage = 5) {
+                let tableContent = '';
+                let data;
 
-                    switch (chartType) {
-                        case 'FileUploadTrends':
-                            data = fileUploadTrends;
-                            tableContent = data.length > 0 ? `
+                switch (chartType) {
+                    case 'FileUploadTrends':
+                        data = fileUploadTrends;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -586,7 +583,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.document_name)}</td>
                                             <td>${sanitizeHTML(entry.document_type)}</td>
@@ -599,10 +596,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'FileDistribution':
-                            data = fileDistribution;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'FileDistribution':
+                        data = fileDistribution;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -616,7 +613,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.document_name)}</td>
                                             <td>${sanitizeHTML(entry.document_type)}</td>
@@ -630,10 +627,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'UsersPerDepartment':
-                            data = usersPerDepartment;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'UsersPerDepartment':
+                        data = usersPerDepartment;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -642,7 +639,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.department_name)}</td>
                                             <td>${sanitizeHTML(entry.user_count.toString())}</td>
@@ -651,10 +648,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'DocumentCopies':
-                            data = documentCopies;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'DocumentCopies':
+                        data = documentCopies;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -665,7 +662,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.file_name)}</td>
                                             <td>${sanitizeHTML(entry.copy_count.toString())}</td>
@@ -676,10 +673,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'PendingRequests':
-                            data = pendingRequestsDetails;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'PendingRequests':
+                        data = pendingRequestsDetails;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -690,7 +687,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.file_name)}</td>
                                             <td>${sanitizeHTML(entry.requester_name)}</td>
@@ -701,10 +698,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'RetrievalHistory':
-                            data = retrievalHistory;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'RetrievalHistory':
+                        data = retrievalHistory;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -719,7 +716,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
                                             <td>${sanitizeHTML(entry.type)}</td>
@@ -734,10 +731,10 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                        case 'AccessHistory':
-                            data = accessHistory;
-                            tableContent = data.length > 0 ? `
+                        break;
+                    case 'AccessHistory':
+                        data = accessHistory;
+                        tableContent = data.length > 0 ? `
                             <table class="chart-data-table">
                                 <thead>
                                     <tr>
@@ -750,7 +747,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${data.map(entry => `
+                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
                                         <tr>
                                             <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
                                             <td>${new Date(entry.time).toLocaleString()}</td>
@@ -763,78 +760,87 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                                 </tbody>
                             </table>
                         ` : '<p>No data available.</p>';
-                            break;
-                    }
-                    container.querySelector('.chart-data-table').innerHTML = tableContent;
-                });
+                        break;
+                }
+                currentData = data;
+                return tableContent;
             }
 
-            // Toggle chart data table and open pop-up on click
-            document.querySelectorAll('.chart-container').forEach(container => {
-                container.addEventListener('click', (e) => {
-                    // Ignore clicks on buttons or within tables
-                    if (e.target.tagName === 'BUTTON' || e.target.closest('.chart-data-table') || e.target.closest('.chart-actions')) return;
+            // Update pagination controls
+            function updatePagination() {
+                const itemsPerPageSelect = document.getElementById('itemsPerPage');
+                itemsPerPage = itemsPerPageSelect.value === 'all' ? currentData.length : parseInt(itemsPerPageSelect.value);
+                currentPage = 1;
+                renderTable();
+            }
 
-                    // Toggle inline table
-                    const dataTable = container.querySelector('.chart-data-table');
-                    dataTable.style.display = dataTable.style.display === 'none' ? 'block' : 'none';
+            // Go to previous page
+            function previousPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                }
+            }
 
-                    // Open pop-up
-                    openPopup(container);
-                });
-            });
+            // Go to next page
+            function nextPage() {
+                const maxPage = Math.ceil(currentData.length / itemsPerPage);
+                if (currentPage < maxPage) {
+                    currentPage++;
+                    renderTable();
+                }
+            }
 
-            // Open pop-up with chart and table
-            function openPopup(container) {
+            // Render table with pagination
+            function renderTable() {
+                const modalTable = document.getElementById('modalTable');
+                modalTable.innerHTML = generateTableContent(currentChartType, currentPage, itemsPerPage);
+
+                const prevButton = document.getElementById('prevPage');
+                const nextButton = document.getElementById('nextPage');
+                const pageInfo = document.getElementById('pageInfo');
+
+                const maxPage = Math.ceil(currentData.length / itemsPerPage);
+                prevButton.disabled = currentPage === 1;
+                nextButton.disabled = currentPage === maxPage || currentData.length === 0;
+                pageInfo.textContent = `Page ${currentPage} of ${maxPage || 1}`;
+            }
+
+            // Open modal with table
+            function openModal(container) {
                 const chartType = container.getAttribute('data-chart-type');
-                const popupOverlay = document.getElementById('popupOverlay');
-                const popupContent = document.getElementById('popupContent');
-                const popupTitle = document.getElementById('popupTitle');
-                const popupChart = document.getElementById('popupChart');
-                const popupTable = document.getElementById('popupTable');
+                currentChartType = chartType;
+                currentPage = 1;
+                const modal = document.getElementById('dataTableModal');
+                const modalTitle = document.getElementById('modalTitle');
 
                 // Set title
-                popupTitle.textContent = container.querySelector('h3').textContent;
+                modalTitle.textContent = container.querySelector('h3').textContent;
 
-                // Copy table content
-                const tableContent = container.querySelector('.chart-data-table').innerHTML;
-                popupTable.innerHTML = tableContent;
+                // Render table
+                renderTable();
 
-                // Handle chart (if applicable)
-                const canvas = container.querySelector('canvas');
-                popupChart.style.display = canvas ? 'block' : 'none';
-                if (canvas) {
-                    const originalChart = Chart.getChart(canvas.id);
-                    if (originalChart) {
-                        popupChart.width = canvas.width;
-                        popupChart.height = canvas.height;
-                        new Chart(popupChart, {
-                            type: originalChart.config.type,
-                            data: originalChart.config.data,
-                            options: {
-                                ...originalChart.config.options,
-                                responsive: true,
-                                maintainAspectRatio: false
-                            }
-                        });
-                    }
-                }
-
-                // Show pop-up
-                popupOverlay.style.display = 'flex';
+                // Show modal
+                modal.style.display = 'flex';
             }
 
-            // Close pop-up
-            function closePopup() {
-                const popupOverlay = document.getElementById('popupOverlay');
-                const popupChart = document.getElementById('popupChart');
-                popupOverlay.style.display = 'none';
-                popupChart.style.display = 'none';
-                // Destroy existing chart to prevent memory leaks
-                const chartInstance = Chart.getChart(popupChart);
-                if (chartInstance) chartInstance.destroy();
-                popupChart.getContext('2d').clearRect(0, 0, popupChart.width, popupChart.height);
+            // Close modal
+            function closeModal() {
+                const modal = document.getElementById('dataTableModal');
+                modal.style.display = 'none';
+                document.getElementById('modalTable').innerHTML = '';
             }
+
+            // Handle chart clicks to open modal
+            document.querySelectorAll('.chart-container').forEach(container => {
+                container.addEventListener('click', (e) => {
+                    // Ignore clicks on buttons or within chart-actions
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('.chart-actions')) return;
+
+                    // Open modal with table
+                    openModal(container);
+                });
+            });
 
             // Generate printable report
             function generateReport(chartType) {
@@ -1069,16 +1075,6 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 };
             }
 
-            // Initialize charts and tables on page load
-            document.addEventListener('DOMContentLoaded', () => {
-                initializeCharts();
-                initializeDataTables();
-                // Update main-content class based on sidebar state
-                const sidebar = document.querySelector('.sidebar');
-                const mainContent = document.querySelector('.main-content');
-                mainContent.classList.add(sidebar.classList.contains('minimized') ? 'sidebar-minimized' : 'sidebar-expanded');
-            });
-
             // Download report as CSV
             function downloadReport(chartType) {
                 let data;
@@ -1160,6 +1156,15 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 mainContent.classList.toggle('sidebar-expanded');
                 mainContent.classList.toggle('sidebar-minimized');
             }
+
+            // Initialize charts on page load
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeCharts();
+                // Update main-content class based on sidebar state
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.querySelector('.main-content');
+                mainContent.classList.add(sidebar.classList.contains('minimized') ? 'sidebar-minimized' : 'sidebar-expanded');
+            });
         </script>
         <style>
             .chart-container {
@@ -1173,25 +1178,32 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             }
 
             .chart-data-table {
-                margin-top: 10px;
                 width: 100%;
                 border-collapse: collapse;
                 font-size: 10pt;
+                background-color: #fff;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
 
             .chart-data-table th,
             .chart-data-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
+                border: 1px solid #e0e0e0;
+                padding: 10px;
                 text-align: left;
                 word-wrap: break-word;
             }
 
             .chart-data-table th {
                 background-color: #f0f0f0;
-                font-weight: bold;
+                font-weight: 600;
                 color: #34495e;
                 text-transform: uppercase;
+                font-size: 9pt;
+            }
+
+            .chart-data-table td {
+                color: #333;
+                font-size: 9pt;
             }
 
             .chart-data-table tr:nth-child(even) {
@@ -1214,10 +1226,94 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 border: none;
                 border-radius: 4px;
                 cursor: pointer;
+                font-size: 10pt;
             }
 
             .chart-actions button:hover {
                 background-color: #2c3e50;
+            }
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                padding-top: 20px;
+            }
+
+            .modal-content {
+                background: #fff;
+                padding: 20px;
+                border-radius: 5px;
+                max-width: 50%;
+                max-height: 80%;
+                overflow-y: auto;
+                position: relative;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .modal-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: #34495e;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+                cursor: pointer;
+                line-height: 30px;
+                text-align: center;
+            }
+
+            .modal-close:hover {
+                background: #2c3e50;
+            }
+
+            .pagination-controls {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+                font-size: 10pt;
+                color: #34495e;
+            }
+
+            .pagination-controls select {
+                padding: 5px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .pagination-controls button {
+                padding: 6px 12px;
+                background-color: #34495e;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+            .pagination-controls button:disabled {
+                background-color: #95a5a6;
+                cursor: not-allowed;
+            }
+
+            .pagination-controls button:hover:not(:disabled) {
+                background-color: #2c3e50;
+            }
+
+            .pagination-controls span {
+                font-weight: 500;
             }
         </style>
 </body>
