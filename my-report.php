@@ -172,8 +172,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>My Report - Document Archival</title>
 
     <?php
@@ -193,7 +192,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     include 'user_menu.php'; 
     ?>
     
-                    <?php foreach ($userDepartments as $dept): ?>
+            <?php foreach ($userDepartments as $dept): ?>
                 <a href="department_folder.php?department_id=<?= htmlspecialchars($dept['id'], ENT_QUOTES, 'UTF-8') ?>"
                     class="<?= $dept['id'] == $departmentId ? 'active' : '' ?>"
                     data-tooltip="<?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?>">
