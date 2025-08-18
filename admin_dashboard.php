@@ -237,6 +237,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
     <?php
         include 'admin_head.php';
     ?>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>   
 
 <body class="admin-dashboard">
@@ -274,7 +275,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 <canvas id="fileUploadTrendsChart"></canvas>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('FileUploadTrends')">Print Report</button>
-                    <button onclick="downloadReport('FileUploadTrends')">Download Report</button>
+                    <button onclick="openDownloadModal('FileUploadTrends')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="FileDistribution">
@@ -282,7 +283,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 <canvas id="fileDistributionChart"></canvas>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('FileDistribution')">Print Report</button>
-                    <button onclick="downloadReport('FileDistribution')">Download Report</button>
+                    <button onclick="openDownloadModal('FileDistribution')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="UsersPerDepartment">
@@ -290,7 +291,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 <canvas id="usersPerDepartmentChart"></canvas>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('UsersPerDepartment')">Print Report</button>
-                    <button onclick="downloadReport('UsersPerDepartment')">Download Report</button>
+                    <button onclick="openDownloadModal('UsersPerDepartment')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="DocumentCopies">
@@ -298,28 +299,28 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 <canvas id="documentCopiesChart"></canvas>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('DocumentCopies')">Print Report</button>
-                    <button onclick="downloadReport('DocumentCopies')">Download Report</button>
+                    <button onclick="openDownloadModal('DocumentCopies')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="PendingRequests">
                 <h3>Pending Requests</h3>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('PendingRequests')">Print Report</button>
-                    <button onclick="downloadReport('PendingRequests')">Download Report</button>
+                    <button onclick="openDownloadModal('PendingRequests')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="RetrievalHistory">
                 <h3>Retrieval History</h3>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('RetrievalHistory')">Print Report</button>
-                    <button onclick="downloadReport('RetrievalHistory')">Download Report</button>
+                    <button onclick="openDownloadModal('RetrievalHistory')">Download Report</button>
                 </div>
             </div>
             <div class="chart-container" data-chart-type="AccessHistory">
                 <h3>Access History</h3>
                 <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
                     <button onclick="generateReport('AccessHistory')">Print Report</button>
-                    <button onclick="downloadReport('AccessHistory')">Download Report</button>
+                    <button onclick="openDownloadModal('AccessHistory')">Download Report</button>
                 </div>
             </div>
 
@@ -340,6 +341,17 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                         <button onclick="nextPage()" id="nextPage">Next</button>
                     </div>
                     <div id="modalTable" style="overflow-x: auto;"></div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="downloadFormatModal" style="display: none;">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeDownloadModal()">×</button>
+                    <h3 id="downloadModalTitle">Select Download Format</h3>
+                    <div class="download-options" style="text-align: center; margin-top: 20px;">
+                        <button onclick="downloadReport(currentChartType, 'csv')">Download as CSV</button>
+                        <button onclick="downloadReport(currentChartType, 'pdf')">Download as PDF</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -831,6 +843,21 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                 document.getElementById('modalTable').innerHTML = '';
             }
 
+            // Open download format modal
+            function openDownloadModal(chartType) {
+                currentChartType = chartType;
+                const modal = document.getElementById('downloadFormatModal');
+                const modalTitle = document.getElementById('downloadModalTitle');
+                modalTitle.textContent = `Select Download Format for ${chartType} Report`;
+                modal.style.display = 'flex';
+            }
+
+            // Close download format modal
+            function closeDownloadModal() {
+                const modal = document.getElementById('downloadFormatModal');
+                modal.style.display = 'none';
+            }
+
             // Handle chart clicks to open modal
             document.querySelectorAll('.chart-container').forEach(container => {
                 container.addEventListener('click', (e) => {
@@ -941,8 +968,7 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                         break;
                 }
 
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
+                const reportContent = `
                 <html>
                     <head>
                         <title>${chartType} Report - ArcHive</title>
@@ -1066,86 +1092,106 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
                         </table>
                     </body>
                 </html>
-            `);
-
+                `;
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(reportContent);
                 printWindow.document.close();
                 printWindow.onload = function() {
                     printWindow.focus();
                     printWindow.print();
                 };
+                return reportContent;
             }
 
-            // Download report as CSV
-            function downloadReport(chartType) {
+            // Download report as CSV or PDF
+            function downloadReport(chartType, format) {
                 let data;
                 let csvContent = '';
 
-                switch (chartType) {
-                    case 'FileUploadTrends':
-                        data = fileUploadTrends;
-                        csvContent += 'File Name,Document Type,Uploader,Uploader\'s Department,Intended Destination,Upload Date/Time\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.document_name}","${entry.document_type}","${entry.uploader_name}","${entry.uploader_department || 'None'}","${entry.target_department_name || 'None'}","${new Date(entry.upload_date).toLocaleString()}"\n`;
-                        });
-                        break;
-                    case 'FileDistribution':
-                        data = fileDistribution;
-                        csvContent += 'File Name,Document Type,Sender,Recipient,Time Sent,Time Received,Department/Subdepartment\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.document_name}","${entry.document_type}","${entry.sender_name || 'None'}","${entry.receiver_name || 'None'}","${entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'}","${entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'}","${entry.department_name || 'None'}${entry.sub_department_name ? ' / ' + entry.sub_department_name : ''}"\n`;
-                        });
-                        break;
-                    case 'UsersPerDepartment':
-                        data = usersPerDepartment;
-                        csvContent += 'Department,User Count\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.department_name}","${entry.user_count}"\n`;
-                        });
-                        break;
-                    case 'DocumentCopies':
-                        data = documentCopies;
-                        csvContent += 'File Name,Copy Count,Offices with Copy,Physical Duplicates\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.file_name}","${entry.copy_count}","${entry.offices_with_copy || 'None'}","${entry.physical_duplicates || 'None'}"\n`;
-                        });
-                        break;
-                    case 'PendingRequests':
-                        data = pendingRequestsDetails;
-                        csvContent += 'File Name,Requester,Requester\'s Department,Physical Storage\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.file_name}","${entry.requester_name}","${entry.requester_department || 'None'}${entry.requester_subdepartment ? ' / ' + entry.requester_subdepartment : ''}","${entry.physical_storage || 'None'}"\n`;
-                        });
-                        break;
-                    case 'RetrievalHistory':
-                        data = retrievalHistory;
-                        csvContent += 'Transaction ID,Type,Status,Time,User,File Name,Department,Physical Storage\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.transaction_id}","${entry.type}","${entry.status}","${new Date(entry.time).toLocaleString()}","${entry.user_name}","${entry.file_name}","${entry.department_name || 'None'}","${entry.physical_storage || 'None'}"\n`;
-                        });
-                        break;
-                    case 'AccessHistory':
-                        data = accessHistory;
-                        csvContent += 'Transaction ID,Time,User,File Name,Type,Department\n';
-                        data.forEach(entry => {
-                            csvContent += `"${entry.transaction_id}","${new Date(entry.time).toLocaleString()}","${entry.user_name}","${entry.file_name}","${entry.type}","${entry.department_name || 'None'}"\n`;
-                        });
-                        break;
-                    default:
-                        alert('Download not implemented for this report type.');
-                        return;
-                }
+                if (format === 'csv') {
+                    switch (chartType) {
+                        case 'FileUploadTrends':
+                            data = fileUploadTrends;
+                            csvContent += 'File Name,Document Type,Uploader,Uploader\'s Department,Intended Destination,Upload Date/Time\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.document_name}","${entry.document_type}","${entry.uploader_name}","${entry.uploader_department || 'None'}","${entry.target_department_name || 'None'}","${new Date(entry.upload_date).toLocaleString()}"\n`;
+                            });
+                            break;
+                        case 'FileDistribution':
+                            data = fileDistribution;
+                            csvContent += 'File Name,Document Type,Sender,Recipient,Time Sent,Time Received,Department/Subdepartment\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.document_name}","${entry.document_type}","${entry.sender_name || 'None'}","${entry.receiver_name || 'None'}","${entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'}","${entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'}","${entry.department_name || 'None'}${entry.sub_department_name ? ' / ' + entry.sub_department_name : ''}"\n`;
+                            });
+                            break;
+                        case 'UsersPerDepartment':
+                            data = usersPerDepartment;
+                            csvContent += 'Department,User Count\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.department_name}","${entry.user_count}"\n`;
+                            });
+                            break;
+                        case 'DocumentCopies':
+                            data = documentCopies;
+                            csvContent += 'File Name,Copy Count,Offices with Copy,Physical Duplicates\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.file_name}","${entry.copy_count}","${entry.offices_with_copy || 'None'}","${entry.physical_duplicates || 'None'}"\n`;
+                            });
+                            break;
+                        case 'PendingRequests':
+                            data = pendingRequestsDetails;
+                            csvContent += 'File Name,Requester,Requester\'s Department,Physical Storage\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.file_name}","${entry.requester_name}","${entry.requester_department || 'None'}${entry.requester_subdepartment ? ' / ' + entry.requester_subdepartment : ''}","${entry.physical_storage || 'None'}"\n`;
+                            });
+                            break;
+                        case 'RetrievalHistory':
+                            data = retrievalHistory;
+                            csvContent += 'Transaction ID,Type,Status,Time,User,File Name,Department,Physical Storage\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.transaction_id}","${entry.type}","${entry.status}","${new Date(entry.time).toLocaleString()}","${entry.user_name}","${entry.file_name}","${entry.department_name || 'None'}","${entry.physical_storage || 'None'}"\n`;
+                            });
+                            break;
+                        case 'AccessHistory':
+                            data = accessHistory;
+                            csvContent += 'Transaction ID,Time,User,File Name,Type,Department\n';
+                            data.forEach(entry => {
+                                csvContent += `"${entry.transaction_id}","${new Date(entry.time).toLocaleString()}","${entry.user_name}","${entry.file_name}","${entry.type}","${entry.department_name || 'None'}"\n`;
+                            });
+                            break;
+                        default:
+                            alert('Download not implemented for this report type.');
+                            return;
+                    }
 
-                const blob = new Blob([csvContent], {
-                    type: 'text/csv;charset=utf-8;'
-                });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.setAttribute('href', url);
-                link.setAttribute('download', `${chartType}_Report.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
+                    const blob = new Blob([csvContent], {
+                        type: 'text/csv;charset=utf-8;'
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `${chartType}_Report.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                } else if (format === 'pdf') {
+                    const reportContent = generateReport(chartType);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = reportContent;
+                    document.body.appendChild(tempDiv);
+                    const opt = {
+                        margin: 0.5,
+                        filename: `${chartType}_Report.pdf`,
+                        image: { type: 'png', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    };
+                    html2pdf().from(tempDiv).set(opt).save().then(() => {
+                        document.body.removeChild(tempDiv);
+                    });
+                }
+                closeDownloadModal();
             }
 
             // Sidebar toggle function
@@ -1314,6 +1360,21 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
 
             .pagination-controls span {
                 font-weight: 500;
+            }
+
+            .download-options button {
+                padding: 10px 20px;
+                margin: 0 10px;
+                background-color: #34495e;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12pt;
+            }
+
+            .download-options button:hover {
+                background-color: #2c3e50;
             }
         </style>
 </body>
