@@ -247,18 +247,14 @@ $documentTypes = $documentTypesStmt ? $documentTypesStmt->fetchAll(PDO::FETCH_AS
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <?php
+        include 'admin_head.php';
+    ?>
     <title>Document Type Management - Arc-Hive</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="style/admin-sidebar.css">
-    <link rel="stylesheet" href="style/admin-interface.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+
+
+
     <style>
         body.document-type-management {
             font-family: 'Montserrat', sans-serif;
@@ -517,18 +513,9 @@ $documentTypes = $documentTypesStmt ? $documentTypesStmt->fetchAll(PDO::FETCH_AS
 
 <body class="document-type-management">
     <!-- Admin Sidebar -->
-    <div class="sidebar">
-        <button class="toggle-btn" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
-        <h2 class="sidebar-title">Admin Panel</h2>
-        <a href="dashboard.php" class="client-btn"><i class="fas fa-exchange-alt"></i><span class="link-text">Switch to Client View</span></a>
-        <a href="admin_dashboard.php"><i class="fas fa-home"></i><span class="link-text">Dashboard</span></a>
-        <a href="admin_search.php"><i class="fas fa-search"></i><span class="link-text">View All Files</span></a>
-        <a href="user_management.php"><i class="fas fa-users"></i><span class="link-text">User Management</span></a>
-        <a href="department_management.php"><i class="fas fa-building"></i><span class="link-text">Department Management</span></a>
-        <a href="physical_storage_management.php"><i class="fas fa-archive"></i><span class="link-text">Physical Storage</span></a>
-        <a href="document_type_management.php" class="active"><i class="fas fa-file-alt"></i><span class="link-text">Document Type Management</span></a>
-        <a href="logout.php" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span></a>
-    </div>
+    <?php
+        include 'admin_menu.php';
+    ?>
 
     <!-- Main Content -->
     <div class="main-content document-type-management">
