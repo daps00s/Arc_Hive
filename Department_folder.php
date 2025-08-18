@@ -384,19 +384,13 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta name="description" content="Document archival system for <?= htmlspecialchars($departmentName, ENT_QUOTES, 'UTF-8') ?>">
+<>   
     <title><?= htmlspecialchars($departmentName, ENT_QUOTES, 'UTF-8') ?> - Document Archival</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/client-sidebar.css">
-    <link rel="stylesheet" href="style/folder-page.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <?php
+    include 'user_head.php'; // Include user-specific styles and scripts
+    ?>
+    
 </head>
 
 <body>
