@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'db_connection.php';
+require 'admin_menu.php';
 
 // Security headers
 header('X-Content-Type-Options: nosniff');
@@ -234,264 +235,9 @@ $csrfToken = generateCsrfToken();
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <title>User Management - ArcHive</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/admin-interface.css">
-    <link rel="stylesheet" href="style/admin-sidebar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 250px;
-            transition: width 0.3s ease;
-            z-index: 1000;
-        }
-        .sidebar.minimized {
-            width: 60px;
-        }
-        .main-content {
-            margin-left: 290px;
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
-            transition: margin-left 0.3s ease;
-        }
-        .main-content.sidebar-minimized {
-            margin-left: 60px;
-        }
-        .error, .success {
-            font-weight: bold;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            width: fit-content;
-        }
-        .error {
-            color: #dc3545;
-            background-color: #f8d7da;
-        }
-        .success {
-            color: #28a745;
-            background-color: #d4edda;
-            animation: fadeOut 5s forwards;
-        }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { opacity: 0; display: none; }
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background-color: #fff;
-            padding: 20px;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 8px;
-            position: relative;
-        }
-        .modal-content h3 {
-            margin-top: 0;
-        }
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-        .table-container {
-            position: relative;
-        }
-        .user-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .user-table th, .user-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        .user-table th {
-            background-color: #3d3d3dff;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .action-buttons button {
-            margin-right: 5px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-        }
-        .edit-btn {
-            background-color: #007bff;
-            color: white;
-        }
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-        }
-        .add-user-btn {
-            padding: 8px 16px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-        .pagination {
-            position: sticky;
-            bottom: 0;
-            background-color: #fff;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        .pagination select, .pagination button {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-        .pagination button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .pagination select:focus, .pagination button:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .modal-content select[multiple] {
-            height: 100px;
-        }
-        .modal-content button {
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-        }
-        .modal-content button[type="submit"] {
-            background-color: #28a745;
-            color: white;
-        }
-        .modal-content button[type="submit"][data-action="delete"] {
-            background-color: #dc3545;
-        }
-        .filter-container {
-            margin-bottom: 20px;
-        }
-        .filter-container select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-        }
-        .profile-pic-preview {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-            display: none;
-        }
-        .cropper-container {
-            max-width: 100%;
-            max-height: 300px;
-            margin-top: 10px;
-        }
-        .highlight-option {
-            animation: highlight 0.3s ease;
-        }
-        @keyframes highlight {
-            0% { background-color: #d4edda; }
-            100% { background-color: transparent; }
-        }
-    </style>
-</head>
+<?php include 'admin_head.php'; ?>
 <body class="admin-dashboard">
-    <!-- Admin Sidebar -->
-    <div class="sidebar">
-        <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
-            <i class="fas fa-bars"></i>
-        </button>
-        <h2 class="sidebar-title">Admin Panel</h2>
-        <a href="dashboard.php" class="client-btn">
-            <i class="fas fa-exchange-alt"></i>
-            <span class="link-text">Switch to Client View</span>
-        </a>
-        <a href="admin_dashboard.php">
-            <i class="fas fa-home"></i>
-            <span class="link-text">Dashboard</span>
-        </a>
-        <a href="admin_search.php">
-            <i class="fas fa-search"></i>
-            <span class="link-text">View All Files</span>
-        </a>
-        <a href="user_management.php" class="active">
-            <i class="fas fa-users"></i>
-            <span class="link-text">User Management</span>
-        </a>
-        <a href="department_management.php">
-            <i class="fas fa-building"></i>
-            <span class="link-text">Department Management</span>
-        </a>
-        <a href="physical_storage_management.php">
-            <i class="fas fa-archive"></i>
-            <span class="link-text">Physical Storage</span>
-        </a>
-        <a href="document_type_management.php">
-            <i class="fas fa-file-alt"></i>
-            <span class="link-text">Document Type Management</span>
-        </a>
-        <a href="backup.php">
-            <i class="fas fa-file-alt"></i>
-            <span class="link-text">System Backup</span>
-        </a>
-        <a href="logout.php" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="link-text">Logout</span>
-        </a>
-    </div>
+    <?php include 'admin_menu.php'; ?>
 
     <div class="main-content">
         <h2>User Management</h2>
@@ -512,10 +258,10 @@ $csrfToken = generateCsrfToken();
             </select>
         </div>
 
-        <button class="add-user-btn" onclick="openModal('add')">Add New User</button>
+        <button class="add-department-btn" onclick="openModal('add')">Add New User</button>
 
         <div class="table-container">
-            <table class="user-table">
+            <table class="department-table">
                 <thead>
                     <tr>
                         <th>Profile</th>
@@ -591,6 +337,185 @@ $csrfToken = generateCsrfToken();
             </div>
         </div>
     </div>
+
+    <style>
+        .main-content {
+            margin-left: 290px; /* Align with expanded sidebar */
+            padding: 20px;
+            flex: 1; /* Take remaining space */
+            overflow-y: auto; /* Allow scrolling in main content */
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.sidebar-minimized {
+            margin-left: 60px; /* Align with minimized sidebar */
+        }
+        .error, .success {
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .success {
+            color: #28a745;
+            background-color: #d4edda;
+            animation: fadeOut 5s forwards;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .modal-content h3 {
+            margin-top: 0;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        .table-container {
+            position: relative;
+        }
+        .department-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .department-table th, .department-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .department-table th {
+            background-color: #3d3d3dff;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+        .edit-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .add-department-btn {
+            padding: 8px 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .pagination {
+            position: sticky;
+            bottom: 0;
+            background-color: #fff;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        .pagination select, .pagination button {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .pagination select:focus, .pagination button:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .modal-content button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+        .modal-content button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+        .modal-content button[type="submit"][data-action="delete"] {
+            background-color: #dc3545;
+        }
+        .filter-container {
+            margin-bottom: 20px;
+        }
+        .filter-container select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .profile-pic-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            display: none;
+        }
+        .cropper-container {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+        }
+        .highlight-option {
+            animation: highlight 0.3s ease;
+        }
+        @keyframes highlight {
+            0% { background-color: #d4edda; }
+            100% { background-color: transparent; }
+        }
+    </style>
 
     <script>
         let cropper = null;
