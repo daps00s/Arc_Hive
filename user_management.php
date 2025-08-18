@@ -362,8 +362,8 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" integrity="sha512-hCAg8D0Ji4sG8M4rKEAy7kSOd0pH2j+1vV5f2jVrOjpV+LP2qF+81Tr5QUvA0D2eV2XJC+9cW9k3G4U3V0y2eA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="admin-sidebar.css">
-    <link rel="stylesheet" href="admin-interface.css">
+    <link rel="stylesheet" href="style/admin-sidebar.css">
+    <link rel="stylesheet" href="style/admin-interface.css">
     <style>
         .main-content {
             padding: 20px;
