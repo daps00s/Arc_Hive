@@ -172,7 +172,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>
-
+    
     <title>My Report - Document Archival</title>
 
     <?php
@@ -514,6 +514,18 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
             updateChart();
         });
     </script>
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 
 </html>

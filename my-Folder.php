@@ -295,6 +295,8 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
             <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
         </a>
     </aside>
+
+    
             <div class="ftypes">
                 <?php foreach ($documentTypes as $type):
                     $fileCount = count(array_filter($filteredFiles, fn($file) => $file['document_type'] === $type['name']));
