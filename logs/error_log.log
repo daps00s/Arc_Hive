@@ -371,3 +371,49 @@ Stack trace:
 #0 C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
 #1 {main}
   thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 16:07:48 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:07:48 Europe/Berlin] [2025-08-18 16:07:48] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:07:56 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:07:56 Europe/Berlin] [2025-08-18 16:07:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:09:02 Europe/Berlin] Error in my-Folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:09:02 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php:211
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 16:09:25 Europe/Berlin] Error in my-Folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:09:25 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php:211
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 16:14:37 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:37 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:37 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:14:37 Europe/Berlin] [2025-08-18 16:14:37] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:14:47 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:47 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 297
+[18-Aug-2025 16:14:52 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:52 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:52 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:14:52 Europe/Berlin] [2025-08-18 16:14:52] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:14:54 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 16:14:54 Europe/Berlin] [2025-08-18 16:14:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:14:57 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:57 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:14:57 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:14:57 Europe/Berlin] [2025-08-18 16:14:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:15:55 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:15:55 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 297
+[18-Aug-2025 16:18:08 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:18:08 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:18:08 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 205
+[18-Aug-2025 16:18:08 Europe/Berlin] [2025-08-18 16:18:08] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page

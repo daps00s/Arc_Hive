@@ -223,7 +223,7 @@ function getFileIcon(string $fileName): string
         <a href="my-report.php" data-tooltip="My Report" aria-label="My Report">
             <i class="fas fa-chart-bar"></i><span class="link-text">My Report</span>
         </a>
-        <a href="my-folder.php" class="<?= htmlspecialchars(basename($_SERVER['PHP_SELF']) === 'my-folder.php' ? 'active' : '') ?>" data-tooltip="My Folder" aria-label="My Folder">
+        <a href="my-Folder.php" class="<?= htmlspecialchars(basename($_SERVER['PHP_SELF']) === 'my-folder.php' ? 'active' : '') ?>" data-tooltip="My Folder" aria-label="My Folder">
             <i class="fas fa-folder"></i><span class="link-text">My Folder</span>
         </a>
         <?php foreach ($userDepartments as $dept): ?>
