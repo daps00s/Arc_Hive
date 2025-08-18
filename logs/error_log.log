@@ -220,3 +220,33 @@ Stack trace:
 [16-Aug-2025 10:44:47 Europe/Berlin] View text for file_id: 113, file_status: ocr_complete, extracted_text length: 0
 [16-Aug-2025 10:44:48 Europe/Berlin] View text for file_id: 113, file_status: ocr_complete, extracted_text length: 0
 [16-Aug-2025 10:44:49 Europe/Berlin] View text for file_id: 113, file_status: ocr_complete, extracted_text length: 0
+[18-Aug-2025 14:40:04 Europe/Berlin] Error in my-Folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 14:40:04 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php:211
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 14:40:07 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 14:40:07 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 297
+[18-Aug-2025 14:40:11 Europe/Berlin] Error in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 14:40:11 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: sendJsonResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php on line 159 and defined in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php:33
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php(159): sendJsonResponse(false, 'Server error: S...', Array, '42S22')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php on line 33
+[18-Aug-2025 14:41:54 Europe/Berlin] Error in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[18-Aug-2025 14:41:54 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: sendJsonResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php on line 159 and defined in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php:33
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php(159): sendJsonResponse(false, 'Server error: S...', Array, '42S22')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-report.php on line 33
+[18-Aug-2025 14:41:58 Europe/Berlin] Error in Department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 14:41:58 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php:297
+Stack trace:
+#0 C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php(297): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 297
