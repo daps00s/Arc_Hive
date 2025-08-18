@@ -252,31 +252,12 @@ $documentTypes = $documentTypesStmt ? $documentTypesStmt->fetchAll(PDO::FETCH_AS
         include 'admin_head.php';
     ?>
 
-</head>   
+
 
 
 
     <style>
-        .document-type-management {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #e0e7ff, #f4f4f9);
-            color: #34495e;
-        }
 
-        .main-content.document-type-management {
-            padding: 25px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-size: 26px;
-            color: #2c3e50;
-            margin: 0 0 20px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #50c878;
-            text-align: left;
-        }
 
         .open-modal-btn {
             background: linear-gradient(45deg, #50c878, #2ecc71);
@@ -446,7 +427,7 @@ $documentTypes = $documentTypesStmt ? $documentTypesStmt->fetchAll(PDO::FETCH_AS
             }
         }
 
-        .modal-content h2 {
+        .modal-content {
             font-size: 24px;
             color: #2c3e50;
             margin-bottom: 15px;

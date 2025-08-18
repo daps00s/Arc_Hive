@@ -371,3 +371,11 @@ Stack trace:
 #0 C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
 #1 {main}
   thrown in C:\xampp\htdocs\GitHub\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 16:08:34 Europe/Berlin] [2025-08-18 16:08:34] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:08:37 Europe/Berlin] Error in my-Folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:08:37 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: http_response_code(): Argument #1 ($response_code) must be of type int, string given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php:211
+Stack trace:
+#0 C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php(211): http_response_code('42S02')
+#1 {main}
+  thrown in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 211
+[18-Aug-2025 16:08:38 Europe/Berlin] [2025-08-18 16:08:38] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
