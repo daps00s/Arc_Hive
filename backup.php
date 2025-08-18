@@ -220,8 +220,8 @@ if ($next_backup <= $now) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle; ?> - ArcHive</title>
-    <link rel="stylesheet" href="admin-interface.css">
-    <link rel="stylesheet" href="admin-sidebar.css">
+    <link rel="stylesheet" href="style/admin-interface.css">
+    <link rel="stylesheet" href="style/admin-sidebar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
