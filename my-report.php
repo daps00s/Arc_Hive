@@ -172,37 +172,30 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Report - Document Archival</title>
-    <meta name="description" content="Document archival system report for <?= htmlspecialchars($user['full_name'] ?? 'User', ENT_QUOTES, 'UTF-8'); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style/client-sidebar.css">
-    <link rel="stylesheet" href="style/my-report.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <?php
+     include 'user_head.php';
+    ?> 
+
+
+
 </head>
 
 <body>
+    
+    <?php
+    include 'user_menu.php';
+    ?>
+
+    
     <?php if ($errorMessage): ?>
         <div class="error-message" style="color: red; padding: 20px; text-align: center;">
             <p><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?></p>
         </div>
     <?php else: ?>
-        <div class="sidebar" id="sidebar">
-            <button class="toggle-btn" id="toggleSidebar" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
-            <h2>Document Archival</h2>
-            <a href="dashboard.php" data-tooltip="Dashboard"><i class="fas fa-home"></i><span class="link-text">Dashboard</span></a>
-            <a href="my-folder.php" data-tooltip="My Folder"><i class="fas fa-folder"></i><span class="link-text">My Folder</span></a>
-            <a href="my-report.php" class="active" data-tooltip="My Report"><i class="fas fa-chart-bar"></i><span class="link-text">My Report</span></a>
-            <?php if ($userRole === 'admin'): ?>
-                <a href="admin_dashboard.php" class="admin-dashboard-btn" data-tooltip="Admin Dashboard"><i class="fas fa-user-shield"></i><span class="link-text">Admin Dashboard</span></a>
-            <?php endif; ?>
-            <button class="logout-btn" onclick="location.href='logout.php'" data-tooltip="Logout"><i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span></button>
-        </div>
+
+
+
 
         <div class="top-nav" id="topNav">
             <button class="toggle-btn" id="toggleNavSidebar" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>

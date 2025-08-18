@@ -491,3 +491,62 @@ Stack trace:
 [18-Aug-2025 16:29:54 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub\Arc_Hive\Department_folder.php on line 351
 [18-Aug-2025 16:29:54 Europe/Berlin] [2025-08-18 16:29:54] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed Department Folder page for department ID 10
 >>>>>>> ba63da4e5f8dea59e6de0e14c4dab3c8424267f5
+[18-Aug-2025 16:34:58 Europe/Berlin] [2025-08-18 16:34:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:35:00 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:35:00 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:35:00 Europe/Berlin] [2025-08-18 16:35:00] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:35:01 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:35:01 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[18-Aug-2025 16:35:01 Europe/Berlin] [2025-08-18 16:35:01] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[18-Aug-2025 16:35:07 Europe/Berlin] [2025-08-18 16:35:07] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:39:59 Europe/Berlin] [2025-08-18 16:39:59] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:43:53 Europe/Berlin] [2025-08-18 16:43:53] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:43:53 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:43:58 Europe/Berlin] [2025-08-18 16:43:58] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:43:58 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:44:15 Europe/Berlin] [2025-08-18 16:44:15] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:44:15 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:44:16 Europe/Berlin] [2025-08-18 16:44:16] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:44:16 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:44:43 Europe/Berlin] [2025-08-18 16:44:43] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:44:43 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:35 Europe/Berlin] [2025-08-18 16:45:35] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:35 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:37 Europe/Berlin] [2025-08-18 16:45:37] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:37 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:38 Europe/Berlin] [2025-08-18 16:45:38] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:38 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:42 Europe/Berlin] [2025-08-18 16:45:42] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:42 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:43 Europe/Berlin] [2025-08-18 16:45:43] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:43 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:44 Europe/Berlin] [2025-08-18 16:45:44] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:44 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:45 Europe/Berlin] [2025-08-18 16:45:45] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:45 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:46 Europe/Berlin] [2025-08-18 16:45:46] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:46 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:48 Europe/Berlin] [2025-08-18 16:45:48] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:48 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:45:50 Europe/Berlin] [2025-08-18 16:45:50] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:45:50 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:46:53 Europe/Berlin] [2025-08-18 16:46:53] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:46:53 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:46:56 Europe/Berlin] [2025-08-18 16:46:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:46:56 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:46:57 Europe/Berlin] [2025-08-18 16:46:57] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:46:57 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:16 Europe/Berlin] [2025-08-18 16:47:16] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:16 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:19 Europe/Berlin] [2025-08-18 16:47:19] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:19 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:20 Europe/Berlin] [2025-08-18 16:47:20] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:20 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:21 Europe/Berlin] [2025-08-18 16:47:21] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:21 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:24 Europe/Berlin] [2025-08-18 16:47:24] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:24 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:26 Europe/Berlin] [2025-08-18 16:47:26] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:26 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
+[18-Aug-2025 16:47:27 Europe/Berlin] [2025-08-18 16:47:27] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
+[18-Aug-2025 16:47:27 Europe/Berlin] PHP Warning:  Undefined array key "department_id" in C:\xampp\htdocs\GitHub.com\Arc_Hive\user_menu.php on line 19
