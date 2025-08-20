@@ -1118,146 +1118,164 @@ $accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_AS
             }
 
             // Download report as CSV or PDF
-            function downloadReport(chartType, format) {
-                let data;
-                let csvContent = '';
+function downloadReport(chartType, format) {
+    let data;
+    let csvContent = '';
+    let headers = [];
+    let rows = [];
 
-                if (format === 'csv') {
-                    switch (chartType) {
-                        case 'FileUploadTrends':
-                            data = fileUploadTrends;
-                            csvContent += 'File Name,Document Type,Uploader,Uploader\'s Department,Intended Destination,Upload Date/Time\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.document_name),
-                                    escapeCsvField(entry.document_type),
-                                    escapeCsvField(entry.uploader_name),
-                                    escapeCsvField(entry.uploader_department || 'None') + (entry.uploader_subdepartment ? ' / ' + escapeCsvField(entry.uploader_subdepartment) : ''),
-                                    escapeCsvField(entry.target_department_name || 'None'),
-                                    escapeCsvField(new Date(entry.upload_date).toLocaleString())
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'FileDistribution':
-                            data = fileDistribution;
-                            csvContent += 'File Name,Document Type,Sender,Recipient,Time Sent,Time Received,Department/Subdepartment\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.document_name),
-                                    escapeCsvField(entry.document_type),
-                                    escapeCsvField(entry.sender_name || 'None'),
-                                    escapeCsvField(entry.receiver_name || 'None'),
-                                    escapeCsvField(entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'),
-                                    escapeCsvField(entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'),
-                                    escapeCsvField((entry.department_name || 'None') + (entry.sub_department_name ? ' / ' + entry.sub_department_name : ''))
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'UsersPerDepartment':
-                            data = usersPerDepartment;
-                            csvContent += 'Department,User Count\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.department_name),
-                                    escapeCsvField(entry.user_count)
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'DocumentCopies':
-                            data = documentCopies;
-                            csvContent += 'File Name,Copy Count,Offices with Copy,Physical Duplicates\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.file_name),
-                                    escapeCsvField(entry.copy_count),
-                                    escapeCsvField(entry.offices_with_copy || 'None'),
-                                    escapeCsvField(entry.physical_duplicates || 'None')
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'PendingRequests':
-                            data = pendingRequestsDetails;
-                            csvContent += 'File Name,Requester,Requester\'s Department,Physical Storage\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.file_name),
-                                    escapeCsvField(entry.requester_name),
-                                    escapeCsvField((entry.requester_department || 'None') + (entry.requester_subdepartment ? ' / ' + entry.requester_subdepartment : '')),
-                                    escapeCsvField(entry.physical_storage || 'None')
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'RetrievalHistory':
-                            data = retrievalHistory;
-                            csvContent += 'Transaction ID,Type,Status,Time,User,File Name,Department,Physical Storage\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.transaction_id),
-                                    escapeCsvField(entry.type),
-                                    escapeCsvField(entry.status),
-                                    escapeCsvField(new Date(entry.time).toLocaleString()),
-                                    escapeCsvField(entry.user_name),
-                                    escapeCsvField(entry.file_name),
-                                    escapeCsvField(entry.department_name || 'None'),
-                                    escapeCsvField(entry.physical_storage || 'None')
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        case 'AccessHistory':
-                            data = accessHistory;
-                            csvContent += 'Transaction ID,Time,User,File Name,Type,Department\n';
-                            data.forEach(entry => {
-                                csvContent += [
-                                    escapeCsvField(entry.transaction_id),
-                                    escapeCsvField(new Date(entry.time).toLocaleString()),
-                                    escapeCsvField(entry.user_name),
-                                    escapeCsvField(entry.file_name),
-                                    escapeCsvField(entry.type),
-                                    escapeCsvField(entry.department_name || 'None')
-                                ].join(',') + '\n';
-                            });
-                            break;
-                        default:
-                            alert('Download not implemented for this report type.');
-                            closeDownloadModal();
-                            return;
-                    }
+    // Map chartType to the correct data array
+    const dataMap = {
+        'FileUploadTrends': fileUploadTrends,
+        'FileDistribution': fileDistribution,
+        'UsersPerDepartment': usersPerDepartment,
+        'DocumentCopies': documentCopies,
+        'PendingRequests': pendingRequestsDetails,
+        'RetrievalHistory': retrievalHistory,
+        'AccessHistory': accessHistory
+    };
 
-                    const blob = new Blob([csvContent], {
-                        type: 'text/csv;charset=utf-8;'
-                    });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.setAttribute('href', url);
-                    link.setAttribute('download', `${chartType}_Report.csv`);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                } else if (format === 'pdf') {
-                    const reportContent = generateReportContent(chartType);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = reportContent;
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    document.body.appendChild(tempDiv);
-                    const opt = {
-                        margin: 0.5,
-                        filename: `${chartType}_Report.pdf`,
-                        image: { type: 'png', quality: 0.98 },
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                    };
-                    html2pdf().from(tempDiv).set(opt).save().then(() => {
-                        document.body.removeChild(tempDiv);
-                    });
-                } else {
-                    alert('Invalid format selected.');
-                    closeDownloadModal();
-                    return;
-                }
+    data = dataMap[chartType] || [];
+
+    // Debug log to check data availability
+    console.log(`${chartType} data:`, data);
+    if (data.length === 0) {
+        alert('No data available for this report. The PDF will be empty. Please ensure the database has relevant records.');
+        closeDownloadModal();
+        return;
+    }
+
+    if (format === 'csv') {
+        switch (chartType) {
+            case 'FileUploadTrends':
+                csvContent += 'File Name,Document Type,Uploader,Uploader\'s Department,Intended Destination,Upload Date/Time\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.document_name),
+                        escapeCsvField(entry.document_type),
+                        escapeCsvField(entry.uploader_name),
+                        escapeCsvField(entry.uploader_department || 'None') + (entry.uploader_subdepartment ? ' / ' + escapeCsvField(entry.uploader_subdepartment) : ''),
+                        escapeCsvField(entry.target_department_name || 'None'),
+                        escapeCsvField(new Date(entry.upload_date).toLocaleString())
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'FileDistribution':
+                csvContent += 'File Name,Document Type,Sender,Recipient,Time Sent,Time Received,Department/Subdepartment\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.document_name),
+                        escapeCsvField(entry.document_type),
+                        escapeCsvField(entry.sender_name || 'None'),
+                        escapeCsvField(entry.receiver_name || 'None'),
+                        escapeCsvField(entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'),
+                        escapeCsvField(entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'),
+                        escapeCsvField((entry.department_name || 'None') + (entry.sub_department_name ? ' / ' + entry.sub_department_name : ''))
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'UsersPerDepartment':
+                csvContent += 'Department,User Count\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.department_name),
+                        escapeCsvField(entry.user_count)
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'DocumentCopies':
+                csvContent += 'File Name,Copy Count,Offices with Copy,Physical Duplicates\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.file_name),
+                        escapeCsvField(entry.copy_count),
+                        escapeCsvField(entry.offices_with_copy || 'None'),
+                        escapeCsvField(entry.physical_duplicates || 'None')
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'PendingRequests':
+                csvContent += 'File Name,Requester,Requester\'s Department,Physical Storage\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.file_name),
+                        escapeCsvField(entry.requester_name),
+                        escapeCsvField((entry.requester_department || 'None') + (entry.requester_subdepartment ? ' / ' + entry.requester_subdepartment : '')),
+                        escapeCsvField(entry.physical_storage || 'None')
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'RetrievalHistory':
+                csvContent += 'Transaction ID,Type,Status,Time,User,File Name,Department,Physical Storage\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.transaction_id),
+                        escapeCsvField(entry.type),
+                        escapeCsvField(entry.status),
+                        escapeCsvField(new Date(entry.time).toLocaleString()),
+                        escapeCsvField(entry.user_name),
+                        escapeCsvField(entry.file_name),
+                        escapeCsvField(entry.department_name || 'None'),
+                        escapeCsvField(entry.physical_storage || 'None')
+                    ].join(',') + '\n';
+                });
+                break;
+            case 'AccessHistory':
+                csvContent += 'Transaction ID,Time,User,File Name,Type,Department\n';
+                data.forEach(entry => {
+                    csvContent += [
+                        escapeCsvField(entry.transaction_id),
+                        escapeCsvField(new Date(entry.time).toLocaleString()),
+                        escapeCsvField(entry.user_name),
+                        escapeCsvField(entry.file_name),
+                        escapeCsvField(entry.type),
+                        escapeCsvField(entry.department_name || 'None')
+                    ].join(',') + '\n';
+                });
+                break;
+            default:
+                alert('Download not implemented for this report type.');
                 closeDownloadModal();
-            }
+                return;
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${chartType}_Report.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } else if (format === 'pdf') {
+        if (!window.html2pdf) {
+            console.error('html2pdf.js not loaded.');
+            alert('html2pdf.js library failed to load. Check CDN or host locally.');
+            closeDownloadModal();
+            return;
+        }
+
+        const reportContent = generateReportContent(chartType);
+        const element = document.createElement('div');
+        element.innerHTML = reportContent;
+
+        html2pdf().from(element).set({
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: `${chartType}_Report.pdf`,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        }).save().then(() => {
+            console.log(`PDF generated for ${chartType}`);
+        }).catch((err) => {
+            console.error('PDF generation failed:', err);
+            alert('Failed to generate PDF. Check console for errors.');
+        });
+    } else {
+        alert('Invalid format selected.');
+    }
+    closeDownloadModal();
+}
 
             // Sidebar toggle function
             function toggleSidebar() {
