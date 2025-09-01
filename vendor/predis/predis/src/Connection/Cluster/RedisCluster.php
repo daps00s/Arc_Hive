@@ -20,14 +20,11 @@ use Predis\ClientException;
 use Predis\Cluster\RedisStrategy as RedisClusterStrategy;
 use Predis\Cluster\SlotMap;
 use Predis\Cluster\StrategyInterface;
-use Predis\Command\Command;
 use Predis\Command\CommandInterface;
 use Predis\Command\RawCommand;
-use Predis\Connection\AbstractAggregateConnection;
 use Predis\Connection\ConnectionException;
 use Predis\Connection\FactoryInterface;
 use Predis\Connection\NodeConnectionInterface;
-use Predis\Connection\ParametersInterface;
 use Predis\NotSupportedException;
 use Predis\Response\Error as ErrorResponse;
 use Predis\Response\ErrorInterface as ErrorResponseInterface;
@@ -56,13 +53,9 @@ use Traversable;
  * Asking for the cluster configuration to Redis is actually done by issuing a
  * CLUSTER SLOTS command to a random node in the pool.
  */
-class RedisCluster extends AbstractAggregateConnection implements ClusterInterface, IteratorAggregate, Countable
+class RedisCluster implements ClusterInterface, IteratorAggregate, Countable
 {
     private $useClusterSlots = true;
-
-    /**
-     * @var NodeConnectionInterface[]
-     */
     private $pool = [];
     private $slots = [];
     private $slotmap;
@@ -72,34 +65,16 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
     private $retryInterval = 10;
 
     /**
-     * @var int
-     */
-    private $readTimeout = 1000;
-
-    /**
-     * @var ParametersInterface
-     */
-    private $connectionParameters;
-
-    /**
      * @param FactoryInterface       $connections Optional connection factory.
      * @param StrategyInterface|null $strategy    Optional cluster strategy.
-     * @param int|null               $readTimeout Optional read timeout
      */
     public function __construct(
         FactoryInterface $connections,
-        ParametersInterface $parameters,
-        ?StrategyInterface $strategy = null,
-        ?int $readTimeout = null
+        ?StrategyInterface $strategy = null
     ) {
         $this->connections = $connections;
-        $this->connectionParameters = $parameters;
         $this->strategy = $strategy ?: new RedisClusterStrategy();
         $this->slotmap = new SlotMap();
-
-        if (!is_null($readTimeout)) {
-            $this->readTimeout = $readTimeout;
-        }
     }
 
     /**
@@ -155,7 +130,7 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
      */
     public function connect()
     {
-        foreach ($this->pool as $connection) {
+        if ($connection = $this->getRandomConnection()) {
             $connection->connect();
         }
     }
@@ -279,7 +254,7 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
                 }
 
                 if (!$connection = $this->getRandomConnection()) {
-                    throw new ClientException('No connections left in the pool for `CLUSTER SLOTS`');
+                    throw new ClientException('No connections left in the pool for `CLUSTER SLOTS` (' . $exception->getMessage() . ')');
                 }
 
                 usleep($retryAfter * 1000);
@@ -362,10 +337,19 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
     {
         $separator = strrpos($connectionID, ':');
 
-        return $this->connections->create([
+        $parameters = [
             'host' => substr($connectionID, 0, $separator),
             'port' => substr($connectionID, $separator + 1),
-        ]);
+        ];
+
+        $existConnection = current($this->pool);
+        if ($existConnection instanceof NodeConnectionInterface) {
+            $existParameters = $existConnection->getParameters()->toArray();
+            unset($existParameters['alias'], $existParameters['slots']);
+            $parameters = array_merge($existParameters, $parameters);
+        }
+
+        return $this->connections->create($parameters);
     }
 
     /**
@@ -623,20 +607,6 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function executeCommandOnEachNode(CommandInterface $command): array
-    {
-        $responses = [];
-
-        foreach ($this->pool as $connection) {
-            $responses[] = $connection->executeCommand($command);
-        }
-
-        return $responses;
-    }
-
-    /**
      * @return int
      */
     #[ReturnTypeWillChange]
@@ -679,9 +649,12 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the underlying command hash strategy used to hash commands by
+     * using keys found in their arguments.
+     *
+     * @return StrategyInterface
      */
-    public function getClusterStrategy(): StrategyInterface
+    public function getClusterStrategy()
     {
         return $this->strategy;
     }
@@ -713,31 +686,5 @@ class RedisCluster extends AbstractAggregateConnection implements ClusterInterfa
     public function useClusterSlots($value)
     {
         $this->useClusterSlots = (bool) $value;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParameters(): ?ParametersInterface
-    {
-        return $this->connectionParameters;
-    }
-
-    /**
-     * Loop over connections until there's data to read.
-     *
-     * @return mixed
-     */
-    public function read()
-    {
-        while (true) {
-            foreach ($this->pool as $connection) {
-                if ($connection->hasDataToRead()) {
-                    return $connection->read();
-                }
-            }
-
-            usleep($this->readTimeout);
-        }
     }
 }

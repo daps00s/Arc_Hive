@@ -4,4 +4,47 @@ OCR completed for file ID 113 (path: uploads/0ec1258c05c9505a_error_log.txt)OCR 
 Leptonica Error in pixRead: pix not read: C:\xampp\htdocs\GitHub.com\Arc_Hive\uploads\6a928454758a9302_Portfolio.pdf
 Error during processing.No text extracted for file ID 114 (path: Uploads/6a928454758a9302_Portfolio.pdf): OCR failed to produce outputOCR error for C:\xampp\htdocs\GitHub.com\Arc_Hive\uploads\8a1e1b7507ee9b77_FileUploadTrends_Report.pdf (type: pdf): Tesseract OCR failed with code 1: Error in pixReadStream: Pdf reading is not supported
 Leptonica Error in pixRead: pix not read: C:\xampp\htdocs\GitHub.com\Arc_Hive\uploads\8a1e1b7507ee9b77_FileUploadTrends_Report.pdf
-Error during processing.No text extracted for file ID 115 (path: Uploads/8a1e1b7507ee9b77_FileUploadTrends_Report.pdf): OCR failed to produce output
+Error during processing.No text extracted for file ID 115 (path: Uploads/8a1e1b7507ee9b77_FileUploadTrends_Report.pdf): OCR failed to produce outputOCR completed for file ID 122 (path: Uploads/8a4be030318376be_Moodle.docx)No pending OCR files found.No pending OCR files found.No pending OCR files found.No pending OCR files found.[2025-08-29 00:40:41] [INFO] Starting OCR processor
+[2025-08-29 00:40:41] [INFO] Processing specific file ID: 224
+[2025-08-29 00:40:41] [ERROR] File ID 224 not found in database
+[2025-08-29 00:44:43] [INFO] Starting OCR processor
+[2025-08-29 00:44:43] [INFO] Processing specific file ID: 230
+[2025-08-29 00:44:43] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png, status: completed
+[2025-08-29 00:44:43] [INFO] Processing file ID: 230, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png, type: image/png
+[2025-08-29 00:44:43] [INFO] Starting text extraction for file ID 230, type: image/png, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png
+[2025-08-29 00:44:43] [ERROR] OCR error for file ID 230: Unsupported file type: image/png
+[2025-08-29 00:44:43] [ERROR] No text extracted for file ID 230: OCR failed to produce output (execution time: 0.0019190311431885s)
+[2025-08-29 00:44:43] [ERROR] OCR processing error for file ID 230: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\ocr_processor.php(402): PDOStatement->execute()
+#1 {main}
+[2025-08-29 00:44:43] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\ocr_processor.php(441): PDOStatement->execute()
+#1 {main}
+[2025-08-29 00:49:56] [INFO] Starting OCR processor
+[2025-08-29 00:49:56] [INFO] Processing specific file ID: 230
+[2025-08-29 00:49:56] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png, type: image/png, status: completed
+[2025-08-29 00:49:56] [INFO] Processing file ID: 230, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png, type: png
+[2025-08-29 00:49:56] [INFO] Starting text extraction for file ID 230, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png
+[2025-08-29 00:49:56] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Untitled00.png
+[2025-08-29 00:49:58] [INFO] Extracted text from image (379 chars)
+[2025-08-29 00:49:58] [INFO] Inserted 1 pages into file_pages table
+[2025-08-29 00:49:58] [INFO] OCR completed for file ID 230 (pages: 1, execution time: 1.8577120304108s)
+[2025-08-29 00:49:58] [INFO] OCR processor finished
+[2025-08-29 00:51:47] [INFO] Starting OCR processor
+[2025-08-29 00:51:47] [INFO] Processing specific file ID: 231
+[2025-08-29 00:51:47] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\websystem-OCR-test.pdf, type: application/pdf, status: completed
+[2025-08-29 00:51:47] [INFO] Processing file ID: 231, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\websystem-OCR-test.pdf, type: pdf
+[2025-08-29 00:51:47] [INFO] Starting text extraction for file ID 231, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\websystem-OCR-test.pdf
+[2025-08-29 00:51:47] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\websystem-OCR-test.pdf
+[2025-08-29 00:51:47] [INFO] PDF contains text, extracting directly
+[2025-08-29 00:51:48] [INFO] Inserted 2 pages into file_pages table
+[2025-08-29 00:51:48] [INFO] OCR completed for file ID 231 (pages: 2, execution time: 0.16521096229553s)
+[2025-08-29 00:51:48] [INFO] OCR processor finished
+[2025-08-29 01:12:44] [INFO] Starting OCR processor
+[2025-08-29 01:12:44] [INFO] Processing specific file ID: 232
+[2025-08-29 01:12:44] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\BASIC LINUX COMMANDS.pdf, type: application/pdf, status: completed
+[2025-08-29 01:12:44] [INFO] Processing file ID: 232, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\BASIC LINUX COMMANDS.pdf, type: pdf
+[2025-08-29 01:12:44] [INFO] Starting text extraction for file ID 232, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\BASIC LINUX COMMANDS.pdf
+[2025-08-29 01:12:44] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\BASIC LINUX COMMANDS.pdf
+[2025-08-29 01:12:44] [INFO] PDF contains text, extracting directly
+[2025-08-29 01:12:44] [INFO] Inserted 2 pages into file_pages table
+[2025-08-29 01:12:44] [INFO] OCR completed for file ID 232 (pages: 2, execution time: 0.47847509384155s)
+[2025-08-29 01:12:44] [INFO] OCR processor finished

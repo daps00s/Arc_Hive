@@ -1,0 +1,448 @@
+[2025-08-29 01:34:12] [INFO] Starting OCR processor
+[2025-08-29 01:34:12] [INFO] Processing specific file ID: 237
+[2025-08-29 01:34:12] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf, type: application/pdf, status: completed
+[2025-08-29 01:34:12] [INFO] Processing file ID: 237, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf, type: pdf
+[2025-08-29 01:34:12] [INFO] Starting text extraction for file ID 237, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf
+[2025-08-29 01:34:12] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf
+[2025-08-29 01:34:12] [INFO] PDF contains text, extracting directly
+[2025-08-29 01:34:12] [INFO] Inserted 15 pages into file_pages table
+[2025-08-29 01:34:12] [INFO] OCR completed for file ID 237 (pages: 15, execution time: 0.18943786621094s)
+[2025-08-29 01:34:12] [INFO] OCR processor finished
+[2025-08-29 01:54:11] [INFO] Starting OCR processor
+[2025-08-29 01:54:11] [INFO] Processing specific file ID: 238
+[2025-08-29 01:54:11] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf, type: application/pdf, status: completed
+[2025-08-29 01:54:11] [INFO] Processing file ID: 238, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf, type: pdf
+[2025-08-29 01:54:11] [INFO] Starting text extraction for file ID 238, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf
+[2025-08-29 01:54:11] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ocr-Unit 3.pdf
+[2025-08-29 01:54:13] [INFO] PDF contains text, extracting directly
+[2025-08-29 01:54:13] [INFO] Inserted 15 pages into file_pages table
+[2025-08-29 01:54:13] [INFO] OCR completed for file ID 238 (pages: 15, execution time: 1.2907860279083s)
+[2025-08-29 01:54:13] [INFO] OCR processor finished
+OCR triggered successfully for file ID 245 (Extension: pdf)[2025-08-29 03:30:51] [INFO] Starting OCR processor
+[2025-08-29 03:30:51] [INFO] Processing specific file ID: 256
+[2025-08-29 03:30:51] [ERROR] File ID 256 not found in database
+[2025-08-29 03:31:07] [INFO] Starting OCR processor
+[2025-08-29 03:31:07] [INFO] Processing specific file ID: 246
+[2025-08-29 03:31:07] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\LAST-OCR-TEST.pdf, type: application/pdf, status: completed
+[2025-08-29 03:31:07] [INFO] Processing file ID: 246, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\LAST-OCR-TEST.pdf, type: pdf
+[2025-08-29 03:31:07] [INFO] Starting text extraction for file ID 246, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\LAST-OCR-TEST.pdf
+[2025-08-29 03:31:07] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\LAST-OCR-TEST.pdf
+[2025-08-29 03:31:07] [INFO] PDF contains text, extracting directly
+[2025-08-29 03:31:07] [INFO] Inserted 15 pages into file_pages table
+[2025-08-29 03:31:07] [INFO] OCR completed for file ID 246 (pages: 15, execution time: 0.21861910820007s)
+[2025-08-29 03:31:07] [INFO] OCR processor finished
+[2025-08-29 04:06:46] [INFO] Starting OCR processor
+[2025-08-29 04:06:46] [INFO] Processing specific file ID: 249
+[2025-08-29 04:06:46] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf, type: application/pdf, status: completed
+[2025-08-29 04:06:46] [INFO] Processing file ID: 249, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf, type: pdf
+[2025-08-29 04:06:46] [INFO] Starting text extraction for file ID 249, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf
+[2025-08-29 04:06:46] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf
+[2025-08-29 04:06:47] [INFO] PDF contains text, extracting directly
+[2025-08-29 04:06:47] [INFO] Inserted 3 pages into file_pages table
+[2025-08-29 04:06:47] [INFO] OCR completed for file ID 249 (pages: 3, execution time: 0.20827388763428s)
+[2025-08-29 04:06:47] [INFO] OCR processor finished
+[2025-08-29 04:08:20] [INFO] Starting OCR processor
+[2025-08-29 04:08:20] [INFO] Processing specific file ID: 250
+[2025-08-29 04:08:20] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA.pdf, type: application/pdf, status: completed
+[2025-08-29 04:08:20] [INFO] Processing file ID: 250, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA.pdf, type: pdf
+[2025-08-29 04:08:20] [INFO] Starting text extraction for file ID 250, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA.pdf
+[2025-08-29 04:08:20] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA.pdf
+[2025-08-29 04:08:20] [INFO] PDF contains text, extracting directly
+[2025-08-29 04:08:21] [INFO] Inserted 3 pages into file_pages table
+[2025-08-29 04:08:21] [INFO] OCR completed for file ID 250 (pages: 3, execution time: 0.20792412757874s)
+[2025-08-29 04:08:21] [INFO] OCR processor finished
+[2025-08-29 04:09:31] [INFO] Starting OCR processor
+[2025-08-29 04:09:31] [INFO] Processing specific file ID: 251
+[2025-08-29 04:09:31] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\CHECK-TEST.pdf, type: application/pdf, status: completed
+[2025-08-29 04:09:31] [INFO] Processing file ID: 251, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\CHECK-TEST.pdf, type: pdf
+[2025-08-29 04:09:31] [INFO] Starting text extraction for file ID 251, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\CHECK-TEST.pdf
+[2025-08-29 04:09:31] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\CHECK-TEST.pdf
+[2025-08-29 04:09:33] [INFO] PDF contains text, extracting directly
+[2025-08-29 04:09:33] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 04:09:33] [INFO] OCR completed for file ID 251 (pages: 74, execution time: 1.8748321533203s)
+[2025-08-29 04:09:33] [INFO] OCR processor finished
+[2025-08-29 04:59:20] [INFO] Starting OCR processor
+[2025-08-29 04:59:20] [INFO] Processing specific file ID: 252
+[2025-08-29 04:59:20] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST.pdf, type: application/pdf, status: completed
+[2025-08-29 04:59:20] [INFO] Processing file ID: 252, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST.pdf, type: pdf
+[2025-08-29 04:59:20] [INFO] Starting text extraction for file ID 252, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST.pdf
+[2025-08-29 04:59:20] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST.pdf
+[2025-08-29 04:59:21] [INFO] PDF contains text, extracting directly
+[2025-08-29 04:59:22] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 04:59:22] [INFO] OCR completed for file ID 252 (pages: 74, execution time: 1.4664251804352s)
+[2025-08-29 04:59:22] [INFO] OCR processor finished
+[2025-08-29 05:31:15] [INFO] Starting OCR processor
+[2025-08-29 05:31:15] [INFO] Processing specific file ID: 253
+[2025-08-29 05:31:15] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again.pdf, type: application/pdf, status: completed
+[2025-08-29 05:31:15] [INFO] Processing file ID: 253, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again.pdf, type: pdf
+[2025-08-29 05:31:15] [INFO] Starting text extraction for file ID 253, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again.pdf
+[2025-08-29 05:31:15] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again.pdf
+[2025-08-29 05:31:15] [INFO] PDF contains text, extracting directly
+[2025-08-29 05:31:16] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 05:31:16] [INFO] OCR completed for file ID 253 (pages: 74, execution time: 1.3195807933807s)
+[2025-08-29 05:31:16] [INFO] OCR processor finished
+[2025-08-29 05:36:18] [INFO] Starting OCR processor
+[2025-08-29 05:36:18] [INFO] Processing specific file ID: 254
+[2025-08-29 05:36:18] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again and again.pdf, type: application/pdf, status: completed
+[2025-08-29 05:36:18] [INFO] Processing file ID: 254, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again and again.pdf, type: pdf
+[2025-08-29 05:36:18] [INFO] Starting text extraction for file ID 254, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again and again.pdf
+[2025-08-29 05:36:18] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TEST-again and again.pdf
+[2025-08-29 05:36:19] [INFO] PDF contains text, extracting directly
+[2025-08-29 05:36:20] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 05:36:20] [INFO] OCR completed for file ID 254 (pages: 74, execution time: 1.3189098834991s)
+[2025-08-29 05:36:20] [INFO] OCR processor finished
+[2025-08-29 05:48:59] [INFO] Starting OCR processor
+[2025-08-29 05:48:59] [INFO] Processing specific file ID: 255
+[2025-08-29 05:48:59] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TESTER-again and again.pdf, type: application/pdf, status: completed
+[2025-08-29 05:48:59] [INFO] Processing file ID: 255, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TESTER-again and again.pdf, type: pdf
+[2025-08-29 05:48:59] [INFO] Starting text extraction for file ID 255, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TESTER-again and again.pdf
+[2025-08-29 05:48:59] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Re-CHECK-TESTER-again and again.pdf
+[2025-08-29 05:49:00] [INFO] PDF contains text, extracting directly
+[2025-08-29 05:49:00] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 05:49:00] [INFO] OCR completed for file ID 255 (pages: 74, execution time: 1.2687129974365s)
+[2025-08-29 05:49:00] [INFO] OCR processor finished
+[2025-08-29 07:32:13] [INFO] Starting OCR processor
+[2025-08-29 07:32:13] [INFO] Processing specific file ID: 256
+[2025-08-29 07:32:13] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\HHH.pdf, type: application/pdf, status: completed
+[2025-08-29 07:32:13] [INFO] Processing file ID: 256, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\HHH.pdf, type: pdf
+[2025-08-29 07:32:13] [INFO] Starting text extraction for file ID 256, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\HHH.pdf
+[2025-08-29 07:32:13] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\HHH.pdf
+[2025-08-29 07:32:14] [INFO] PDF contains text, extracting directly
+[2025-08-29 07:32:14] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 07:32:14] [INFO] OCR completed for file ID 256 (pages: 74, execution time: 1.2840671539307s)
+[2025-08-29 07:32:14] [INFO] OCR processor finished
+[2025-08-29 08:30:58] [INFO] Starting OCR processor
+[2025-08-29 08:30:58] [INFO] Processing specific file ID: 257
+[2025-08-29 08:30:58] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\RETEST.pdf, type: application/pdf, status: completed
+[2025-08-29 08:30:58] [INFO] Processing file ID: 257, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\RETEST.pdf, type: pdf
+[2025-08-29 08:30:58] [INFO] Starting text extraction for file ID 257, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\RETEST.pdf
+[2025-08-29 08:30:58] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\RETEST.pdf
+[2025-08-29 08:30:59] [INFO] PDF contains text, extracting directly
+[2025-08-29 08:30:59] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 08:30:59] [INFO] OCR completed for file ID 257 (pages: 74, execution time: 1.1137931346893s)
+[2025-08-29 08:30:59] [INFO] OCR processor finished
+[2025-08-29 08:31:28] [INFO] Starting OCR processor
+[2025-08-29 08:31:28] [INFO] Processing specific file ID: 258
+[2025-08-29 08:31:28] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\RETEST-9898.pdf, type: application/pdf, status: completed
+[2025-08-29 08:31:28] [INFO] Processing file ID: 258, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\RETEST-9898.pdf, type: pdf
+[2025-08-29 08:31:28] [INFO] Starting text extraction for file ID 258, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\RETEST-9898.pdf
+[2025-08-29 08:31:28] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\RETEST-9898.pdf
+[2025-08-29 08:31:29] [INFO] PDF contains text, extracting directly
+[2025-08-29 08:31:30] [INFO] Inserted 74 pages into file_pages table
+[2025-08-29 08:31:30] [INFO] OCR completed for file ID 258 (pages: 74, execution time: 1.083731174469s)
+[2025-08-29 08:31:30] [INFO] OCR processor finished
+<<<<<<< HEAD
+[2025-08-30 13:04:55] [INFO] Starting OCR processor
+[2025-08-30 13:04:55] [INFO] Processing specific file ID: 259
+[2025-08-30 13:04:55] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:04:55] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:04:55] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:04:55] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:04:55] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:04:55] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0025241374969482s)
+[2025-08-30 13:04:55] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:04:55] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:10:51] [INFO] Starting OCR processor
+[2025-08-30 13:10:51] [INFO] Processing specific file ID: 260
+[2025-08-30 13:10:51] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\scrnli_kesa666Z86uMua.png, type: image/png, status: completed
+[2025-08-30 13:10:51] [INFO] Processing file ID: 260, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\scrnli_kesa666Z86uMua.png, type: png
+[2025-08-30 13:10:51] [INFO] Starting text extraction for file ID 260, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\scrnli_kesa666Z86uMua.png
+[2025-08-30 13:10:51] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\scrnli_kesa666Z86uMua.png
+[2025-08-30 13:10:51] [ERROR] OCR error for file ID 260: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:10:51] [ERROR] No text extracted for file ID 260: OCR failed to produce output (execution time: 0.0018539428710938s)
+[2025-08-30 13:10:51] [ERROR] OCR processing error for file ID 260: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:10:51] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:12:21] [INFO] Starting OCR processor
+[2025-08-30 13:12:21] [INFO] Processing specific file ID: 261
+[2025-08-30 13:12:21] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Screenshot 2025-08-15 195239.png, type: image/png, status: completed
+[2025-08-30 13:12:21] [INFO] Processing file ID: 261, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Screenshot 2025-08-15 195239.png, type: png
+[2025-08-30 13:12:21] [INFO] Starting text extraction for file ID 261, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Screenshot 2025-08-15 195239.png
+[2025-08-30 13:12:21] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\Screenshot 2025-08-15 195239.png
+[2025-08-30 13:12:21] [ERROR] OCR error for file ID 261: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:12:21] [ERROR] No text extracted for file ID 261: OCR failed to produce output (execution time: 0.0015308856964111s)
+[2025-08-30 13:12:21] [ERROR] OCR processing error for file ID 261: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:12:21] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:12:57] [INFO] Starting OCR processor
+[2025-08-30 13:12:57] [INFO] Processing specific file ID: 262
+[2025-08-30 13:12:57] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\TEST-CHECK.pdf, type: application/pdf, status: completed
+[2025-08-30 13:12:57] [INFO] Processing file ID: 262, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\TEST-CHECK.pdf, type: pdf
+[2025-08-30 13:12:57] [INFO] Starting text extraction for file ID 262, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\TEST-CHECK.pdf
+[2025-08-30 13:12:57] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\TEST-CHECK.pdf
+[2025-08-30 13:12:57] [INFO] PDF appears to be scanned, using Tesseract OCR
+[2025-08-30 13:12:57] [ERROR] OCR error for file ID 262: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:12:57] [ERROR] No text extracted for file ID 262: OCR failed to produce output (execution time: 0.026359081268311s)
+[2025-08-30 13:12:57] [ERROR] OCR processing error for file ID 262: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:12:57] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:15:48] [INFO] Starting OCR processor
+[2025-08-30 13:15:48] [INFO] Processing specific file ID: 259
+[2025-08-30 13:15:48] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:15:48] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:15:48] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:15:48] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:15:48] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:15:48] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0016307830810547s)
+[2025-08-30 13:15:48] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:15:48] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:17] [INFO] Starting OCR processor
+[2025-08-30 13:21:17] [INFO] Processing specific file ID: 259
+[2025-08-30 13:21:17] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:21:17] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:21:17] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:17] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:17] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:21:17] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0016601085662842s)
+[2025-08-30 13:21:17] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(429): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:17] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(474): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:18] [INFO] Starting OCR processor
+[2025-08-30 13:21:18] [INFO] Processing specific file ID: 259
+[2025-08-30 13:21:18] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:21:18] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:21:18] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:18] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:18] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:21:18] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0015490055084229s)
+[2025-08-30 13:21:18] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(429): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:18] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(474): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:18] [INFO] Starting OCR processor
+[2025-08-30 13:21:18] [INFO] Processing specific file ID: 259
+[2025-08-30 13:21:18] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:21:18] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:21:18] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:18] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:18] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:21:18] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0016379356384277s)
+[2025-08-30 13:21:18] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(429): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:18] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(474): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:19] [INFO] Starting OCR processor
+[2025-08-30 13:21:19] [INFO] Processing specific file ID: 259
+[2025-08-30 13:21:19] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:21:19] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:21:19] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:19] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:19] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:21:19] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0017051696777344s)
+[2025-08-30 13:21:19] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(429): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:19] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(474): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:19] [INFO] Starting OCR processor
+[2025-08-30 13:21:19] [INFO] Processing specific file ID: 259
+[2025-08-30 13:21:19] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:21:19] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:21:19] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:19] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:21:19] [ERROR] OCR error for file ID 259: Tesseract executable not found at C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\tesseract\tesseract.exe
+[2025-08-30 13:21:19] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.0017070770263672s)
+[2025-08-30 13:21:19] [ERROR] OCR processing error for file ID 259: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(429): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:21:19] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(474): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:26:16] [INFO] Starting OCR processor
+[2025-08-30 13:26:16] [INFO] Processing specific file ID: 259
+[2025-08-30 13:26:16] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: image/png, status: completed
+[2025-08-30 13:26:16] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png, type: png
+[2025-08-30 13:26:16] [INFO] Starting text extraction for file ID 259, type: png (image/png), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:26:16] [INFO] Processing image file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\ARC-HIVE-DB.png
+[2025-08-30 13:26:20] [INFO] Extracted text from image (2248 chars)
+[2025-08-30 13:26:20] [INFO] Inserted 1 pages into file_pages table
+[2025-08-30 13:26:21] [INFO] OCR completed for file ID 259 (pages: 1, execution time: 4.1668980121613s)
+[2025-08-30 13:26:21] [INFO] OCR processor finished
+[2025-08-30 13:40:37] [INFO] Starting OCR processor
+[2025-08-30 13:40:37] [INFO] Processing specific file ID: 263
+[2025-08-30 13:40:37] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_28\User_1\CHECK CHECK.pdf, type: application/pdf, status: completed
+[2025-08-30 13:40:37] [INFO] Processing file ID: 263, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_28\User_1\CHECK CHECK.pdf, type: pdf
+[2025-08-30 13:40:37] [INFO] Starting text extraction for file ID 263, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_28\User_1\CHECK CHECK.pdf
+[2025-08-30 13:40:37] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_28\User_1\CHECK CHECK.pdf
+[2025-08-30 13:40:37] [INFO] PDF contains text, extracting directly
+[2025-08-30 13:40:37] [INFO] Inserted 15 pages into file_pages table
+[2025-08-30 13:40:37] [INFO] OCR completed for file ID 263 (pages: 15, execution time: 0.21224403381348s)
+[2025-08-30 13:40:37] [INFO] OCR processor finished
+[2025-08-30 13:42:12] [INFO] Starting OCR processor
+[2025-08-30 13:42:12] [INFO] Processing specific file ID: 264
+[2025-08-30 13:42:12] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_root\User_1\GGG.pdf, type: application/pdf, status: completed
+[2025-08-30 13:42:12] [INFO] Processing file ID: 264, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_root\User_1\GGG.pdf, type: pdf
+[2025-08-30 13:42:12] [INFO] Starting text extraction for file ID 264, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_root\User_1\GGG.pdf
+[2025-08-30 13:42:12] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\user_root\User_1\GGG.pdf
+[2025-08-30 13:42:12] [INFO] PDF appears to be scanned, using Tesseract OCR
+[2025-08-30 13:42:12] [ERROR] OCR error for file ID 264: pdftoppm failed with code 1: 'pdftoppm' is not recognized as an internal or external command,
+operable program or batch file.
+[2025-08-30 13:42:12] [ERROR] No text extracted for file ID 264: OCR failed to produce output (execution time: 0.11040306091309s)
+[2025-08-30 13:42:12] [ERROR] OCR processing error for file ID 264: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(434): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:42:12] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\api\ocr_processor.php(479): PDOStatement->execute()
+#1 {main}
+[2025-08-30 13:44:43] [INFO] Starting OCR processor
+[2025-08-30 13:44:43] [INFO] Processing specific file ID: 265
+[2025-08-30 13:44:43] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\root\User_1\jsadhjasd.pdf, type: application/pdf, status: completed
+[2025-08-30 13:44:43] [INFO] Processing file ID: 265, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\root\User_1\jsadhjasd.pdf, type: pdf
+[2025-08-30 13:44:43] [INFO] Starting text extraction for file ID 265, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\root\User_1\jsadhjasd.pdf
+[2025-08-30 13:44:43] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\root\User_1\jsadhjasd.pdf
+[2025-08-30 13:44:43] [INFO] PDF contains text, extracting directly
+[2025-08-30 13:44:43] [INFO] Inserted 20 pages into file_pages table
+[2025-08-30 13:44:43] [INFO] OCR completed for file ID 265 (pages: 20, execution time: 0.26108479499817s)
+[2025-08-30 13:44:43] [INFO] OCR processor finished
+[2025-08-30 13:56:57] [INFO] Starting OCR processor
+[2025-08-30 13:56:57] [INFO] Processing specific file ID: 266
+[2025-08-30 13:56:57] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\uyuyuy.pdf, type: application/pdf, status: completed
+[2025-08-30 13:56:57] [INFO] Processing file ID: 266, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\uyuyuy.pdf, type: pdf
+[2025-08-30 13:56:57] [INFO] Starting text extraction for file ID 266, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\uyuyuy.pdf
+[2025-08-30 13:56:57] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\uyuyuy.pdf
+[2025-08-30 13:56:59] [INFO] PDF contains text, extracting directly
+[2025-08-30 13:56:59] [INFO] Inserted 74 pages into file_pages table
+[2025-08-30 13:56:59] [INFO] OCR completed for file ID 266 (pages: 74, execution time: 1.9173049926758s)
+[2025-08-30 13:56:59] [INFO] OCR processor finished
+[2025-08-30 14:01:22] [INFO] Starting OCR processor
+[2025-08-30 14:01:22] [INFO] Processing specific file ID: 267
+[2025-08-30 14:01:22] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\Rodriguez-et-al.pdf, type: pdf, status: pending_ocr
+[2025-08-30 14:01:22] [INFO] Processing file ID: 267, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\Rodriguez-et-al.pdf, type: 
+[2025-08-30 14:01:22] [INFO] Starting text extraction for file ID 267, type:  (pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\Rodriguez-et-al.pdf
+[2025-08-30 14:01:22] [ERROR] OCR error for file ID 267: Unsupported file type: pdf (normalized: )
+[2025-08-30 14:01:22] [ERROR] No text extracted for file ID 267: OCR failed to produce output (execution time: 0.0013139247894287s)
+[2025-08-30 14:01:22] [INFO] OCR processor finished
+[2025-08-30 14:02:45] [INFO] Starting OCR processor
+[2025-08-30 14:02:45] [INFO] Processing specific file ID: 268
+[2025-08-30 14:02:45] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\CHECK CHECK-CHECK.pdf, type: pdf, status: pending_ocr
+[2025-08-30 14:02:45] [INFO] Processing file ID: 268, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\CHECK CHECK-CHECK.pdf, type: 
+[2025-08-30 14:02:45] [INFO] Starting text extraction for file ID 268, type:  (pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\CHECK CHECK-CHECK.pdf
+[2025-08-30 14:02:45] [ERROR] OCR error for file ID 268: Unsupported file type: pdf (normalized: )
+[2025-08-30 14:02:45] [ERROR] No text extracted for file ID 268: OCR failed to produce output (execution time: 0.0021131038665771s)
+[2025-08-30 14:02:45] [INFO] OCR processor finished
+[2025-08-30 14:06:23] [INFO] Starting OCR processor
+[2025-08-30 14:06:23] [INFO] Processing specific file ID: 269
+[2025-08-30 14:06:23] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\23231321321.pdf, type: pdf, status: pending_ocr
+[2025-08-30 14:06:23] [INFO] Processing file ID: 269, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\23231321321.pdf, type: 
+[2025-08-30 14:06:23] [INFO] Starting text extraction for file ID 269, type:  (pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\23231321321.pdf
+[2025-08-30 14:06:23] [ERROR] OCR error for file ID 269: Unsupported file type: pdf (normalized: )
+[2025-08-30 14:06:23] [ERROR] No text extracted for file ID 269: OCR failed to produce output (execution time: 0.0016708374023438s)
+[2025-08-30 14:06:23] [INFO] OCR processor finished
+[2025-08-30 14:08:18] [INFO] Starting OCR processor
+[2025-08-30 14:08:18] [INFO] Processing specific file ID: 270
+[2025-08-30 14:08:18] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\4CHECK CHECK-CHECK.pdf, type: application/pdf, status: completed
+[2025-08-30 14:08:18] [INFO] Processing file ID: 270, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\4CHECK CHECK-CHECK.pdf, type: pdf
+[2025-08-30 14:08:18] [INFO] Starting text extraction for file ID 270, type: pdf (application/pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\4CHECK CHECK-CHECK.pdf
+[2025-08-30 14:08:18] [INFO] Processing PDF file: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\4CHECK CHECK-CHECK.pdf
+[2025-08-30 14:08:18] [INFO] PDF contains text, extracting directly
+[2025-08-30 14:08:18] [INFO] Inserted 15 pages into file_pages table
+[2025-08-30 14:08:18] [INFO] OCR completed for file ID 270 (pages: 15, execution time: 0.27628207206726s)
+[2025-08-30 14:08:18] [INFO] OCR processor finished
+[2025-08-30 14:13:50] [INFO] Starting OCR processor
+[2025-08-30 14:13:50] [INFO] Processing specific file ID: 271
+[2025-08-30 14:13:50] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\files\NEW-UPLOAD.pdf, type: pdf, status: pending_ocr
+[2025-08-30 14:13:50] [INFO] Processing file ID: 271, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\files\NEW-UPLOAD.pdf, type: 
+[2025-08-30 14:13:50] [INFO] Starting text extraction for file ID 271, type:  (pdf), path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\rivz_rivera\files\NEW-UPLOAD.pdf
+[2025-08-30 14:13:50] [ERROR] OCR error for file ID 271: Unsupported file type: pdf (normalized: )
+[2025-08-30 14:13:50] [ERROR] No text extracted for file ID 271: OCR failed to produce output (execution time: 0.0014212131500244s)
+[2025-08-30 14:13:50] [INFO] OCR processor finished
+=======
+[2025-08-30 15:38:14] [INFO] Starting OCR processor
+[2025-08-30 15:38:14] [INFO] Processing specific file ID: 249
+[2025-08-30 15:38:14] [INFO] File found: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf, type: application/pdf, status: completed
+[2025-08-30 15:38:14] [INFO] Processing file ID: 249, path: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf, type: pdf
+[2025-08-30 15:38:14] [ERROR] File not accessible for file ID 249: C:\xampp\htdocs\Arc_Hive-DEVELOPMENT\uploads\Uploads\Users\rivz_rivera\User_1\REVIEWER-1Introduction-to-SIA (1).pdf
+[2025-08-30 15:38:14] [ERROR] OCR processing error for file ID 249: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\GitHub\Arc_Hive-main\api\ocr_processor.php(396): PDOStatement->execute(Array)
+#1 {main}
+[2025-08-30 15:38:14] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\GitHub\Arc_Hive-main\api\ocr_processor.php(479): PDOStatement->execute(Array)
+#1 {main}
+[2025-08-30 15:38:48] [INFO] Starting OCR processor
+[2025-08-30 15:38:48] [INFO] Processing specific file ID: 260
+[2025-08-30 15:38:48] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\REFERENCE (RRL&RRS).docx, type: application/vnd.openxmlformats-officedocument.word, status: completed
+[2025-08-30 15:38:48] [INFO] Processing file ID: 260, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\REFERENCE (RRL&RRS).docx, type: word
+[2025-08-30 15:38:48] [INFO] Starting text extraction for file ID 260, type: word (application/vnd.openxmlformats-officedocument.word), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\REFERENCE (RRL&RRS).docx
+[2025-08-30 15:38:48] [ERROR] OCR error for file ID 260: Unsupported file type: application/vnd.openxmlformats-officedocument.word (normalized: word)
+[2025-08-30 15:38:48] [ERROR] No text extracted for file ID 260: OCR failed to produce output (execution time: 0.0017099380493164s)
+[2025-08-30 15:38:48] [INFO] OCR processor finished
+[2025-08-30 15:39:53] [INFO] Starting OCR processor
+[2025-08-30 15:39:53] [INFO] Processing specific file ID: 259
+[2025-08-30 15:39:53] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testtttttttttttttttttttttttttttttttttttt.docx, type: application/vnd.openxmlformats-officedocument.word, status: completed
+[2025-08-30 15:39:53] [INFO] Processing file ID: 259, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testtttttttttttttttttttttttttttttttttttt.docx, type: word
+[2025-08-30 15:39:53] [INFO] Starting text extraction for file ID 259, type: word (application/vnd.openxmlformats-officedocument.word), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testtttttttttttttttttttttttttttttttttttt.docx
+[2025-08-30 15:39:53] [ERROR] OCR error for file ID 259: Unsupported file type: application/vnd.openxmlformats-officedocument.word (normalized: word)
+[2025-08-30 15:39:53] [ERROR] No text extracted for file ID 259: OCR failed to produce output (execution time: 0.00079607963562012s)
+[2025-08-30 15:39:53] [INFO] OCR processor finished
+[2025-08-30 15:42:45] [INFO] Starting OCR processor
+[2025-08-30 15:42:45] [INFO] Processing specific file ID: 261
+[2025-08-30 15:42:45] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf, type: application/pdf, status: completed
+[2025-08-30 15:42:45] [INFO] Processing file ID: 261, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf, type: pdf
+[2025-08-30 15:42:45] [INFO] Starting text extraction for file ID 261, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf
+[2025-08-30 15:42:45] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf
+[2025-08-30 15:42:45] [INFO] PDF contains text, extracting directly
+[2025-08-30 15:42:46] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 15:42:46] [INFO] OCR completed for file ID 261 (pages: 3, execution time: 0.59738516807556s)
+[2025-08-30 15:42:46] [INFO] OCR processor finished
+[2025-08-30 15:44:44] [INFO] Starting OCR processor
+[2025-08-30 15:44:44] [INFO] Processing specific file ID: 261
+[2025-08-30 15:44:44] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf, type: application/pdf, status: completed
+[2025-08-30 15:44:44] [INFO] Processing file ID: 261, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf, type: pdf
+[2025-08-30 15:44:44] [INFO] Starting text extraction for file ID 261, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf
+[2025-08-30 15:44:44] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ppt 3 (IT Project Planning).pdf
+[2025-08-30 15:44:44] [INFO] PDF contains text, extracting directly
+[2025-08-30 15:44:44] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 15:44:44] [INFO] OCR completed for file ID 261 (pages: 3, execution time: 0.63369083404541s)
+[2025-08-30 15:44:44] [INFO] OCR processor finished
+[2025-08-30 16:04:27] [INFO] Starting OCR processor
+[2025-08-30 16:04:27] [INFO] Processing specific file ID: 262
+[2025-08-30 16:04:27] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testing.pdf, type: application/pdf, status: completed
+[2025-08-30 16:04:27] [INFO] Processing file ID: 262, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testing.pdf, type: pdf
+[2025-08-30 16:04:27] [INFO] Starting text extraction for file ID 262, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testing.pdf
+[2025-08-30 16:04:27] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\testing.pdf
+[2025-08-30 16:04:27] [INFO] PDF contains text, extracting directly
+[2025-08-30 16:04:27] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 16:04:27] [INFO] OCR completed for file ID 262 (pages: 3, execution time: 0.747309923172s)
+[2025-08-30 16:04:27] [INFO] OCR processor finished
+[2025-08-30 16:11:56] [INFO] Starting OCR processor
+[2025-08-30 16:11:56] [INFO] Processing specific file ID: 263
+[2025-08-30 16:11:56] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\eto na.pdf, type: application/pdf, status: completed
+[2025-08-30 16:11:56] [INFO] Processing file ID: 263, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\eto na.pdf, type: pdf
+[2025-08-30 16:11:56] [INFO] Starting text extraction for file ID 263, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\eto na.pdf
+[2025-08-30 16:11:56] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\eto na.pdf
+[2025-08-30 16:11:56] [INFO] PDF contains text, extracting directly
+[2025-08-30 16:11:57] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 16:11:57] [INFO] OCR completed for file ID 263 (pages: 3, execution time: 0.78536701202393s)
+[2025-08-30 16:11:57] [INFO] OCR processor finished
+[2025-08-30 16:16:22] [INFO] Starting OCR processor
+[2025-08-30 16:16:22] [INFO] Processing specific file ID: 264
+[2025-08-30 16:16:22] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\mali parin.pdf, type: application/pdf, status: completed
+[2025-08-30 16:16:22] [INFO] Processing file ID: 264, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\mali parin.pdf, type: pdf
+[2025-08-30 16:16:22] [INFO] Starting text extraction for file ID 264, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\mali parin.pdf
+[2025-08-30 16:16:22] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\mali parin.pdf
+[2025-08-30 16:16:22] [INFO] PDF contains text, extracting directly
+[2025-08-30 16:16:22] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 16:16:23] [INFO] OCR completed for file ID 264 (pages: 3, execution time: 0.76133418083191s)
+[2025-08-30 16:16:23] [INFO] OCR processor finished
+[2025-08-30 16:50:37] [INFO] Starting OCR processor
+[2025-08-30 16:50:37] [INFO] Processing specific file ID: 265
+[2025-08-30 16:50:37] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ayy ganun.pdf, type: application/pdf, status: completed
+[2025-08-30 16:50:37] [INFO] Processing file ID: 265, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ayy ganun.pdf, type: pdf
+[2025-08-30 16:50:37] [INFO] Starting text extraction for file ID 265, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ayy ganun.pdf
+[2025-08-30 16:50:37] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\ayy ganun.pdf
+[2025-08-30 16:50:37] [INFO] PDF contains text, extracting directly
+[2025-08-30 16:50:37] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 16:50:37] [INFO] OCR completed for file ID 265 (pages: 3, execution time: 0.7412281036377s)
+[2025-08-30 16:50:37] [INFO] OCR processor finished
+[2025-08-30 17:10:13] [INFO] Starting OCR processor
+[2025-08-30 17:10:13] [INFO] Processing specific file ID: 266
+[2025-08-30 17:10:13] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\lahh meron pa.pdf, type: application/pdf, status: completed
+[2025-08-30 17:10:13] [INFO] Processing file ID: 266, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\lahh meron pa.pdf, type: pdf
+[2025-08-30 17:10:13] [INFO] Starting text extraction for file ID 266, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\lahh meron pa.pdf
+[2025-08-30 17:10:13] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\lahh meron pa.pdf
+[2025-08-30 17:10:13] [INFO] PDF contains text, extracting directly
+[2025-08-30 17:10:13] [INFO] Inserted 3 pages into file_pages table
+[2025-08-30 17:10:13] [INFO] OCR completed for file ID 266 (pages: 3, execution time: 0.74909996986389s)
+[2025-08-30 17:10:13] [INFO] OCR processor finished
+>>>>>>> 2aecf55b5b45af97dd77ff24ac42487a215cdd54

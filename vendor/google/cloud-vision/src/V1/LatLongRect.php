@@ -20,13 +20,13 @@ class LatLongRect extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.type.LatLng min_lat_lng = 1;</code>
      */
-    protected $min_lat_lng = null;
+    private $min_lat_lng = null;
     /**
      * Max lat/long pair.
      *
      * Generated from protobuf field <code>.google.type.LatLng max_lat_lng = 2;</code>
      */
-    protected $max_lat_lng = null;
+    private $max_lat_lng = null;
 
     /**
      * Constructor.

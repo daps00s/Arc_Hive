@@ -13,7 +13,7 @@
 namespace Predis\Command\Redis\Search;
 
 use Predis\Command\Argument\Search\SchemaFields\FieldInterface;
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/ft.create/
@@ -43,10 +43,5 @@ class FTCREATE extends RedisCommand
             $commandArguments,
             $schema
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

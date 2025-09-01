@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TimeSeries;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/ts.get/
@@ -35,10 +35,5 @@ class TSGET extends RedisCommand
             [$key],
             $commandArguments
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

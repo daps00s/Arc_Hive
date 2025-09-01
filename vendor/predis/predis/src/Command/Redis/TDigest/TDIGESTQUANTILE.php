@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TDigest;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/tdigest.quantile/
@@ -51,10 +51,5 @@ class TDIGESTQUANTILE extends RedisCommand
                 default: return $value;
             }
         }, $data);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

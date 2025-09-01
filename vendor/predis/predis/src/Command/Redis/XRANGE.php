@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/xrange
@@ -58,15 +58,5 @@ class XRANGE extends RedisCommand
         }
 
         return $result;
-    }
-
-    public function parseResp3Response($data)
-    {
-        return $this->parseResponse($data);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

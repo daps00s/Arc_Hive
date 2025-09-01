@@ -20,7 +20,7 @@ class LocalizedObjectAnnotation extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string mid = 1;</code>
      */
-    protected $mid = '';
+    private $mid = '';
     /**
      * The BCP-47 language code, such as "en-US" or "sr-Latn". For more
      * information, see
@@ -28,25 +28,25 @@ class LocalizedObjectAnnotation extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string language_code = 2;</code>
      */
-    protected $language_code = '';
+    private $language_code = '';
     /**
      * Object name, expressed in its `language_code` language.
      *
      * Generated from protobuf field <code>string name = 3;</code>
      */
-    protected $name = '';
+    private $name = '';
     /**
      * Score of the result. Range [0, 1].
      *
      * Generated from protobuf field <code>float score = 4;</code>
      */
-    protected $score = 0.0;
+    private $score = 0.0;
     /**
      * Image region to which this object belongs. This must be populated.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.BoundingPoly bounding_poly = 5;</code>
      */
-    protected $bounding_poly = null;
+    private $bounding_poly = null;
 
     /**
      * Constructor.

@@ -25,13 +25,10 @@ class FireAndForget extends Pipeline
      */
     protected function executePipeline(ConnectionInterface $connection, SplQueue $commands)
     {
-        $buffer = '';
-
         while (!$commands->isEmpty()) {
-            $buffer .= $commands->dequeue()->serializeCommand();
+            $connection->writeRequest($commands->dequeue());
         }
 
-        $connection->write($buffer);
         $connection->disconnect();
 
         return [];

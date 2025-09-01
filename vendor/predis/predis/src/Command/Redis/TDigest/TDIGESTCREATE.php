@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TDigest;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/tdigest.create/
@@ -36,10 +36,5 @@ class TDIGESTCREATE extends RedisCommand
         }
 
         parent::setArguments($arguments);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

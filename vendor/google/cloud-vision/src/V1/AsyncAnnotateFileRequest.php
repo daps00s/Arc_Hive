@@ -20,7 +20,7 @@ class AsyncAnnotateFileRequest extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.InputConfig input_config = 1;</code>
      */
-    protected $input_config = null;
+    private $input_config = null;
     /**
      * Required. Requested features.
      *
@@ -32,13 +32,13 @@ class AsyncAnnotateFileRequest extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.ImageContext image_context = 3;</code>
      */
-    protected $image_context = null;
+    private $image_context = null;
     /**
      * Required. The desired output location and metadata (e.g. format).
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.OutputConfig output_config = 4;</code>
      */
-    protected $output_config = null;
+    private $output_config = null;
 
     /**
      * Constructor.

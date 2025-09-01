@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\CuckooFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/cf.mexists/
@@ -24,10 +24,5 @@ class CFMEXISTS extends RedisCommand
     public function getId()
     {
         return 'CF.MEXISTS';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

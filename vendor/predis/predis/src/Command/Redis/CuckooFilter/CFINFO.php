@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\CuckooFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/cf.info/
@@ -41,10 +41,5 @@ class CFINFO extends RedisCommand
         }
 
         return $data;
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

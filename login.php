@@ -28,12 +28,10 @@ function logLoginAttempt($pdo, $user_id, $status, $message)
 {
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO transactions (user_id, transaction_type, transaction_time, description)
+            INSERT INTO transactions (user_id, transaction_status, transaction_time, description)
             VALUES (?, ?, NOW(), ?)
         ");
-        // transaction_type: 'login_success' for success, 'login_failure' for failure
-        $transaction_type = ($status === 'Success') ? 'login_success' : 'login_failure';
-        $stmt->execute([$user_id, $transaction_type, $message]);
+        $stmt->execute([$user_id, $status, $message]);
     } catch (PDOException $e) {
         error_log("Failed to log login attempt: " . $e->getMessage(), 3, 'error_log.log');
     }
@@ -66,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $posted_csrf = filter_input(INPUT_POST, 'csrf_token', FILTER_SANITIZE_STRING) ?? '';
     if ($posted_csrf !== $_SESSION['csrf_token']) {
         $error = "Invalid CSRF token.";
-        logLoginAttempt($pdo, null, 'Failure', 'Invalid CSRF token for username: ' . ($_POST['username'] ?? 'unknown'));
+        logLoginAttempt($pdo, null, 'failed', 'Invalid CSRF token for username: ' . ($_POST['username'] ?? 'unknown'));
     } else {
         // Sanitize and validate inputs
         $username = trim(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '');
@@ -74,12 +72,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (empty($username) || empty($password)) {
             $error = "Username and password are required.";
-            logLoginAttempt($pdo, null, 'Failure', 'Empty username or password');
+            logLoginAttempt($pdo, null, 'failed', 'Empty username or password');
         } else {
             try {
                 // Fetch user from database
                 $stmt = $pdo->prepare("
-                    SELECT user_id, username, password, role, position 
+                    SELECT user_id, username, password, role
                     FROM users 
                     WHERE username = ?
                 ");
@@ -94,13 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['role'];
-                    $_SESSION['position'] = $user['position'];
                     $_SESSION['departments'] = getUserDepartments($pdo, $user['user_id']);
-                    // No sub_departments table in schema, set as empty
-                    $_SESSION['sub_departments'] = [];
 
                     // Log successful login
-                    logLoginAttempt($pdo, $user['user_id'], 'Success', 'User logged in successfully');
+                    logLoginAttempt($pdo, $user['user_id'], 'completed', "Successful login for username: $username");
 
                     // Redirect based on role
                     $redirect = ($user['role'] === 'admin') ? 'admin_dashboard.php' : 'Dashboard.php';
@@ -108,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     exit();
                 } else {
                     $error = "Invalid username or password.";
-                    logLoginAttempt($pdo, null, 'Failure', "Invalid login attempt for username: $username");
+                    logLoginAttempt($pdo, null, 'failed', "Invalid login attempt for username: $username");
                 }
             } catch (PDOException $e) {
                 error_log("Database error: " . $e->getMessage(), 3, 'error_log.log');

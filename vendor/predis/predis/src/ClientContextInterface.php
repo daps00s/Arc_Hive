@@ -38,14 +38,14 @@ use Predis\Command\Argument\TimeSeries\MGetArguments;
 use Predis\Command\Argument\TimeSeries\MRangeArguments;
 use Predis\Command\Argument\TimeSeries\RangeArguments;
 use Predis\Command\CommandInterface;
-use Predis\Command\Container\ACL;
-use Predis\Command\Container\CLIENT;
-use Predis\Command\Container\FUNCTIONS;
-use Predis\Command\Container\Json\JSONDEBUG;
-use Predis\Command\Container\Search\FTCONFIG;
-use Predis\Command\Container\Search\FTCURSOR;
-use Predis\Command\Container\XGROUP;
-use Predis\Command\Redis\VADD;
+use Predis\Command\Redis\Container\ACL;
+use Predis\Command\Redis\Container\CLUSTER;
+use Predis\Command\Redis\Container\FunctionContainer;
+use Predis\Command\Redis\Container\Json\JSONDEBUG;
+use Predis\Command\Redis\Container\Search\FTCONFIG;
+use Predis\Command\Redis\Container\Search\FTCURSOR;
+use Predis\Command\Redis\HGETEX;
+use Predis\Command\Redis\HSETEX;
 
 /**
  * Interface defining a client-side context such as a pipeline or transaction.
@@ -61,8 +61,8 @@ use Predis\Command\Redis\VADD;
  * @method $this move($key, $db)
  * @method $this object($subcommand, $key)
  * @method $this persist($key)
- * @method $this pexpire($key, $milliseconds, string $option = null)
- * @method $this pexpireat($key, $timestamp, string $option = null)
+ * @method $this pexpire($key, $milliseconds)
+ * @method $this pexpireat($key, $timestamp)
  * @method $this pttl($key)
  * @method $this randomkey()
  * @method $this rename($key, $target)
@@ -242,9 +242,6 @@ use Predis\Command\Redis\VADD;
  * @method $this srandmember($key, $count = null)
  * @method $this srem($key, $member)
  * @method $this sscan($key, $cursor, ?array $options = null)
- * @method $this ssubscribe(string ...$shardChannels)
- * @method $this subscribe(string ...$channels)
- * @method $this sunsubscribe(?string ...$shardChannels = null)
  * @method $this sunion(array|string $keys)
  * @method $this sunionstore($destination, array|string $keys)
  * @method $this tdigestadd(string $key, float ...$value)
@@ -284,21 +281,6 @@ use Predis\Command\Redis\VADD;
  * @method $this tsqueryindex(string ...$filterExpression)
  * @method $this tsrange(string $key, $fromTimestamp, $toTimestamp, ?RangeArguments $arguments = null)
  * @method $this tsrevrange(string $key, $fromTimestamp, $toTimestamp, ?RangeArguments $arguments = null)
- * @method $this xack(string $key, string $group, string ...$id)
- * @method $this xackdel(string $key, string $group, string $mode, array $ids)
- * @method $this xadd(string $key, array $dictionary, string $id = '*', array $options = null)
- * @method $this xautoclaim(string $key, string $group, string $consumer, int $minIdleTime, string $start, ?int $count = null, bool $justId = false)
- * @method $this xclaim(string $key, string $group, string $consumer, int $minIdleTime, string|array $ids, ?int $idle = null, ?int $time = null, ?int $retryCount = null, bool $force = false, bool $justId = false, ?string $lastId = null)
- * @method $this xdel(string $key, string ...$id)
- * @method $this xdelex(string $key, string $mode, array $ids)
- * @method $this xlen(string $key)
- * @method $this xpending(string $key, string $group, ?int $minIdleTime = null, ?string $start = null, ?string $end = null, ?int $count = null, ?string $consumer = null)
- * @method $this xrevrange(string $key, string $end, string $start, ?int $count = null)
- * @method $this xrange(string $key, string $start, string $end, ?int $count = null)
- * @method $this xread(int $count = null, int $block = null, array $streams = null, string ...$id)
- * @method $this xreadgroup(string $group, string $consumer, ?int $count = null, ?int $blockMs = null, bool $noAck = false, string ...$keyOrId)
- * @method $this xsetid(string $key, string $lastId, ?int $entriesAdded = null, ?string $maxDeleteId = null)
- * @method $this xtrim(string $key, array|string $strategy, string $threshold, array $options = null)
  * @method $this zadd($key, array $membersAndScoresDictionary)
  * @method $this zcard($key)
  * @method $this zcount($key, $min, $max)
@@ -340,18 +322,6 @@ use Predis\Command\Redis\VADD;
  * @method $this multi()
  * @method $this unwatch()
  * @method $this waitaof(int $numLocal, int $numReplicas, int $timeout)
- * @method $this unsubscribe(string ...$channels)
- * @method $this vadd(string $key, string|array $vector, string $elem, int $dim = null, bool $cas = false, string $quant = VADD::QUANT_DEFAULT, ?int $BEF = null, string|array $attributes = null, int $numlinks = null)
- * @method $this vcard(string $key)
- * @method $this vdim(int $key)
- * @method $this vemb(string $key, string $elem, bool $raw = false)
- * @method $this vgetattr(string $key, string $elem, bool $asJson = false)
- * @method $this vinfo(string $key)
- * @method $this vlinks(string $key, string $elem, bool $withScores = false)
- * @method $this vrandmember(string $key, int $count = null)
- * @method $this vrem(string $key, string $elem)
- * @method $this vsetattr(string $key, string $elem, string|array $attributes)
- * @method $this vsim(string $key, string|array $vectorOrElem, bool $isElem = false, bool $withScores = false, int $count = null, float $epsilon = null, int $ef = null, string $filter = null, int $filterEf = null, bool $truth = false, bool $noThread = false)
  * @method $this watch($key)
  * @method $this eval($script, $numkeys, $keyOrArg1 = null, $keyOrArgN = null)
  * @method $this eval_ro(string $script, array $keys, ...$argument)
@@ -365,18 +335,18 @@ use Predis\Command\Redis\VADD;
  * @method $this select($database)
  * @method $this bgrewriteaof()
  * @method $this bgsave()
+ * @method $this client($subcommand, $argument = null)
  * @method $this config($subcommand, $argument = null)
  * @method $this dbsize()
  * @method $this flushall()
  * @method $this flushdb()
- * @method $this info(string ...$section = null)
+ * @method $this info($section = null)
  * @method $this lastsave()
  * @method $this save()
  * @method $this slaveof($host, $port)
  * @method $this slowlog($subcommand, $argument = null)
- * @method $this spublish(string $shardChannel, string $message)
  * @method $this time()
- * @method $this command($subcommand, $argument = null)
+ * @method $this command()
  * @method $this geoadd($key, $longitude, $latitude, $member)
  * @method $this geohash($key, array $members)
  * @method $this geopos($key, array $members)
@@ -387,13 +357,12 @@ use Predis\Command\Redis\VADD;
  * @method $this geosearchstore(string $destination, string $source, FromInterface $from, ByInterface $by, ?string $sorting = null, int $count = -1, bool $any = false, bool $storeDist = false)
  *
  * Container commands
- * @property CLIENT    $client
- * @property FUNCTIONS $function
- * @property FTCONFIG  $ftconfig
- * @property FTCURSOR  $ftcursor
- * @property JSONDEBUG $jsondebug
- * @property ACL       $acl
- * @property XGROUP    $xgroup
+ * @property CLUSTER           $cluster
+ * @property FunctionContainer $function
+ * @property FTCONFIG          $ftconfig
+ * @property FTCURSOR          $ftcursor
+ * @property JSONDEBUG         $jsondebug
+ * @property ACL               $acl
  */
 interface ClientContextInterface
 {

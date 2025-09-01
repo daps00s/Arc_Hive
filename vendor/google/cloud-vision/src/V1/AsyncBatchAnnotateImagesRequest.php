@@ -26,7 +26,7 @@ class AsyncBatchAnnotateImagesRequest extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.OutputConfig output_config = 2 [(.google.api.field_behavior) = REQUIRED];</code>
      */
-    protected $output_config = null;
+    private $output_config = null;
     /**
      * Optional. Target project and location to make a call.
      * Format: `projects/{project-id}/locations/{location-id}`.
@@ -39,7 +39,7 @@ class AsyncBatchAnnotateImagesRequest extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string parent = 4;</code>
      */
-    protected $parent = '';
+    private $parent = '';
     /**
      * Optional. The labels with user-defined metadata for the request.
      * Label keys and values can be no longer than 63 characters

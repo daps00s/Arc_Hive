@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\Search;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 class FTCURSOR extends RedisCommand
 {
@@ -30,10 +30,5 @@ class FTCURSOR extends RedisCommand
             [$subcommand, $index, $cursorId],
             $commandArguments
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

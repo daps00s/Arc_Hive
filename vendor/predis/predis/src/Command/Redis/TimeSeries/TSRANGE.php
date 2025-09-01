@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TimeSeries;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/ts.range/
@@ -35,10 +35,5 @@ class TSRANGE extends RedisCommand
             [$key, $fromTimestamp, $toTimestamp],
             $commandArguments
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\CuckooFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/cf.addnx/
@@ -24,10 +24,5 @@ class CFADDNX extends RedisCommand
     public function getId()
     {
         return 'CF.ADDNX';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

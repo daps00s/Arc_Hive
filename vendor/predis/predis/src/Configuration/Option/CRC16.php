@@ -26,7 +26,7 @@ class CRC16 implements OptionInterface
      * Returns an hash generator instance from a descriptive name.
      *
      * @param OptionsInterface $options     Client options.
-     * @param string           $description Identifier of a hash generator (`predis`)
+     * @param string           $description Identifier of a hash generator (`predis`, `phpiredis`)
      *
      * @return callable
      */
@@ -34,9 +34,11 @@ class CRC16 implements OptionInterface
     {
         if ($description === 'predis') {
             return new Hash\CRC16();
+        } elseif ($description === 'phpiredis') {
+            return new Hash\PhpiredisCRC16();
         } else {
             throw new InvalidArgumentException(
-                'String value for the crc16 option must be either `predis`'
+                'String value for the crc16 option must be either `predis` or `phpiredis`'
             );
         }
     }
@@ -65,6 +67,8 @@ class CRC16 implements OptionInterface
      */
     public function getDefault(OptionsInterface $options)
     {
-        return new Hash\CRC16();
+        return function_exists('phpiredis_utils_crc16')
+            ? new Hash\PhpiredisCRC16()
+            : new Hash\CRC16();
     }
 }

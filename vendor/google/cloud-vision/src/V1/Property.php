@@ -20,19 +20,19 @@ class Property extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string name = 1;</code>
      */
-    protected $name = '';
+    private $name = '';
     /**
      * Value of the property.
      *
      * Generated from protobuf field <code>string value = 2;</code>
      */
-    protected $value = '';
+    private $value = '';
     /**
      * Value of numeric properties.
      *
      * Generated from protobuf field <code>uint64 uint64_value = 3;</code>
      */
-    protected $uint64_value = 0;
+    private $uint64_value = 0;
 
     /**
      * Constructor.

@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\Json;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/json.arrappend/
@@ -24,10 +24,5 @@ class JSONARRAPPEND extends RedisCommand
     public function getId()
     {
         return 'JSON.ARRAPPEND';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

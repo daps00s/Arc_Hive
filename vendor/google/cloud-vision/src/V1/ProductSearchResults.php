@@ -22,7 +22,7 @@ class ProductSearchResults extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.protobuf.Timestamp index_time = 2;</code>
      */
-    protected $index_time = null;
+    private $index_time = null;
     /**
      * List of results, one for each product match.
      *

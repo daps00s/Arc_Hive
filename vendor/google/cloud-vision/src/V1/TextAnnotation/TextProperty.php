@@ -26,7 +26,7 @@ class TextProperty extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.TextAnnotation.DetectedBreak detected_break = 2;</code>
      */
-    protected $detected_break = null;
+    private $detected_break = null;
 
     /**
      * Constructor.
@@ -109,4 +109,6 @@ class TextProperty extends \Google\Protobuf\Internal\Message
 
 }
 
+// Adding a class alias for backwards compatibility with the previous class name.
+class_alias(TextProperty::class, \Google\Cloud\Vision\V1\TextAnnotation_TextProperty::class);
 

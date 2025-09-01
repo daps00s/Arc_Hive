@@ -69,7 +69,7 @@ class ImportProductSetsGcsSource extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string csv_file_uri = 1;</code>
      */
-    protected $csv_file_uri = '';
+    private $csv_file_uri = '';
 
     /**
      * Constructor.

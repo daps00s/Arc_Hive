@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\Json;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/json.objkeys/
@@ -24,10 +24,5 @@ class JSONOBJKEYS extends RedisCommand
     public function getId()
     {
         return 'JSON.OBJKEYS';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

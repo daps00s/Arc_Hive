@@ -20,19 +20,19 @@ class WebPage extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string url = 1;</code>
      */
-    protected $url = '';
+    private $url = '';
     /**
      * (Deprecated) Overall relevancy score for the web page.
      *
      * Generated from protobuf field <code>float score = 2;</code>
      */
-    protected $score = 0.0;
+    private $score = 0.0;
     /**
      * Title for the web page, may contain HTML markups.
      *
      * Generated from protobuf field <code>string page_title = 3;</code>
      */
-    protected $page_title = '';
+    private $page_title = '';
     /**
      * Fully matching images on the page.
      * Can include resized copies of the query image.
@@ -217,4 +217,6 @@ class WebPage extends \Google\Protobuf\Internal\Message
 
 }
 
+// Adding a class alias for backwards compatibility with the previous class name.
+class_alias(WebPage::class, \Google\Cloud\Vision\V1\WebDetection_WebPage::class);
 

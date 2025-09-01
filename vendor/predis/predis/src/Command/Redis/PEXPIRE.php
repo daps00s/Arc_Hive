@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/pexpire
@@ -25,10 +25,5 @@ class PEXPIRE extends RedisCommand
     public function getId()
     {
         return 'PEXPIRE';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

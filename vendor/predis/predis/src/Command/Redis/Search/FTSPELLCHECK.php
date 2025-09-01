@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\Search;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 class FTSPELLCHECK extends RedisCommand
 {
@@ -23,21 +23,8 @@ class FTSPELLCHECK extends RedisCommand
 
     public function setArguments(array $arguments)
     {
-        // If command already deserialized, bypass logic.
-        if (in_array('DIALECT', $arguments)) {
-            parent::setArguments($arguments);
-
-            return;
-        }
-
         [$index, $query] = $arguments;
-
-        if (!empty($arguments[2]) && !in_array('DIALECT', $arguments[2]->toArray())) {
-            // Default dialect is 2
-            $arguments[2]->dialect(2);
-        }
-
-        $commandArguments = ['DIALECT', 2];
+        $commandArguments = [];
 
         if (!empty($arguments[2])) {
             $commandArguments = $arguments[2]->toArray();
@@ -47,10 +34,5 @@ class FTSPELLCHECK extends RedisCommand
             [$index, $query],
             $commandArguments
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

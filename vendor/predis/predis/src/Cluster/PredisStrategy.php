@@ -46,7 +46,7 @@ class PredisStrategy extends ClusterStrategy
     /**
      * {@inheritdoc}
      */
-    public function checkSameSlotForKeys(array $keys): bool
+    protected function checkSameSlotForKeys(array $keys)
     {
         if (!$count = count($keys)) {
             return false;
@@ -60,6 +60,8 @@ class PredisStrategy extends ClusterStrategy
             if ($currentKey !== $nextKey) {
                 return false;
             }
+
+            $currentKey = $nextKey;
         }
 
         return true;

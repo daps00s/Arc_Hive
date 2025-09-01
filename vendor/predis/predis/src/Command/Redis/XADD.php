@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/xadd
@@ -50,13 +50,8 @@ class XADD extends RedisCommand
             }
         }
 
-        if (isset($options['trimming'])) {
-            $args[] = strtoupper($options['trimming']);
-        }
-
         // ID, default to * to let Redis set it
         $args[] = $arguments[2] ?? '*';
-
         if (isset($arguments[1]) && is_array($arguments[1])) {
             foreach ($arguments[1] as $key => $val) {
                 $args[] = $key;
@@ -65,10 +60,5 @@ class XADD extends RedisCommand
         }
 
         parent::setArguments($args);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

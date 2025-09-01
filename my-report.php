@@ -2,11 +2,11 @@
 session_start();
 require 'db_connection.php';
 require 'log_activity.php';
-require 'vendor/autoload.php'; // Load Composer autoload (phpdotenv if used)
+require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-// Load environment variables safely
+// Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
@@ -16,7 +16,7 @@ header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
 header("Content-Security-Policy: default-src 'self'; script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com;");
 
-// Disable error display in production; log errors instead
+// Disable error display
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 ini_set('error_log', __DIR__ . '/logs/error_log.log');
@@ -24,8 +24,7 @@ error_reporting(E_ALL);
 
 /**
  * Validate session and return user info
- *
- * @return array ['user_id'=>int, 'role'=>string] or null on failure
+ * @return array ['user_id'=>int, 'role'=>string] or null
  */
 function validateSession(): ?array
 {
@@ -33,65 +32,40 @@ function validateSession(): ?array
         error_log("Unauthorized access attempt in my-report.php: Session invalid.");
         return null;
     }
-    // Regenerate session ID on sensitive pages
     session_regenerate_id(true);
     return ['user_id' => (int)$_SESSION['user_id'], 'role' => (string)$_SESSION['role']];
 }
 
 /**
- * Fetch user's department mappings
- *
+ * Fetch user details and departments
  * @param PDO $pdo
  * @param int $userId
  * @return array
  */
-function fetchUserDepartments(PDO $pdo, int $userId): array
+function fetchUserDetailsAndDepartments(PDO $pdo, int $userId): array
 {
     try {
         $stmt = $pdo->prepare("
-            SELECT d.department_id AS id, d.department_name AS name, ud.users_department_id
-            FROM departments d
-            JOIN users_department ud ON d.department_id = ud.department_id
-            WHERE ud.user_id = ?
-            ORDER BY d.department_name
-        ");
-        $stmt->execute([$userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        error_log("Error fetching departments in my-report.php: " . $e->getMessage());
-        return [];
-    }
-}
-
-/**
- * Fetch aggregated user details (username + department names)
- *
- * @param PDO $pdo
- * @param int $userId
- * @return array
- */
-function fetchUserDetails(PDO $pdo, int $userId): array
-{
-    try {
-        $stmt = $pdo->prepare("
-            SELECT u.username AS full_name, GROUP_CONCAT(d.department_name SEPARATOR ', ') AS department_names
+            SELECT u.user_id, u.username AS full_name, u.role,
+                   GROUP_CONCAT(DISTINCT d.department_name ORDER BY d.department_name SEPARATOR ', ') AS department_names,
+                   GROUP_CONCAT(DISTINCT d.department_id ORDER BY d.department_name) AS department_ids
             FROM users u
-            LEFT JOIN users_department ud ON u.user_id = ud.user_id
+            LEFT JOIN user_departments ud ON u.user_id = ud.user_id
             LEFT JOIN departments d ON ud.department_id = d.department_id
             WHERE u.user_id = ?
             GROUP BY u.user_id
         ");
         $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: ['full_name' => 'Unknown', 'department_names' => 'None'];
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: ['user_id' => $userId, 'full_name' => 'Unknown', 'role' => 'user', 'department_names' => 'None', 'department_ids' => ''];
     } catch (Exception $e) {
         error_log("Error fetching user details in my-report.php: " . $e->getMessage());
-        return ['full_name' => 'Unknown', 'department_names' => 'None'];
+        return ['user_id' => $userId, 'full_name' => 'Unknown', 'role' => 'user', 'department_names' => 'None', 'department_ids' => ''];
     }
 }
 
 /**
- * Fetch document copy details (documents that the user is involved with via upload)
- *
+ * Fetch document copy details
  * @param PDO $pdo
  * @param int $userId
  * @return array
@@ -100,14 +74,14 @@ function fetchDocumentCopyDetails(PDO $pdo, int $userId): array
 {
     try {
         $stmt = $pdo->prepare("
-            SELECT f.file_id, f.file_name, f.copy_type, f.physical_storage_path AS physical_storage,
-                   GROUP_CONCAT(DISTINCT d.department_name SEPARATOR ', ') AS departments_with_copy
+            SELECT f.file_id, f.file_name, f.copy_type, f.file_path AS physical_storage,
+                   GROUP_CONCAT(DISTINCT d.department_name ORDER BY d.department_name SEPARATOR ', ') AS departments_with_copy
             FROM files f
             LEFT JOIN transactions t ON f.file_id = t.file_id
-            LEFT JOIN users_department ud ON t.users_department_id = ud.users_department_id
+            LEFT JOIN user_departments ud ON t.user_department_id = ud.user_department_id
             LEFT JOIN departments d ON ud.department_id = d.department_id
             WHERE t.user_id = ? AND t.transaction_type = 'upload'
-            GROUP BY f.file_id, f.file_name, f.copy_type, f.physical_storage_path
+            GROUP BY f.file_id, f.file_name, f.copy_type, f.file_path
             ORDER BY f.file_name
         ");
         $stmt->execute([$userId]);
@@ -122,11 +96,9 @@ function fetchDocumentCopyDetails(PDO $pdo, int $userId): array
 $errorMessage = '';
 $userId = null;
 $userRole = 'user';
-$user = ['full_name' => 'Unknown', 'department_names' => 'None'];
-$userDepartments = [];
+$user = ['full_name' => 'Unknown', 'department_names' => 'None', 'department_ids' => ''];
 $documentCopies = [];
 $csrfToken = bin2hex(random_bytes(32));
-$usersDepartmentId = null;
 
 // Check database connection
 if (!isset($pdo) || !$pdo instanceof PDO) {
@@ -142,29 +114,15 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     $userId = $session['user_id'];
     $userRole = $session['role'];
 
-    // Generate CSRF token if missing
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = $csrfToken;
-    } else {
-        $csrfToken = $_SESSION['csrf_token'];
-    }
+    // Generate CSRF token
+    $_SESSION['csrf_token'] = $csrfToken;
 
-    // Fetch data for the page
-    $userDepartments = fetchUserDepartments($pdo, $userId);
-    $user = fetchUserDetails($pdo, $userId);
+    // Fetch user details and departments
+    $user = fetchUserDetailsAndDepartments($pdo, $userId);
+    $user['department_ids'] = explode(',', $user['department_ids'] ?? '');
+
+    // Fetch document copies
     $documentCopies = fetchDocumentCopyDetails($pdo, $userId);
-
-    // Determine a users_department_id to use for actions (if any exist)
-    $usersDepartmentId = !empty($userDepartments) ? $userDepartments[0]['users_department_id'] : null;
-
-    // Log page access
-    error_log(sprintf(
-        "[%s] User %d (%s) accessed My Report page (users_department_id=%s)",
-        date('Y-m-d H:i:s'),
-        $userId,
-        $user['full_name'] ?? 'Unknown',
-        $usersDepartmentId ?? 'none'
-    ));
 }
 ?>
 
@@ -172,312 +130,357 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 <html lang="en">
 
 <head>
-    
-    <title>My Report - Document Archival</title>
-
-    <?php
-    include 'user_head.php';
-    ?>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
+    <title>File Activity Report</title>
+    <link rel="stylesheet" href="style/client-sidebar.css">
+    <link rel="stylesheet" href="style/my-report.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 
 <body>
-    <?php if ($errorMessage): ?>
-        <div class="error-message" style="color: red; padding: 20px; text-align: center;">
-            <p><?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?></p>
-        </div>
-    <?php else: ?>
-    
-    <?php 
-    include 'user_menu.php'; 
-    ?>
-    
-            <?php foreach ($userDepartments as $dept): ?>
-                <a href="department_folder.php?department_id=<?= htmlspecialchars($dept['id'], ENT_QUOTES, 'UTF-8') ?>"
-                    class="<?= $dept['id'] == $departmentId ? 'active' : '' ?>"
-                    data-tooltip="<?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?>">
-                    <i class="fas fa-folder"></i><span class="link-text"><?= htmlspecialchars($dept['name'], ENT_QUOTES, 'UTF-8') ?></span>
-                </a>
-            <?php endforeach; ?>
-
-            <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
+    <aside class="sidebar" role="navigation" aria-label="Main Navigation">
+        <button class="toggle-btn" title="Toggle Sidebar" aria-label="Toggle Sidebar"><i class="fas fa-bars"></i></button>
+        <h2 class="sidebar-title">Document Archival</h2>
+        <?php if ($userRole === 'admin'): ?>
+            <a href="admin_dashboard.php" class="admin-dashboard-btn" data-tooltip="Admin Dashboard" aria-label="Admin Dashboard">
+                <i class="fas fa-user-shield"></i><span class="link-text">Admin Dashboard</span>
+            </a>
+        <?php endif; ?>
+        <a href="dashboard.php" class="<?= htmlspecialchars(basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? 'active' : '') ?>" data-tooltip="Dashboard" aria-label="Dashboard">
+            <i class="fas fa-home"></i><span class="link-text">Dashboard</span>
+        </a>
+        <a href="my-report.php" data-tooltip="My Report" aria-label="My Report">
+            <i class="fas fa-chart-bar"></i><span class="link-text">My Report</span>
+        </a>
+        <a href="my-folder.php" class="<?= htmlspecialchars(basename($_SERVER['PHP_SELF']) === 'my-folder.php' ? 'active' : '') ?>" data-tooltip="My Folder" aria-label="My Folder">
+            <i class="fas fa-folder"></i><span class="link-text">My Folder</span>
+        </a>
+        <?php foreach ($userDepartments as $dept): ?>
+            <a href="department_folder.php?department_id=<?= htmlspecialchars(filter_var($dept['department_id'], FILTER_SANITIZE_NUMBER_INT)) ?>"
+                class="<?= isset($_GET['department_id']) && (int)$_GET['department_id'] === $dept['department_id'] ? 'active' : '' ?>"
+                data-tooltip="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?>"
+                aria-label="<?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?> Folder">
+                <i class="fas fa-folder"></i>
+                <span class="link-text"><?= htmlspecialchars($dept['department_name'] ?? 'Unnamed Department') ?></span>
+            </a>
+        <?php endforeach; ?>
+        <a href="logout.php" class="logout-btn" data-tooltip="Logout" aria-label="Logout">
             <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span>
         </a>
     </aside>
 
-        <div class="top-nav" id="topNav">
-            <button class="toggle-btn" id="toggleNavSidebar" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
-            <h2>My Report</h2>
-            <button onclick="downloadChart()"><i class="fas fa-download"></i> Download PDF</button>
-            <button onclick="printChart()"><i class="fas fa-print"></i> Print Report</button>
+    <div class="main-content <?php echo $userRole === 'admin' ? '' : 'resized'; ?>">
+        <div class="top-nav <?php echo $userRole === 'admin' ? '' : 'resized'; ?>" id="topNav">
+            <button class="toggle-btn" id="toggleNavSidebar"><i class="fas fa-bars"></i></button>
+            <h2>File Activity Report</h2>
+            <div class="filter-container">
+                <div class="interval-buttons">
+                    <button class="interval-btn active" data-interval="day">Day</button>
+                    <button class="interval-btn" data-interval="week">Week</button>
+                    <button class="interval-btn" data-interval="month">Month</button>
+                    <button class="interval-btn" data-interval="range">Custom Range</button>
+                </div>
+                <div class="date-range" id="dateRange">
+                    <label><i class="fas fa-calendar-alt"></i> Start: <input type="date" id="startDate"></label>
+                    <label><i class="fas fa-calendar-alt"></i> End: <input type="date" id="endDate"></label>
+                </div>
+                <?php if (!empty($user['department_ids'])): ?>
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <?php foreach (array_combine($user['department_ids'], explode(', ', $user['department_names'])) as $id => $name): ?>
+                            <option value="<?php echo htmlspecialchars($id, ENT_QUOTES, 'UTF-8'); ?>">
+                                <?php echo htmlspecialchars($name, ENT_QUOTES, 'UTF-8'); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
+                <button id="applyFilter"><i class="fas fa-filter"></i> Apply</button>
+                <button id="clearFilter"><i class="fas fa-times"></i> Clear</button>
+            </div>
+        </div>
+
+        <div id="print-header">
+            <h1>File Activity Report</h1>
+            <p>Generated by: <?php echo htmlspecialchars($user['full_name'], ENT_QUOTES, 'UTF-8'); ?>, Departments: <?php echo htmlspecialchars($user['department_names'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p>Generated on: <?php echo date('Y-m-d H:i:s'); ?></p>
         </div>
 
         <div class="main-content">
-            <div class="print-header" id="printHeader" style="display: none;">
-                <h1>File Activity Report for <?= htmlspecialchars($user['full_name'] ?? 'User', ENT_QUOTES, 'UTF-8'); ?></h1>
-                <p>Generated on <?= date('F j, Y'); ?> | Departments: <?= htmlspecialchars($user['department_names'] ?? 'None', ENT_QUOTES, 'UTF-8'); ?></p>
-            </div>
-
-            <div class="report-controls">
-                <label for="interval">Time Period:</label>
-                <select id="interval" onchange="updateChart()">
-                    <option value="day">Last 24 Hours</option>
-                    <option value="week">Last 7 Days</option>
-                    <option value="month" selected>Last 30 Days</option>
-                    <option value="range">Custom Range</option>
-                </select>
-                <div id="dateRange" style="display: none;">
-                    <label for="startDate">Start Date:</label>
-                    <input type="date" id="startDate" max="<?= date('Y-m-d'); ?>">
-                    <label for="endDate">End Date:</label>
-                    <input type="date" id="endDate" max="<?= date('Y-m-d'); ?>">
-                </div>
-                <label for="sortBy">Sort By:</label>
-                <select id="sortBy" onchange="sortTable()">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                </select>
-                <label for="filterDirection">Filter Direction:</label>
-                <select id="filterDirection" onchange="filterTable()">
-                    <option value="all">All</option>
-                    <option value="Sent">Sent</option>
-                    <option value="Received">Received</option>
-                </select>
-            </div>
-
+            <?php if ($errorMessage): ?>
+                <div id="customAlert" class="alert error"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8'); ?></div>
+            <?php endif; ?>
             <div class="chart-container">
-                <canvas id="chartCanvas"></canvas>
+                <canvas id="myChart"></canvas>
+                <div class="chart-actions">
+                    <button class="download-btn" onclick="downloadChart()"><i class="fas fa-download"></i> Download PDF</button>
+                    <button class="print-btn" onclick="printChart()"><i class="fas fa-print"></i> Print</button>
+                </div>
             </div>
-
-            <div class="loading-spinner" id="loadingSpinner"></div>
-
-            <h3>File Activity</h3>
-            <div class="files-table" id="filesTable">
-                <table>
+            <div class="files-table">
+                <h3>File Activity</h3>
+                <div class="table-controls">
+                    <select id="sortBy">
+                        <option value="event_date">Sort by Date</option>
+                        <option value="file_name">Sort by File Name</option>
+                        <option value="document_type">Sort by Type</option>
+                        <option value="department_name">Sort by Department</option>
+                    </select>
+                    <select id="filterDirection">
+                        <option value="">All Directions</option>
+                        <option value="Sent">Sent</option>
+                        <option value="Received">Received</option>
+                    </select>
+                </div>
+                <table id="filesTable">
                     <thead>
                         <tr>
                             <th>File Name</th>
-                            <th>Document Type</th>
+                            <th>Type</th>
                             <th>Date</th>
                             <th>Department</th>
                             <th>Uploader</th>
                             <th>Direction</th>
                         </tr>
                     </thead>
-                    <tbody id="fileTableBody"></tbody>
+                    <tbody></tbody>
                 </table>
             </div>
-
-            <h3>Document Copies</h3>
-            <div class="copies-table" id="copiesTable">
-                <table>
+            <div class="files-table">
+                <h3>Document Copies</h3>
+                <table id="copiesTable">
                     <thead>
                         <tr>
                             <th>File Name</th>
                             <th>Copy Type</th>
-                            <th>Physical Storage Path</th>
+                            <th>Physical Storage</th>
                             <th>Departments with Copy</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($documentCopies as $copy): ?>
                             <tr>
-                                <td><?= htmlspecialchars($copy['file_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?= htmlspecialchars($copy['copy_type'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?= htmlspecialchars($copy['physical_storage'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?= htmlspecialchars($copy['departments_with_copy'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td title="<?php echo htmlspecialchars($copy['file_name'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php echo htmlspecialchars($copy['file_name'], ENT_QUOTES, 'UTF-8'); ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($copy['copy_type'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($copy['physical_storage'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($copy['departments_with_copy'] ?? 'None', ENT_QUOTES, 'UTF-8'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
+            <div class="loading-spinner"></div>
         </div>
-
-        <div class="custom-alert" id="customAlert" style="display: none;">
-            <p id="alertMessage"></p>
-            <button onclick="hideAlert()">OK</button>
-        </div>
-    <?php endif; ?>
+    </div>
 
     <script>
-        const state = {
-            chart: null,
-            tableData: [],
-            isLoading: false
-        };
-
         const elements = {
-            chartCanvas: document.getElementById('chartCanvas'),
-            fileTableBody: document.getElementById('fileTableBody'),
+            chartCanvas: document.getElementById('myChart'),
             filesTable: document.getElementById('filesTable'),
             copiesTable: document.getElementById('copiesTable'),
-            printHeader: document.getElementById('printHeader'),
-            intervalSelect: document.getElementById('interval'),
+            printHeader: document.getElementById('print-header'),
+            intervalButtons: document.querySelectorAll('.interval-btn'),
             startDate: document.getElementById('startDate'),
             endDate: document.getElementById('endDate'),
-            loadingSpinner: document.querySelector('.loading-spinner')
+            departmentFilter: document.getElementById('departmentFilter'),
+            sortBy: document.getElementById('sortBy'),
+            filterDirection: document.getElementById('filterDirection'),
+            applyFilter: document.getElementById('applyFilter'),
+            clearFilter: document.getElementById('clearFilter'),
+            dateRange: document.getElementById('dateRange')
         };
+
+        const state = {
+            isLoading: false,
+            chartInstance: null,
+            tableData: [],
+            interval: 'day',
+            startDate: '',
+            endDate: '',
+            departmentId: ''
+        };
+
+        const notyf = new Noty({
+            theme: 'metroui',
+            timeout: 3000,
+            progressBar: true
+        });
 
         const setLoadingState = (isLoading) => {
             state.isLoading = isLoading;
-            elements.loadingSpinner.classList.toggle('report-loading', isLoading);
+            document.querySelector('.loading-spinner').style.display = isLoading ? 'block' : 'none';
+            elements.applyFilter.disabled = isLoading;
         };
 
-        const showAlert = (message, type) => {
-            const alert = document.createElement('div');
-            alert.className = `custom-alert ${type}`;
-            alert.innerHTML = `<p>${message}</p>`;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 3000);
-        };
-
-        const formatDate = (dateStr) => {
-            if (!dateStr) return 'N/A';
-            const date = new Date(dateStr);
-            return isNaN(date) ? 'N/A' : date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        };
+        const showAlert = (message, type) => notyf.open({
+            type,
+            message
+        });
 
         const updateTable = () => {
-            elements.fileTableBody.innerHTML = '';
-            const sortBy = document.getElementById('sortBy')?.value || 'newest';
-            const filter = document.getElementById('filterDirection')?.value || 'all';
+            const tbody = elements.filesTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            let filteredData = [...state.tableData];
 
-            const sortedData = [...state.tableData].sort((a, b) => {
-                const dateA = new Date(a.date);
-                const dateB = new Date(b.date);
-                return sortBy === 'newest' ? dateB - dateA : dateA - dateB;
+            const direction = elements.filterDirection.value;
+            if (direction) {
+                filteredData = filteredData.filter(row => row.direction === direction);
+            }
+
+            const departmentId = elements.departmentFilter ? elements.departmentFilter.value : '';
+            if (departmentId) {
+                filteredData = filteredData.filter(row => row.department_id === departmentId);
+            }
+
+            const sortBy = elements.sortBy.value;
+            filteredData.sort((a, b) => {
+                if (sortBy === 'event_date') {
+                    return new Date(b[sortBy]) - new Date(a[sortBy]);
+                }
+                return a[sortBy].localeCompare(b[sortBy]);
             });
 
-            sortedData.forEach(row => {
-                if (filter === 'all' || row.direction === filter) {
-                    const tr = document.createElement('tr');
-                    tr.dataset.direction = row.direction;
-                    tr.innerHTML = `
-                        <td>${row.file_name || 'N/A'}</td>
-                        <td>${row.document_type || 'N/A'}</td>
-                        <td>${formatDate(row.date)}</td>
-                        <td>${row.department || 'N/A'}</td>
-                        <td>${row.uploader || 'N/A'}</td>
-                        <td>${row.direction || 'N/A'}</td>
-                    `;
-                    elements.fileTableBody.appendChild(tr);
-                }
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">No files found for this period.</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td title="${row.file_name}">${row.file_name}</td>
+                    <td>${row.document_type}</td>
+                    <td>${row.upload_date ? new Date(row.upload_date).toLocaleDateString('en-US') : 'N/A'}</td>
+                    <td>${row.department_name}</td>
+                    <td>${row.uploader}</td>
+                    <td>${row.direction}</td>
+                `;
+                tbody.appendChild(tr);
             });
         };
 
         const updateChart = () => {
+            if (state.isLoading) return;
             setLoadingState(true);
-            const interval = elements.intervalSelect.value;
-            const params = new URLSearchParams({
-                interval,
-                _csrf: '<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>'
-            });
-            if (interval === 'range') {
-                const startDate = elements.startDate.value;
-                const endDate = elements.endDate.value;
-                if (startDate && endDate) {
-                    params.append('startDate', startDate);
-                    params.append('endDate', endDate);
-                }
-            }
 
-            fetch('fetch_incoming_outgoing.php?' + params.toString(), {
-                headers: {
-                    'X-CSRF-Token': '<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>'
-                }
-            }).then(response => {
-                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                return response.json();
-            }).then(data => {
-                if (!data || !data.labels || !data.datasets) {
-                    showAlert('No data available for the selected period.', 'error');
-                    return;
-                }
+            const data = {
+                interval: state.interval,
+                startDate: elements.startDate.value,
+                endDate: elements.endDate.value,
+                departmentId: elements.departmentFilter ? elements.departmentFilter.value : '',
+                csrf_token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            };
 
-                if (state.chart) state.chart.destroy();
-                state.chart = new Chart(elements.chartCanvas, {
-                    type: 'line',
-                    data: {
-                        labels: data.labels || ['No Data'],
-                        datasets: [{
-                            label: 'Files Sent',
-                            data: data.datasets.files_sent || [0],
-                            borderColor: '#34d058',
-                            backgroundColor: 'rgba(52, 208, 88, 0.2)',
-                            fill: true
-                        }, {
-                            label: 'Files Received',
-                            data: data.datasets.files_received || [0],
-                            borderColor: '#2c3e50',
-                            backgroundColor: 'rgba(44, 62, 80, 0.2)',
-                            fill: true
-                        }]
+            fetch('fetch_incoming_outgoing.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': data.csrf_token
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top'
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showAlert(data.error, 'error');
+                        return;
+                    }
+
+                    if (state.chartInstance) {
+                        state.chartInstance.destroy();
+                    }
+
+                    state.chartInstance = new Chart(elements.chartCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels || ['No Data'],
+                            datasets: [{
+                                    label: 'Files Sent',
+                                    data: data.datasets.files_sent || [0],
+                                    borderColor: '#34d058',
+                                    backgroundColor: 'rgba(52, 208, 88, 0.2)',
+                                    fill: true
+                                },
+                                {
+                                    label: 'Files Received',
+                                    data: data.datasets.files_received || [0],
+                                    borderColor: '#2c3e50',
+                                    backgroundColor: 'rgba(44, 62, 80, 0.2)',
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'File Activity Report'
+                                }
                             },
-                            title: {
-                                display: true,
-                                text: 'File Activity Report'
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeOutQuart'
                             }
                         }
-                    }
-                });
+                    });
 
-                state.tableData = data.tableData || [];
-                updateTable();
-            }).catch(err => {
-                console.error('Fetch error:', err);
-                showAlert('Failed to load report data: ' + err.message, 'error');
-            }).finally(() => setLoadingState(false));
-        };
-
-        const sortTable = () => {
-            updateTable();
-        };
-
-        const filterTable = () => {
-            updateTable();
+                    state.tableData = data.tableData || [];
+                    updateTable();
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    showAlert('Failed to load report data.', 'error');
+                })
+                .finally(() => setLoadingState(false));
         };
 
         const downloadChart = async () => {
             if (state.isLoading) return;
             setLoadingState(true);
             try {
-                if (!window.jspdf || !window.html2canvas) {
-                    throw new Error('Required libraries (jsPDF or html2canvas) not loaded.');
-                }
-                const { jsPDF } = window.jspdf;
-                elements.printHeader.style.display = 'block';
-                const headerImg = await html2canvas(elements.printHeader, { scale: 2 });
-                const chartImg = await html2canvas(elements.chartCanvas, { scale: 2 });
-                const fileTableImg = await html2canvas(elements.filesTable, { scale: 2 });
-                const copiesTableImg = await html2canvas(elements.copiesTable, { scale: 2 });
-                elements.printHeader.style.display = 'none';
+                const {
+                    jsPDF
+                } = window.jspdf;
+                const headerImg = await html2canvas(elements.printHeader, {
+                    scale: 2
+                });
+                const chartImg = await html2canvas(elements.chartCanvas, {
+                    scale: 2
+                });
+                const fileTableImg = await html2canvas(elements.filesTable, {
+                    scale: 2
+                });
+                const copiesTableImg = await html2canvas(elements.copiesTable, {
+                    scale: 2
+                });
 
                 const pdf = new jsPDF('p', 'pt', 'a4');
-                pdf.addImage(headerImg.toDataURL('image/png'), 'PNG', 20, 20, 555, (555 * headerImg.height / headerImg.width));
+                pdf.addImage(headerImg, 'PNG', 20, 20, 555, 555 * headerImg.height / headerImg.width);
                 pdf.addPage();
-                pdf.addImage(chartImg.toDataURL('image/png'), 'PNG', 20, 20, 555, (555 * chartImg.height / chartImg.width));
+                pdf.addImage(chartImg, 'PNG', 20, 20, 555, 555 * chartImg.height / chartImg.width);
                 pdf.addPage();
-                pdf.addImage(fileTableImg.toDataURL('image/png'), 'PNG', 20, 20, 555, (555 * fileTableImg.height / fileTableImg.width));
+                pdf.addImage(fileTableImg, 'PNG', 20, 20, 555, 555 * fileTableImg.height / fileTableImg.width);
                 pdf.addPage();
-                pdf.addImage(copiesTableImg.toDataURL('image/png'), 'PNG', 20, 20, 555, (555 * copiesTableImg.height / copiesTableImg.width));
+                pdf.addImage(copiesTableImg, 'PNG', 20, 20, 555, 555 * copiesTableImg.height / copiesTableImg.width);
                 pdf.save('file-activity-report.pdf');
             } catch (err) {
                 console.error('Download error:', err);
-                showAlert('Failed to prepare PDF: ' + err.message, 'error');
+                showAlert('Failed to generate PDF.', 'error');
             } finally {
-                elements.printHeader.style.display = 'none';
                 setLoadingState(false);
             }
         };
@@ -488,44 +491,49 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
             elements.printHeader.style.display = 'none';
         };
 
-        const hideAlert = () => {
-            document.getElementById('customAlert').style.display = 'none';
-        };
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Toggle sidebar
+            elements.intervalButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    elements.intervalButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.interval = btn.dataset.interval;
+                    elements.dateRange.style.display = state.interval === 'range' ? 'flex' : 'none';
+                });
+            });
+
+            elements.applyFilter.addEventListener('click', updateChart);
+            elements.clearFilter.addEventListener('click', () => {
+                elements.intervalButtons.forEach(b => b.classList.remove('active'));
+                elements.intervalButtons[0].classList.add('active');
+                state.interval = 'day';
+                elements.startDate.value = '';
+                elements.endDate.value = '';
+                if (elements.departmentFilter) elements.departmentFilter.value = '';
+                elements.sortBy.value = 'event_date';
+                elements.filterDirection.value = '';
+                elements.dateRange.style.display = 'none';
+                updateChart();
+            });
+
+            elements.sortBy.addEventListener('change', updateTable);
+            elements.filterDirection.addEventListener('change', updateTable);
+            if (elements.departmentFilter) elements.departmentFilter.addEventListener('change', updateChart);
+
             document.getElementById('toggleSidebar').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('minimized');
-                document.getElementById('topNav').classList.toggle('shifted');
-                document.querySelector('.main-content').classList.toggle('shifted');
+                document.getElementById('topNav').classList.toggle('resized');
+                document.querySelector('.main-content').classList.toggle('resized');
             });
 
             document.getElementById('toggleNavSidebar').addEventListener('click', () => {
                 document.getElementById('sidebar').classList.toggle('minimized');
-                document.getElementById('topNav').classList.toggle('shifted');
-                document.querySelector('.main-content').classList.toggle('shifted');
-            });
-
-            // Handle date range visibility
-            document.getElementById('interval').addEventListener('change', () => {
-                document.getElementById('dateRange').style.display = elements.intervalSelect.value === 'range' ? 'block' : 'none';
+                document.getElementById('topNav').classList.toggle('resized');
+                document.querySelector('.main-content').classList.toggle('resized');
             });
 
             updateChart();
         });
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
 
 </html>

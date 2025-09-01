@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TDigest;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/tdigest.revrank/
@@ -26,10 +26,5 @@ class TDIGESTREVRANK extends RedisCommand
     public function getId()
     {
         return 'TDIGEST.REVRANK';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

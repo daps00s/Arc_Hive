@@ -52,32 +52,48 @@ function validateUserSession(): array
     ];
 }
 
-// Handle AJAX request to fetch extracted text
-if (isset($_GET['action']) && $_GET['action'] === 'view_text' && isset($_GET['file_id'])) {
+// Handle AJAX request to fetch extracted text for preview
+if (isset($_GET['action']) && $_GET['action'] === 'get_preview' && isset($_GET['file_id'])) {
     try {
-        validateUserSession();
+        $user = validateUserSession();
         $fileId = filter_var($_GET['file_id'], FILTER_VALIDATE_INT);
         if (!$fileId) {
-            error_log("Invalid file ID provided for view_text: {$_GET['file_id']}");
+            error_log("Invalid file ID provided for get_preview: {$_GET['file_id']}");
             sendJsonResponse(false, 'Invalid file ID.', [], 400);
         }
+
+        // Get search query for highlighting
+        $searchQuery = isset($_GET['q']) ? filter_var($_GET['q'], FILTER_SANITIZE_SPECIAL_CHARS) : '';
+
         $stmt = $pdo->prepare("
-            SELECT tr.extracted_text, f.file_status, f.file_name
+            SELECT tr.extracted_text, f.file_status, f.file_name, f.file_type, f.file_path, 
+                   f.access_level, f.department_id, f.sub_department_id
             FROM text_repository tr
             JOIN files f ON tr.file_id = f.file_id
-            WHERE tr.file_id = ?
+            LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
+            WHERE tr.file_id = ? 
+            AND f.file_status != 'deleted'
+            AND (f.user_id = ? OR f.access_level = 'college' OR 
+                 (f.access_level = 'sub_department' AND ud.user_id = ?) OR 
+                 (f.access_level = 'personal' AND f.user_id = ?))
         ");
-        $stmt->execute([$fileId]);
+        $stmt->execute([$fileId, $user['user_id'], $user['user_id'], $user['user_id']]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if (!$result) {
-            error_log("No text_repository entry found for file_id: $fileId");
-            sendJsonResponse(false, 'No text repository entry found for this file.', [], 404);
+            error_log("No text_repository entry found or access denied for file_id: $fileId");
+            sendJsonResponse(false, 'No text repository entry found or access denied.', [], 403);
         }
+
         $responseData = [
             'extracted_text' => $result['extracted_text'] ?? '',
             'file_status' => $result['file_status'],
-            'file_name' => $result['file_name']
+            'file_name' => $result['file_name'],
+            'file_type' => $result['file_type'],
+            'file_path' => $result['file_path'],
+            'search_query' => $searchQuery
         ];
+
         if ($result['file_status'] === 'pending_ocr') {
             sendJsonResponse(false, 'Text extraction is still in progress. Please try again later.', $responseData, 202);
         } elseif ($result['file_status'] === 'ocr_failed') {
@@ -85,29 +101,40 @@ if (isset($_GET['action']) && $_GET['action'] === 'view_text' && isset($_GET['fi
         } elseif (empty($result['extracted_text'])) {
             sendJsonResponse(false, 'No text extracted for this file. It may not contain extractable content.', $responseData, 200);
         }
-        error_log("View text for file_id: $fileId, file_status: {$result['file_status']}, extracted_text length: " . strlen($result['extracted_text'] ?? ''));
-        sendJsonResponse(true, 'Text retrieved successfully.', $responseData, 200);
+
+        error_log("Preview for file_id: $fileId, file_status: {$result['file_status']}, extracted_text length: " . strlen($result['extracted_text'] ?? ''));
+        sendJsonResponse(true, 'Preview retrieved successfully.', $responseData, 200);
     } catch (Exception $e) {
-        error_log("Error fetching text for file_id {$_GET['file_id']}: " . $e->getMessage() . " | Line: " . $e->getLine());
-        sendJsonResponse(false, 'Server error: Unable to retrieve text: ' . $e->getMessage(), [], $e->getCode() ?: 500);
+        error_log("Error fetching preview for file_id {$_GET['file_id']}: " . $e->getMessage() . " | Line: " . $e->getLine());
+        sendJsonResponse(false, 'Server error: Unable to retrieve preview: ' . $e->getMessage(), [], $e->getCode() ?: 500);
     }
 }
 
 // Handle AJAX request to retry OCR
 if (isset($_GET['action']) && $_GET['action'] === 'retry_ocr' && isset($_GET['file_id'])) {
     try {
-        validateUserSession();
+        $user = validateUserSession();
         $fileId = filter_var($_GET['file_id'], FILTER_VALIDATE_INT);
         if (!$fileId) {
             error_log("Invalid file ID provided for retry_ocr: {$_GET['file_id']}");
             sendJsonResponse(false, 'Invalid file ID.', [], 400);
         }
-        $stmt = $pdo->prepare("UPDATE files SET file_status = 'pending_ocr' WHERE file_id = ? AND file_status = 'ocr_failed'");
-        $stmt->execute([$fileId]);
-        if ($stmt->rowCount() === 0) {
-            error_log("No file found or not in ocr_failed status for file_id: $fileId");
-            sendJsonResponse(false, 'File not eligible for OCR retry.', [], 400);
+        $stmt = $pdo->prepare("
+            SELECT file_status, access_level, department_id, sub_department_id
+            FROM files f
+            LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
+            WHERE f.file_id = ? AND (f.file_status = 'ocr_failed' OR f.file_status = 'pending_ocr')
+            AND (f.user_id = ? OR f.access_level = 'college' OR 
+                 (f.access_level = 'sub_department' AND ud.user_id = ?) OR 
+                 (f.access_level = 'personal' AND f.user_id = ?))
+        ");
+        $stmt->execute([$fileId, $user['user_id'], $user['user_id'], $user['user_id']]);
+        if (!$stmt->fetch()) {
+            error_log("No file found or not in ocr_failed/pending_ocr status or access denied for file_id: $fileId");
+            sendJsonResponse(false, 'File not eligible for OCR retry or access denied.', [], 403);
         }
+        $stmt = $pdo->prepare("UPDATE files SET file_status = 'pending_ocr' WHERE file_id = ?");
+        $stmt->execute([$fileId]);
         // Trigger background OCR processing
         $logFile = __DIR__ . '/logs/ocr_processor.log';
         $command = escapeshellcmd("php " . __DIR__ . "/ocr_processor.php $fileId >> $logFile 2>&1");
@@ -126,7 +153,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'retry_ocr' && isset($_GET['fi
             INSERT INTO transactions (user_id, file_id, transaction_type, transaction_status, transaction_time, description)
             VALUES (?, ?, 'ocr_retry', 'scheduled', NOW(), ?)
         ");
-        $stmt->execute([$_SESSION['user_id'], $fileId, "Retrying OCR processing for file ID $fileId"]);
+        $stmt->execute([$user['user_id'], $fileId, "Retrying OCR processing for file ID $fileId"]);
         sendJsonResponse(true, 'OCR retry scheduled successfully.', [], 200);
     } catch (Exception $e) {
         error_log("Error retrying OCR for file_id {$_GET['file_id']}: " . $e->getMessage() . " | Line: " . $e->getLine());
@@ -155,261 +182,441 @@ try {
     $files = [];
 
     if (!empty($searchQuery)) {
-        // Build SQL query to search file contents using FULLTEXT index
-        $sql = "
-            SELECT f.file_id, f.file_name, f.file_type, f.upload_date, 
-                   COALESCE(dt.type_name, 'Unknown') AS document_type,
-                   COALESCE(f.copy_type, 'softcopy') AS copy_type,
-                   f.file_status
-            FROM files f
-            JOIN text_repository tr ON f.file_id = tr.file_id
-            LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
-            LEFT JOIN users u ON f.user_id = u.user_id
-            LEFT JOIN users_department ud ON u.user_id = ud.user_id
-            WHERE MATCH(tr.extracted_text) AGAINST (? IN BOOLEAN MODE)
-            AND (f.user_id = ? OR ud.department_id IN (" .
-            (empty($departmentIds) ? '0' : implode(',', array_fill(0, count($departmentIds), '?')))
-            . "))
-        ";
-        $params = [$searchQuery, $userId];
-        if (!empty($departmentIds)) {
-            $params = array_merge($params, $departmentIds);
-        }
+        // First check if text_repository has any extracted text
+        $checkTextStmt = $pdo->prepare("SELECT COUNT(*) as count FROM text_repository WHERE extracted_text IS NOT NULL AND LENGTH(extracted_text) > 0");
+        $checkTextStmt->execute();
+        $hasExtractedText = $checkTextStmt->fetch(PDO::FETCH_ASSOC)['count'] > 0;
 
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($hasExtractedText) {
+            // Build SQL query to search file contents using FULLTEXT index
+            $sql = "
+                SELECT f.file_id, f.file_name, f.file_type, f.upload_date, 
+                       COALESCE(dt.type_name, 'Unknown') AS document_type,
+                       COALESCE(f.copy_type, 'soft_copy') AS copy_type,
+                       f.file_status,
+                       tr.extracted_text,
+                       MATCH(tr.extracted_text) AGAINST(? IN NATURAL LANGUAGE MODE) as relevance
+                FROM files f
+                LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
+                INNER JOIN text_repository tr ON f.file_id = tr.file_id
+                LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
+                WHERE f.file_status != 'deleted'
+                AND MATCH(tr.extracted_text) AGAINST(? IN NATURAL LANGUAGE MODE)
+                AND (f.user_id = ? OR f.access_level = 'college' OR 
+                     (f.access_level = 'sub_department' AND ud.user_id = ?) OR 
+                     (f.access_level = 'personal' AND f.user_id = ?))
+                ORDER BY relevance DESC
+            ";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$searchQuery, $searchQuery, $userId, $userId, $userId]);
+            $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // If no results from FULLTEXT search, try fallback to LIKE search on file names
+            if (empty($files)) {
+                $sql = "
+                    SELECT f.file_id, f.file_name, f.file_type, f.upload_date, 
+                           COALESCE(dt.type_name, 'Unknown') AS document_type,
+                           COALESCE(f.copy_type, 'soft_copy') AS copy_type,
+                           f.file_status,
+                           NULL as extracted_text,
+                           0 as relevance
+                    FROM files f
+                    LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
+                    LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
+                    WHERE f.file_status != 'deleted'
+                    AND f.file_name LIKE ?
+                    AND (f.user_id = ? OR f.access_level = 'college' OR 
+                         (f.access_level = 'sub_department' AND ud.user_id = ?) OR 
+                         (f.access_level = 'personal' AND f.user_id = ?))
+                ";
+                $stmt = $pdo->prepare($sql);
+                $searchPattern = '%' . $searchQuery . '%';
+                $stmt->execute([$searchPattern, $userId, $userId, $userId]);
+                $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } else {
+            // Fallback: search in file names if no extracted text is available
+            $sql = "
+                SELECT f.file_id, f.file_name, f.file_type, f.upload_date, 
+                       COALESCE(dt.type_name, 'Unknown') AS document_type,
+                       COALESCE(f.copy_type, 'soft_copy') AS copy_type,
+                       f.file_status,
+                       NULL as extracted_text
+                FROM files f
+                LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
+                LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
+                WHERE f.file_status != 'deleted'
+                AND f.file_name LIKE ?
+                AND (f.user_id = ? OR f.access_level = 'college' OR 
+                     (f.access_level = 'sub_department' AND ud.user_id = ?) OR 
+                     (f.access_level = 'personal' AND f.user_id = ?))
+            ";
+            $stmt = $pdo->prepare($sql);
+            $searchPattern = '%' . $searchQuery . '%';
+            $stmt->execute([$searchPattern, $userId, $userId, $userId]);
+            $files = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     }
-} catch (Exception $e) {
-    error_log("Error in test_search.php: " . $e->getMessage() . " | Line: " . $e->getLine());
-    sendJsonResponse(false, 'Server error: Unable to process search: ' . $e->getMessage(), [], 500);
-}
+
+    // HTML output
 ?>
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Content Search - Arc Hive</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>File Search</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f5f5f5;
+            }
 
-        .search-form {
-            margin-bottom: 20px;
-        }
+            .search-container {
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-        .search-form input[type="text"] {
-            padding: 8px;
-            width: 300px;
-        }
+            .search-input {
+                width: 300px;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 16px;
+            }
 
-        .search-form button {
-            padding: 8px 16px;
-        }
+            button {
+                padding: 10px 15px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
 
-        .results {
-            margin-top: 20px;
-        }
+            button:hover {
+                background-color: #45a049;
+            }
 
-        .file-item {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background-color: white;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                overflow: hidden;
+            }
 
-        .error {
-            color: red;
-        }
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
+            }
 
-        .view-button,
-        .retry-button {
-            padding: 6px 12px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
 
-        .view-button {
-            background-color: #4CAF50;
-        }
+            .highlight {
+                background-color: yellow;
+                font-weight: bold;
+            }
 
-        .view-button:hover {
-            background-color: #45a049;
-        }
+            .preview-container {
+                margin-top: 20px;
+                padding: 15px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                display: none;
+            }
 
-        .retry-button {
-            background-color: #2196F3;
-        }
+            .preview-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
 
-        .retry-button:hover {
-            background-color: #1e88e5;
-        }
+            .preview-content {
+                max-height: 400px;
+                overflow: auto;
+                padding: 10px;
+                border: 1px solid #eee;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+                white-space: pre-wrap;
+                line-height: 1.5;
+            }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+            .close-btn {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #999;
+            }
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
+            .close-btn:hover {
+                color: #333;
+            }
 
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            cursor: pointer;
-        }
+            .search-info {
+                margin: 10px 0;
+                padding: 10px;
+                background-color: #e7f3ff;
+                border-left: 4px solid #007bff;
+                border-radius: 4px;
+            }
 
-        .highlight {
-            background-color: yellow;
-            font-weight: bold;
-        }
+            .search-type-badge {
+                display: inline-block;
+                padding: 3px 8px;
+                background-color: #28a745;
+                color: white;
+                border-radius: 4px;
+                font-size: 12px;
+                margin-left: 5px;
+            }
 
-        .no-text {
-            color: #555;
-            font-style: italic;
-        }
-    </style>
-</head>
+            .file-row {
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
 
-<body>
-    <h2>Test File Content Search</h2>
-    <form class="search-form" method="GET">
-        <input type="text" name="q" placeholder="Search file contents..." value="<?php echo htmlspecialchars($searchQuery); ?>">
-        <button type="submit">Search</button>
-    </form>
-    <div class="results">
+            .file-row:hover {
+                background-color: #f0f0f0;
+            }
+
+            .file-row.active {
+                background-color: #e6f7ff;
+            }
+
+            .no-text {
+                color: #777;
+                font-style: italic;
+            }
+
+            .text-snippet {
+                margin-top: 5px;
+                font-size: 14px;
+                color: #555;
+                max-height: 60px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .retry-btn {
+                background-color: #ff9800;
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+
+            .retry-btn:hover {
+                background-color: #e68a00;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search files...">
+            <button onclick="searchFiles()">Search</button>
+        </div>
+
         <?php if (!empty($searchQuery)): ?>
+            <h2>Search Results for "<?php echo htmlspecialchars($searchQuery); ?>"</h2>
+
+            <?php
+            // Check search type
+            $checkTextStmt = $pdo->prepare("SELECT COUNT(*) as count FROM text_repository WHERE extracted_text IS NOT NULL AND LENGTH(extracted_text) > 0");
+            $checkTextStmt->execute();
+            $hasExtractedText = $checkTextStmt->fetch(PDO::FETCH_ASSOC)['count'] > 0;
+
+            $searchType = 'content';
+            if (!$hasExtractedText) {
+                $searchType = 'filename';
+            } elseif (!empty($files) && isset($files[0]['extracted_text']) && $files[0]['extracted_text'] === null) {
+                $searchType = 'filename';
+            }
+            ?>
+
+            <?php if (!$hasExtractedText): ?>
+                <div class="search-info">
+                    <strong>Note:</strong> No extracted text available in database. Searching by file names only.
+                    <br>To enable content search, upload files with OCR processing or run OCR on existing files.
+                </div>
+            <?php endif; ?>
+
             <?php if (empty($files)): ?>
-                <p>No files found with content matching "<?php echo htmlspecialchars($searchQuery); ?>". This may be due to files not being OCR-processed or no matching content.</p>
+                <p>No files found matching your query.</p>
             <?php else: ?>
-                <h3>Search Results</h3>
-                <?php foreach ($files as $file): ?>
-                    <div class="file-item">
-                        <p><strong>File Name:</strong> <?php echo htmlspecialchars($file['file_name']); ?></p>
-                        <p><strong>Document Type:</strong> <?php echo htmlspecialchars($file['document_type']); ?></p>
-                        <p><strong>File Type:</strong> <?php echo htmlspecialchars($file['file_type']); ?></p>
-                        <p><strong>Copy Type:</strong> <?php echo htmlspecialchars($file['copy_type']); ?></p>
-                        <p><strong>Upload Date:</strong> <?php echo htmlspecialchars($file['upload_date']); ?></p>
-                        <button class="view-button" data-file-id="<?php echo $file['file_id']; ?>" data-search-query="<?php echo htmlspecialchars($searchQuery); ?>">View Contents</button>
-                        <?php if ($file['file_status'] === 'ocr_failed'): ?>
-                            <button class="retry-button" data-file-id="<?php echo $file['file_id']; ?>" data-retry-enabled="true">Retry OCR</button>
-                        <?php else: ?>
-                            <button class="retry-button" data-file-id="<?php echo $file['file_id']; ?>" style="display: none;" data-retry-enabled="false">Retry OCR</button>
-                        <?php endif; ?>
+                <p>Found <?php echo count($files); ?> file(s)
+                    <span class="search-type-badge">
+                        <?php echo $searchType === 'content' ? 'Content Search' : 'Filename Search'; ?>
+                    </span>
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>File Type</th>
+                            <th>Document Type</th>
+                            <th>Upload Date</th>
+                            <th>Copy Type</th>
+                            <th>File Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($files as $index => $file):
+                            // Highlight search term in file name
+                            $highlightedFileName = htmlspecialchars($file['file_name']);
+                            if (!empty($searchQuery)) {
+                                $highlightedFileName = preg_replace(
+                                    "/(" . preg_quote($searchQuery, '/') . ")/i",
+                                    '<span class="highlight">$1</span>',
+                                    $highlightedFileName
+                                );
+                            }
+
+                            // Create a text snippet if available
+                            $textSnippet = '';
+                            if (!empty($file['extracted_text'])) {
+                                $text = htmlspecialchars($file['extracted_text']);
+                                $position = stripos($text, $searchQuery);
+                                if ($position !== false) {
+                                    $start = max(0, $position - 50);
+                                    $end = min(strlen($text), $position + strlen($searchQuery) + 100);
+                                    $snippet = substr($text, $start, $end - $start);
+                                    if ($start > 0) $snippet = '...' . $snippet;
+                                    if ($end < strlen($text)) $snippet = $snippet . '...';
+
+                                    // Highlight the search term in the snippet
+                                    $textSnippet = preg_replace(
+                                        "/(" . preg_quote($searchQuery, '/') . ")/i",
+                                        '<span class="highlight">$1</span>',
+                                        $snippet
+                                    );
+                                }
+                            }
+                        ?>
+                            <tr class="file-row" data-file-id="<?php echo $file['file_id']; ?>" data-search-query="<?php echo htmlspecialchars($searchQuery); ?>">
+                                <td>
+                                    <?php echo $highlightedFileName; ?>
+                                    <?php if (!empty($textSnippet)): ?>
+                                        <div class="text-snippet"><?php echo $textSnippet; ?></div>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo htmlspecialchars($file['file_type']); ?></td>
+                                <td><?php echo htmlspecialchars($file['document_type']); ?></td>
+                                <td><?php echo htmlspecialchars($file['upload_date']); ?></td>
+                                <td><?php echo htmlspecialchars($file['copy_type']); ?></td>
+                                <td><?php echo htmlspecialchars($file['file_status']); ?></td>
+                                <td>
+                                    <button class="retry-btn" data-file-id="<?php echo $file['file_id']; ?>" data-retry-enabled="<?php echo in_array($file['file_status'], ['ocr_failed', 'pending_ocr']) ? 'true' : 'false'; ?>" style="display: <?php echo in_array($file['file_status'], ['ocr_failed', 'pending_ocr']) ? 'inline-block' : 'none'; ?>;">Retry OCR</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <!-- Preview container that will show the extracted text -->
+                <div class="preview-container" id="previewContainer">
+                    <div class="preview-header">
+                        <h3 id="previewFileName"></h3>
+                        <button class="close-btn" onclick="closePreview()">&times;</button>
                     </div>
-                <?php endforeach; ?>
+                    <div id="previewFileStatus"></div>
+                    <div class="preview-content" id="previewContent"></div>
+                </div>
             <?php endif; ?>
         <?php else: ?>
-            <p>Enter a search query to find files by content.</p>
+            <p>Enter a search query to find files.</p>
         <?php endif; ?>
-    </div>
 
-    <!-- Modal for displaying extracted text -->
-    <div id="textModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h3>Extracted Text</h3>
-            <p><strong>File:</strong> <span id="modalFileName"></span></p>
-            <p><strong>Status:</strong> <span id="modalFileStatus"></span></p>
-            <div id="extractedText" class="no-text">Loading...</div>
-        </div>
-    </div>
+        <script>
+            function searchFiles() {
+                const query = document.getElementById('searchInput').value;
+                if (query) {
+                    window.location.href = `?q=${encodeURIComponent(query)}`;
+                }
+            }
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('textModal');
-            const closeButton = document.querySelector('.close-button');
-            const extractedTextDiv = document.getElementById('extractedText');
-            const modalFileName = document.getElementById('modalFileName');
-            const modalFileStatus = document.getElementById('modalFileStatus');
-
-            // Close modal when clicking the close button
-            closeButton.addEventListener('click', () => {
-                modal.style.display = 'none';
-                extractedTextDiv.innerHTML = '<div class="no-text">Loading...</div>';
-                modalFileName.textContent = '';
-                modalFileStatus.textContent = '';
-            });
-
-            // Close modal when clicking outside
-            window.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                    extractedTextDiv.innerHTML = '<div class="no-text">Loading...</div>';
-                    modalFileName.textContent = '';
-                    modalFileStatus.textContent = '';
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchFiles();
                 }
             });
 
-            // Handle view button clicks
-            document.querySelectorAll('.view-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    const fileId = button.getAttribute('data-file-id');
-                    const searchQuery = button.getAttribute('data-search-query');
-                    const retryButton = button.parentElement.querySelector('.retry-button');
+            // Function to highlight text
+            function highlightText(text, searchQuery) {
+                if (!searchQuery || !text) return text;
 
-                    // Limit search query length to prevent regex issues
-                    const maxQueryLength = 100;
-                    if (searchQuery.length > maxQueryLength) {
-                        extractedTextDiv.innerHTML = '<div class="no-text">Search query too long. Please shorten it.</div>';
-                        modalFileName.textContent = 'Unknown';
-                        modalFileStatus.textContent = 'Unknown';
-                        modal.style.display = 'flex';
-                        retryButton.style.display = 'none';
-                        return;
-                    }
+                // Escape special regex characters
+                const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(escapedQuery, 'gi');
 
-                    // Fetch extracted text via AJAX
-                    fetch(`?action=view_text&file_id=${fileId}`, {
+                return text.replace(regex, match => `<span class="highlight">${match}</span>`);
+            }
+
+            // Handle file row clicks to show preview
+            document.querySelectorAll('.file-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    const fileId = row.getAttribute('data-file-id');
+                    const searchQuery = row.getAttribute('data-search-query');
+
+                    // Highlight the selected row
+                    document.querySelectorAll('.file-row').forEach(r => r.classList.remove('active'));
+                    row.classList.add('active');
+
+                    // Show loading state
+                    document.getElementById('previewFileName').textContent = 'Loading...';
+                    document.getElementById('previewFileStatus').textContent = '';
+                    document.getElementById('previewContent').innerHTML = '<div class="no-text">Loading preview...</div>';
+                    document.getElementById('previewContainer').style.display = 'block';
+
+                    // Scroll to preview
+                    document.getElementById('previewContainer').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                    // Fetch preview via AJAX
+                    fetch(`?action=get_preview&file_id=${fileId}&q=${encodeURIComponent(searchQuery)}`, {
                             method: 'GET',
                             headers: {
                                 'Accept': 'application/json'
                             }
                         })
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
+                            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                             return response.json();
                         })
                         .then(data => {
-                            extractedTextDiv.innerHTML = ''; // Clear loading message
-                            modalFileName.textContent = data.file_name || 'Unknown';
-                            modalFileStatus.textContent = data.file_status || 'Unknown';
-                            retryButton.style.display = data.file_status === 'ocr_failed' ? 'inline-block' : 'none';
-                            retryButton.dataset.retryEnabled = data.file_status === 'ocr_failed' ? 'true' : 'false';
+                            document.getElementById('previewFileName').textContent = data.file_name || 'Unknown';
+                            document.getElementById('previewFileStatus').textContent = `Status: ${data.file_status || 'Unknown'}`;
 
                             if (data.success && data.extracted_text) {
-                                // Escape HTML to prevent XSS
+                                // Escape HTML entities first
                                 const escapedText = data.extracted_text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                                // Highlight search term (case-insensitive)
-                                const escapedQuery = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                const regex = new RegExp(escapedQuery, 'gi');
-                                const highlightedText = escapedText.replace(regex, match => `<span class="highlight">${match}</span>`);
-                                extractedTextDiv.innerHTML = highlightedText.replace(/\n/g, '<br>');
+
+                                // Highlight the search query
+                                const highlightedText = highlightText(escapedText, data.search_query || searchQuery);
+
+                                // Replace newlines with <br> tags
+                                const formattedText = highlightedText.replace(/\n/g, '<br>');
+
+                                document.getElementById('previewContent').innerHTML = formattedText;
                             } else {
                                 let message = data.message || 'No text available for this file.';
                                 if (data.file_status === 'pending_ocr') {
@@ -419,31 +626,28 @@ try {
                                 } else if (!data.extracted_text) {
                                     message = 'No text available for this file. It may not contain extractable text.';
                                 }
-                                extractedTextDiv.innerHTML = `<div class="no-text">${message} (Status: ${data.file_status})</div>`;
+                                document.getElementById('previewContent').innerHTML = `<div class="no-text">${message}</div>`;
                             }
-                            modal.style.display = 'flex';
                         })
                         .catch(error => {
-                            console.error('Error fetching text for file_id ' + fileId + ':', error);
-                            extractedTextDiv.innerHTML = `<div class="no-text">Failed to load text: ${error.message}. Please try again.</div>`;
-                            modalFileName.textContent = 'Unknown';
-                            modalFileStatus.textContent = 'Unknown';
-                            retryButton.style.display = 'none';
-                            modal.style.display = 'flex';
+                            console.error('Error fetching preview for file_id ' + fileId + ':', error);
+                            document.getElementById('previewContent').innerHTML = `<div class="no-text">Failed to load preview: ${error.message}. Please try again.</div>`;
+                            document.getElementById('previewFileName').textContent = 'Error';
+                            document.getElementById('previewFileStatus').textContent = 'Error';
                         });
                 });
             });
 
             // Handle retry OCR button clicks
-            document.querySelectorAll('.retry-button').forEach(button => {
-                button.addEventListener('click', () => {
+            document.querySelectorAll('.retry-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent triggering the row click event
+
                     const fileId = button.getAttribute('data-file-id');
                     const retryEnabled = button.getAttribute('data-retry-enabled') === 'true';
+
                     if (!retryEnabled) {
-                        extractedTextDiv.innerHTML = '<div class="no-text">OCR retry not available for this file.</div>';
-                        modalFileName.textContent = 'Unknown';
-                        modalFileStatus.textContent = 'Unknown';
-                        modal.style.display = 'flex';
+                        alert('OCR retry not available for this file.');
                         return;
                     }
 
@@ -455,27 +659,34 @@ try {
                             }
                         })
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
+                            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                             return response.json();
                         })
                         .then(data => {
-                            extractedTextDiv.innerHTML = `<div class="no-text">${data.message || 'OCR retry scheduled.'}</div>`;
-                            modalFileName.textContent = data.file_name || 'Unknown';
-                            modalFileStatus.textContent = 'pending_ocr';
+                            alert(data.message || 'OCR retry scheduled.');
                             button.style.display = 'none';
-                            modal.style.display = 'flex';
+                            // Reload the page after a short delay to reflect the status change
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
                         })
                         .catch(error => {
                             console.error('Error retrying OCR for file_id ' + fileId + ':', error);
-                            extractedTextDiv.innerHTML = `<div class="no-text">Failed to retry OCR: ${error.message}. Please try again.</div>`;
-                            modal.style.display = 'flex';
+                            alert('Failed to retry OCR: ' + error.message);
                         });
                 });
             });
-        });
-    </script>
-</body>
 
-</html>
+            function closePreview() {
+                document.getElementById('previewContainer').style.display = 'none';
+                document.querySelectorAll('.file-row').forEach(r => r.classList.remove('active'));
+            }
+        </script>
+    </body>
+
+    </html>
+<?php
+} catch (Exception $e) {
+    error_log("Error in search page: " . $e->getMessage() . " | Line: " . $e->getLine());
+    echo "<p>Error: " . htmlspecialchars($e->getMessage()) . "</p>";
+}

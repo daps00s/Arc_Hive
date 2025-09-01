@@ -33,7 +33,7 @@ class TextAnnotation extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string text = 2;</code>
      */
-    protected $text = '';
+    private $text = '';
 
     /**
      * Constructor.

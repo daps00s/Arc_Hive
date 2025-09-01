@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\BloomFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/bf.loadchunk/
@@ -24,10 +24,5 @@ class BFLOADCHUNK extends RedisCommand
     public function getId()
     {
         return 'BF.LOADCHUNK';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\Search;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see  https://redis.io/commands/ft.search/
@@ -28,30 +28,12 @@ class FTSEARCH extends RedisCommand
 
     public function setArguments(array $arguments)
     {
-        // If command already deserialized, bypass logic.
-        if (in_array('DIALECT', $arguments)) {
-            parent::setArguments($arguments);
-
-            return;
-        }
-
         [$index, $query] = $arguments;
-
-        if (!empty($arguments[2]) && !in_array('DIALECT', $arguments[2]->toArray())) {
-            // Default dialect is 2
-            $arguments[2]->dialect(2);
-        }
-
-        $commandArguments = (!empty($arguments[2])) ? $arguments[2]->toArray() : ['DIALECT', 2];
+        $commandArguments = (!empty($arguments[2])) ? $arguments[2]->toArray() : [];
 
         parent::setArguments(array_merge(
             [$index, $query],
             $commandArguments
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

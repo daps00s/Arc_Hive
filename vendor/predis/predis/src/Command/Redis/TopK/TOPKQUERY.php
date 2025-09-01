@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TopK;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/topk.query/
@@ -25,10 +25,5 @@ class TOPKQUERY extends RedisCommand
     public function getId()
     {
         return 'TOPK.QUERY';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

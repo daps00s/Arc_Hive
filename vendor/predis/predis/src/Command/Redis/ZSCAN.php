@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/zscan
@@ -82,19 +82,5 @@ class ZSCAN extends RedisCommand
         }
 
         return $data;
-    }
-
-    /**
-     * @param                          $data
-     * @return array|mixed|string|null
-     */
-    public function parseResp3Response($data)
-    {
-        return $this->parseResponse($data);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

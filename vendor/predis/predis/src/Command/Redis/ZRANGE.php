@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/zrange
@@ -105,29 +105,5 @@ class ZRANGE extends RedisCommand
         }
 
         return $data;
-    }
-
-    /**
-     * @param                          $data
-     * @return array|mixed|string|null
-     */
-    public function parseResp3Response($data)
-    {
-        if (!is_array($data)) {
-            return $data;
-        }
-
-        $parsedData = [];
-
-        foreach ($data as $element) {
-            $parsedData[] = $this->parseResponse($element);
-        }
-
-        return $parsedData;
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

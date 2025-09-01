@@ -177,11 +177,6 @@ abstract class ClusterStrategy implements StrategyInterface
             'GEORADIUS' => [$this, 'getKeyFromGeoradiusCommands'],
             'GEORADIUSBYMEMBER' => [$this, 'getKeyFromGeoradiusCommands'],
 
-            /* sharded pubsub */
-            'SSUBSCRIBE' => $getKeyFromAllArguments,
-            'SUNSUBSCRIBE' => [$this, 'getKeyFromSUnsubscribeCommand'],
-            'SPUBLISH' => $getKeyFromFirstArgument,
-
             /* cluster */
             'CLUSTER' => [$this, 'getFakeKey'],
         ];
@@ -413,24 +408,6 @@ abstract class ClusterStrategy implements StrategyInterface
     }
 
     /**
-     * Extracts key from SUNSUBSCRIBE command if it's given.
-     *
-     * @param  CommandInterface $command
-     * @return string
-     */
-    protected function getKeyFromSUnsubscribeCommand(CommandInterface $command): ?string
-    {
-        $arguments = $command->getArguments();
-
-        // SUNSUBSCRIBE command could be called without arguments, so it doesn't matter on each node it will be called.
-        if (empty($arguments)) {
-            return 'fake';
-        }
-
-        return $this->getKeyFromAllArguments($command);
-    }
-
-    /**
      * Extracts the key from EVAL and EVALSHA commands.
      *
      * @param CommandInterface $command Command instance.
@@ -470,9 +447,13 @@ abstract class ClusterStrategy implements StrategyInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if the specified array of keys will generate the same hash.
+     *
+     * @param array $keys Array of keys.
+     *
+     * @return bool
      */
-    public function checkSameSlotForKeys(array $keys): bool
+    protected function checkSameSlotForKeys(array $keys)
     {
         if (!$count = count($keys)) {
             return false;
@@ -486,6 +467,8 @@ abstract class ClusterStrategy implements StrategyInterface
             if ($currentSlot !== $nextSlot) {
                 return false;
             }
+
+            $currentSlot = $nextSlot;
         }
 
         return true;

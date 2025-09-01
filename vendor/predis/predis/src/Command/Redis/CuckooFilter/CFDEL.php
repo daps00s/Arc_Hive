@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\CuckooFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/cf.del/
@@ -26,10 +26,5 @@ class CFDEL extends RedisCommand
     public function getId()
     {
         return 'CF.DEL';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

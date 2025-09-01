@@ -47,9 +47,7 @@ class WebDetectionParams extends \Google\Protobuf\Internal\Message
      */
     public function getIncludeGeoResults()
     {
-        if ($this->include_geo_results !== false) {
-            @trigger_error('include_geo_results is deprecated.', E_USER_DEPRECATED);
-        }
+        @trigger_error('include_geo_results is deprecated.', E_USER_DEPRECATED);
         return $this->include_geo_results;
     }
 

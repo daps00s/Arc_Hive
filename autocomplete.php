@@ -15,12 +15,12 @@ $term = filter_var($_GET['term'], FILTER_SANITIZE_STRING);
 
 try {
     $stmt = $pdo->prepare("
-        SELECT f.File_name AS value, dtf.Field_name AS document_type, d.Department_id
+        SELECT f.file_name AS value, dt.type_name AS document_type, d.department_id
         FROM files f
-        LEFT JOIN documents_type_fields dtf ON f.Document_type_id = dtf.Document_type_id
-        LEFT JOIN users_department ud ON f.User_id = ud.User_id
-        LEFT JOIN departments d ON ud.Department_id = d.Department_id
-        WHERE f.File_name LIKE ? AND f.File_status != 'deleted'
+        LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
+        LEFT JOIN users_department ud ON f.user_id = ud.user_id
+        LEFT JOIN departments d ON ud.department_id = d.department_id
+        WHERE f.file_name LIKE ? AND f.file_status != 'deleted'
         LIMIT 10
     ");
     $stmt->execute(['%' . $term . '%']);

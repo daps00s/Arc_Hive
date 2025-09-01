@@ -45,19 +45,4 @@ class ZDIFF extends RedisCommand
 
         $this->setWithScore($arguments);
     }
-
-    /**
-     * @param                          $data
-     * @return array|mixed|string|null
-     */
-    public function parseResp3Response($data)
-    {
-        $parsedData = [];
-
-        foreach ($data as $element) {
-            $parsedData[] = $this->parseResponse($element);
-        }
-
-        return $parsedData;
-    }
 }

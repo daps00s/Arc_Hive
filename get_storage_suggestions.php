@@ -18,9 +18,9 @@ try {
     $stmt = $pdo->prepare("
         SELECT meta_data
         FROM files
-        WHERE Department_id = ? AND Document_type_id = (SELECT Document_type_id FROM documents_type_fields WHERE Field_name = ?)
-        AND Copy_type = 'hard' AND File_status != 'deleted'
-        ORDER BY Upload_date DESC LIMIT 1
+        WHERE department_id = ? AND document_type_id = (SELECT document_type_id FROM document_types WHERE type_name = ?)
+        AND copy_type = 'hard' AND file_status != 'deleted'
+        ORDER BY upload_date DESC LIMIT 1
     ");
     $stmt->execute([$departmentId, $documentType]);
     $lastMeta = $stmt->fetchColumn();

@@ -1,14 +1,56 @@
 <?php
+declare(strict_types=1);
+error_reporting(E_ALL);
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+
 session_start();
-require 'db_connection.php';
 
 // Security headers
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
+header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 
-// CSRF token generation and validation
-function generateCsrfToken()
+// Validate session and authentication
+function validate_session(): void
+{
+    if (!isset($_SESSION['user_id'], $_SESSION['role'])) {
+        header('Location: login.php');
+        exit();
+    }
+
+    if ($_SESSION['role'] !== 'admin') {
+        header('Location: unauthorized.php');
+        exit();
+    }
+
+    $userId = filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT);
+    if ($userId === false) {
+        session_destroy();
+        header('Location: login.php');
+        exit();
+    }
+}
+
+validate_session();
+
+// Database connection
+$host = '127.0.0.1';
+$dbname = 'arc-hive-mainDB';
+$username = 'root'; // Change to your DB user
+$password = ''; // Change to your DB password
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    error_log("Database connection failed: " . $e->getMessage());
+    die("Database connection failed: " . $e->getMessage());
+}
+
+// CSRF protection functions
+function generateCsrfToken(): string
 {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -16,1450 +58,1034 @@ function generateCsrfToken()
     return $_SESSION['csrf_token'];
 }
 
-// Validate CSRF token
-function validateCsrfToken($token)
+function validateCsrfToken(string $token): bool
 {
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
-// Redirect to login if not authenticated or not an admin
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role'])) {
-    header('Location: login.php');
-    exit();
-}
-
-if ($_SESSION['role'] !== 'admin') {
-    header('Location: unauthorized.php');
-    exit();
-}
-
-$userId = filter_var($_SESSION['user_id'], FILTER_VALIDATE_INT);
-if ($userId === false) {
-    session_destroy();
-    header('Location: login.php');
-    exit();
-}
-
-// Function to execute prepared queries safely
-function executeQuery($pdo, $query, $params = [])
+// Database query execution with error handling
+function executeQuery(PDO $pdo, string $query, array $params = []): PDOStatement
 {
     try {
         $stmt = $pdo->prepare($query);
         $stmt->execute($params);
         return $stmt;
     } catch (PDOException $e) {
-        error_log("Database error: " . $e->getMessage());
-        return false;
+        error_log("Database error in executeQuery: " . $e->getMessage());
+        throw new RuntimeException("Database operation failed", 0, $e);
     }
 }
 
-// Function to sanitize HTML output
-function sanitizeHTML($data)
+// Sanitize output
+function sanitizeOutput(?string $data): string
 {
-    return htmlspecialchars($data ?? '', ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($data ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }
 
 // Fetch admin details
-$adminStmt = executeQuery($pdo, "SELECT user_id, Username, Role FROM users WHERE user_id = ?", [$userId]);
-$admin = $adminStmt ? $adminStmt->fetch(PDO::FETCH_ASSOC) : null;
+try {
+    $adminStmt = executeQuery(
+        $pdo,
+        "SELECT user_id, username, role FROM users WHERE user_id = ?",
+        [$_SESSION['user_id']]
+    );
+    $admin = $adminStmt->fetch(PDO::FETCH_ASSOC);
 
-// Fetch system statistics
-$totalUsersStmt = executeQuery($pdo, "SELECT COUNT(*) FROM users");
-$totalUsers = $totalUsersStmt ? $totalUsersStmt->fetchColumn() : 0;
+    if (!$admin) {
+        throw new RuntimeException("Admin user not found");
+    }
+} catch (Exception $e) {
+    error_log("Error fetching admin details: " . $e->getMessage());
+    $errorMessage = "Failed to load admin details. Please try again later.";
+}
 
-$totalFilesStmt = executeQuery($pdo, "SELECT COUNT(*) FROM files WHERE File_status != 'disposed'");
-$totalFiles = $totalFilesStmt ? $totalFilesStmt->fetchColumn() : 0;
+// System statistics queries
+$statisticsQueries = [
+    'totalUsers' => "SELECT COUNT(*) FROM users",
+    'totalFiles' => "SELECT COUNT(*) FROM files",
+    'pendingRequests' => "SELECT COUNT(*) FROM transactions WHERE transaction_status = 'pending' AND transaction_type = 'request'",
+    'fileUploads' => "SELECT COUNT(*) FROM v_file_uploads WHERE upload_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)",
+    'fileActivity' => "SELECT COUNT(*) FROM v_file_activity WHERE transaction_type IN ('access', 'scan') AND transaction_time >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)"
+];
 
-$pendingRequestsStmt = executeQuery($pdo, "SELECT COUNT(*) FROM transactions WHERE transaction_status = 'pending' AND transaction_type = 'request'");
-$pendingRequests = $pendingRequestsStmt ? $pendingRequestsStmt->fetchColumn() : 0;
+$stats = [];
+foreach ($statisticsQueries as $key => $query) {
+    try {
+        $stmt = executeQuery($pdo, $query);
+        $stats[$key] = $stmt->fetchColumn() ?: 0;
+    } catch (Exception $e) {
+        error_log("Error fetching statistic {$key}: " . $e->getMessage());
+        $stats[$key] = 0;
+        $errorMessage = "Failed to load statistics. Some data may be unavailable.";
+    }
+}
 
-$incomingFilesStmt = executeQuery($pdo, "
-    SELECT COUNT(*) AS incoming_count 
-    FROM transactions t
-    JOIN files f ON t.file_id = f.file_id
-    WHERE t.users_department_id IN (SELECT users_department_id FROM users_department WHERE user_id = ?) 
-    AND t.transaction_status = 'pending' 
-    AND t.transaction_type = '2'", [$userId]);
-$incomingFiles = $incomingFilesStmt ? $incomingFilesStmt->fetchColumn() : 0;
+// Data fetching functions
+function fetchData(PDO $pdo, string $query, array $params = []): array
+{
+    try {
+        $stmt = executeQuery($pdo, $query, $params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    } catch (Exception $e) {
+        error_log("Error fetching data: " . $e->getMessage());
+        return [];
+    }
+}
 
-$outgoingFilesStmt = executeQuery($pdo, "
-    SELECT COUNT(*) AS outgoing_count 
-    FROM transactions t
-    JOIN files f ON t.file_id = f.file_id
-    WHERE t.user_id = ? 
-    AND t.transaction_status = 'pending' 
-    AND t.transaction_type = '2'", [$userId]);
-$outgoingFiles = $outgoingFilesStmt ? $outgoingFilesStmt->fetchColumn() : 0;
+// Fetch report data
+$reportData = [
+    'fileUploadTrends' => fetchData($pdo, "
+        SELECT DATE(upload_date) AS date, COUNT(*) AS count
+        FROM v_file_uploads
+        GROUP BY DATE(upload_date)
+        ORDER BY date ASC
+    "),
+    'fileUploadTrendsTable' => fetchData($pdo, "
+        SELECT file_id, file_name, upload_date, uploader_name, department_name, document_type
+        FROM v_file_uploads
+        ORDER BY upload_date DESC
+        LIMIT 20
+    "),
+    'fileDistribution' => fetchData($pdo, "
+        SELECT department_name, COUNT(*) AS count
+        FROM v_file_distribution
+        GROUP BY department_name
+    "),
+    'usersPerDepartment' => fetchData($pdo, "
+        SELECT d.department_name, COUNT(uda.user_id) AS user_count
+        FROM departments d
+        LEFT JOIN user_department_assignments uda ON uda.department_id = d.department_id
+        GROUP BY d.department_id
+        ORDER BY department_name
+    "),
+    'documentCopies' => fetchData($pdo, "
+        SELECT original_file_name AS file_name, copy_count, offices_with_copy
+        FROM v_document_copies
+        WHERE copy_count > 0
+        ORDER BY file_name
+    "),
+    'pendingRequests' => fetchData($pdo, "
+        SELECT t.transaction_id, t.transaction_time, u.username, f.file_name, d.department_name
+        FROM transactions t
+        LEFT JOIN users u ON u.user_id = t.user_id
+        LEFT JOIN files f ON f.file_id = t.file_id
+        LEFT JOIN user_department_assignments ud ON ud.users_department_id = t.users_department_id
+        LEFT JOIN departments d ON d.department_id = ud.department_id
+        WHERE t.transaction_type = 'request' AND t.transaction_status = 'pending'
+        ORDER BY t.transaction_time DESC
+    "),
+    'retrievalHistory' => fetchData($pdo, "
+        SELECT transaction_id, transaction_time AS time, username, file_name, department_name
+        FROM v_file_activity
+        WHERE transaction_type IN ('access', 'scan')
+        ORDER BY transaction_time DESC
+        LIMIT 100
+    "),
+    'accessHistory' => fetchData($pdo, "
+        SELECT transaction_id, transaction_time AS time, username, file_name, department_name
+        FROM v_file_activity
+        WHERE transaction_type = 'access'
+        ORDER BY transaction_time DESC
+        LIMIT 100
+    ")
+];
 
-// Fetch pending requests details
-$pendingRequestsDetailsStmt = executeQuery($pdo, "
-    SELECT t.transaction_id, f.file_name, u.username AS requester_name, 
-           COALESCE(d2.department_name, d.department_name) AS requester_department,
-           CASE WHEN d2.department_id IS NOT NULL THEN d.department_name ELSE NULL END AS requester_subdepartment,
-           f.physical_storage
-    FROM transactions t
-    JOIN files f ON t.file_id = f.file_id
-    JOIN users u ON t.user_id = u.user_id
-    JOIN users_department ud ON u.user_id = ud.user_id
-    JOIN departments d ON ud.department_id = d.department_id
-    LEFT JOIN departments d2 ON d.parent_department_id = d2.department_id
-    WHERE t.transaction_status = 'pending' AND t.transaction_type = '10'
-    GROUP BY t.transaction_id");
-$pendingRequestsDetails = $pendingRequestsDetailsStmt ? $pendingRequestsDetailsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+// Extract variables for easier access
+[
+    'fileUploadTrends' => $fileUploadTrends,
+    'fileUploadTrendsTable' => $fileUploadTrendsTable,
+    'fileDistribution' => $fileDistribution,
+    'usersPerDepartment' => $usersPerDepartment,
+    'documentCopies' => $documentCopies,
+    'pendingRequests' => $pendingRequests,
+    'retrievalHistory' => $retrievalHistory,
+    'accessHistory' => $accessHistory
+] = $reportData;
 
-// Fetch file upload trends (Last 7 Days)
-$fileUploadTrendsStmt = executeQuery($pdo, "
-    SELECT 
-        f.file_name AS document_name,
-        dt.type_name AS document_type,
-        f.upload_date AS upload_date,
-        u.username AS uploader_name,
-        COALESCE(d2.department_name, d.department_name) AS uploader_department,
-        CASE WHEN d2.department_id IS NOT NULL THEN d.department_name ELSE NULL END AS uploader_subdepartment,
-        td.department_name AS target_department_name
-    FROM files f
-    LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
-    LEFT JOIN users u ON f.user_id = u.user_id
-    LEFT JOIN users_department uda ON u.user_id = uda.user_id
-    LEFT JOIN departments d ON uda.department_id = d.department_id
-    LEFT JOIN departments d2 ON d.parent_department_id = d2.department_id
-    LEFT JOIN transactions t ON f.file_id = t.file_id AND t.transaction_type = '2'
-    LEFT JOIN users_department tud ON t.users_department_id = tud.users_department_id
-    LEFT JOIN departments td ON tud.department_id = td.department_id
-    WHERE f.upload_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
-    AND f.file_status != 'disposed'
-    ORDER BY f.upload_date ASC");
-$fileUploadTrends = $fileUploadTrendsStmt ? $fileUploadTrendsStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+// Generate CSRF token
+$csrfToken = generateCsrfToken();
 
-// Fetch file distribution by document type
-$fileDistributionByTypeStmt = executeQuery($pdo, "
-    SELECT 
-        f.file_name AS document_name,
-        dt.type_name AS document_type,
-        us.username AS sender_name,
-        ur.username AS receiver_name,
-        t.transaction_time AS time_sent,
-        t2.transaction_time AS time_received,
-        uq.username AS requester_name,
-        uo.username AS owner_name,
-        COALESCE(d2.department_name, d.department_name) AS department_name,
-        CASE WHEN d2.department_id IS NOT NULL THEN d.department_name ELSE NULL END AS sub_department_name
-    FROM files f
-    LEFT JOIN document_types dt ON f.document_type_id = dt.document_type_id
-    LEFT JOIN transactions t ON f.file_id = t.file_id AND t.transaction_type = '2'
-    LEFT JOIN users us ON t.user_id = us.user_id
-    LEFT JOIN transactions t2 ON f.file_id = t2.file_id AND t2.transaction_type = '12'
-    LEFT JOIN users ur ON t2.user_id = ur.user_id
-    LEFT JOIN transactions t3 ON f.file_id = t3.file_id AND t3.transaction_type = '10'
-    LEFT JOIN users uq ON t3.user_id = uq.user_id
-    LEFT JOIN transactions t4 ON f.file_id = t4.file_id AND t4.transaction_type = '12'
-    LEFT JOIN users uo ON f.user_id = uo.user_id
-    LEFT JOIN users_department ud ON uo.user_id = ud.user_id
-    LEFT JOIN departments d ON ud.department_id = d.department_id
-    LEFT JOIN departments d2 ON d.parent_department_id = d2.department_id");
-$fileDistribution = $fileDistributionByTypeStmt ? $fileDistributionByTypeStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+// Generate CSV
+function generateCSV($data, $report) {
+    $filename = $report . '_' . date('YmdHis') . '.csv';
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
+    $output = fopen('php://output', 'w');
+    if (!empty($data)) {
+        fputcsv($output, array_map(function($key) { return ucwords(str_replace('_', ' ', $key)); }, array_keys($data[0])));
+        foreach ($data as $row) {
+            fputcsv($output, array_map(function($value) { return $value ?? 'N/A'; }, $row));
+        }
+    }
+    fclose($output);
+    exit;
+}
 
-// Fetch users per department
-$usersPerDepartmentStmt = executeQuery($pdo, "
-    SELECT 
-        COALESCE(d2.Department_name, d.Department_name) AS department_name,
-        COUNT(DISTINCT ud.User_id) AS user_count
-    FROM departments d
-    LEFT JOIN departments d2 ON d.Parent_department_id = d2.department_id
-    LEFT JOIN users_department ud ON d.department_id = ud.Department_id
-    WHERE d.Department_type IN ('college', 'office')
-    GROUP BY d.department_id
-    ORDER BY department_name");
-$usersPerDepartment = $usersPerDepartmentStmt ? $usersPerDepartmentStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-// Fetch document copies details
-$documentCopiesStmt = executeQuery($pdo, "
-    SELECT 
-        f.File_name,
-        COUNT(DISTINCT c.file_id) AS copy_count,
-        GROUP_CONCAT(DISTINCT COALESCE(d2.Department_name, d.Department_name)) AS offices_with_copy,
-        GROUP_CONCAT(DISTINCT c.physical_storage) AS physical_duplicates
-    FROM files f
-    LEFT JOIN files c ON f.file_id = c.Parent_file_id
-    LEFT JOIN transactions t ON c.file_id = t.file_id AND t.transaction_type IN ('send', 'accept')
-    LEFT JOIN users_department ud ON t.users_department_id = ud.users_department_id
-    LEFT JOIN departments d ON ud.Department_id = d.department_id
-    LEFT JOIN departments d2 ON d.Parent_department_id = d2.department_id
-    WHERE f.File_status != 'disposed'
-    GROUP BY f.file_id");
-$documentCopies = $documentCopiesStmt ? $documentCopiesStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-// Fetch retrieval history
-$retrievalHistoryStmt = executeQuery($pdo, "
-    SELECT 
-        t.transaction_id,
-        t.transaction_type AS type,
-        t.transaction_status AS status,
-        t.transaction_time AS time,
-        u.Username AS user_name,
-        f.File_name,
-        COALESCE(d2.Department_name, d.Department_name) AS department_name,
-        f.physical_storage
-    FROM transactions t
-    JOIN files f ON t.file_id = f.file_id
-    JOIN users u ON t.user_id = u.user_id
-    JOIN users_department ud ON t.users_department_id = ud.users_department_id
-    JOIN departments d ON ud.Department_id = d.department_id
-    LEFT JOIN departments d2 ON d.Parent_department_id = d2.department_id
-    WHERE t.transaction_type IN ('request', 'send', 'accept')
-    ORDER BY t.transaction_time DESC");
-$retrievalHistory = $retrievalHistoryStmt ? $retrievalHistoryStmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-// Fetch access history (only accept transactions)
-$accessHistoryStmt = executeQuery($pdo, "
-    SELECT 
-        t.transaction_id,
-        t.transaction_time AS time,
-        u.Username AS user_name,
-        f.File_name,
-        t.transaction_type AS type,
-        COALESCE(d2.Department_name, d.Department_name) AS department_name
-    FROM transactions t
-    JOIN files f ON t.file_id = f.file_id
-    JOIN users u ON t.user_id = u.user_id
-    JOIN users_department ud ON t.users_department_id = ud.users_department_id
-    JOIN departments d ON ud.Department_id = d.department_id
-    LEFT JOIN departments d2 ON d.Parent_department_id = d2.department_id
-    WHERE t.transaction_type = 'accept'
-    ORDER BY t.transaction_time DESC");
-$accessHistory = $accessHistoryStmt ? $accessHistoryStmt->fetchAll(PDO::FETCH_ASSOC) : [];
+// Handle CSV download
+if (isset($_GET['download']) && $_GET['download'] === 'csv' && isset($_GET['report'])) {
+    $report = $_GET['report'];
+    $data = [];
+    switch ($report) {
+        case 'FileUploadTrends':
+            $data = $fileUploadTrendsTable;
+            break;
+        case 'FileDistribution':
+            $data = $fileDistribution;
+            break;
+        case 'UsersPerDepartment':
+            $data = $usersPerDepartment;
+            break;
+        case 'DocumentCopies':
+            $data = $documentCopies;
+            break;
+        case 'PendingRequests':
+            $data = $pendingRequests;
+            break;
+        case 'RetrievalHistory':
+            $data = $retrievalHistory;
+            break;
+        case 'AccessHistory':
+            $data = $accessHistory;
+            break;
+    }
+    if (!empty($data)) {
+        generateCSV($data, $report);
+    } else {
+        error_log("No data available for CSV download: $report");
+        die("No data available for download.");
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>Admin Dashboard - ArcHive</title>
-    <?php
-        include 'admin_head.php';
-    ?>
+    <title>Reports Dashboard - ArcHive</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <link rel="stylesheet" href="style/admin-interface.css">
+    <link rel="stylesheet" href="style/admin-sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>   
-
+</head>
 <body class="admin-dashboard">
-    <?php
-        include 'admin_menu.php';
-    ?>
+    <?php include 'admin_menu.php'; ?>
+
+    <div class="top-nav">
+        <h2>Welcome, <?= sanitizeOutput($admin['username']) ?>!</h2>
+        <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
     <div class="main-content">
-        <h2>Welcome, <?php echo sanitizeHTML($admin['Username']); ?>!</h2>
+        <?php if (isset($errorMessage)): ?>
+            <div class="error-message"><i class="fas fa-exclamation-circle"></i> <?= sanitizeOutput($errorMessage) ?></div>
+        <?php endif; ?>
+
+        <!-- Statistics Cards -->
         <div class="admin-stats">
             <div class="stat-card">
+                <i class="fas fa-users"></i>
                 <h3>Total Users</h3>
-                <p><?php echo $totalUsers; ?></p>
+                <p><?= $stats['totalUsers'] ?></p>
             </div>
             <div class="stat-card">
+                <i class="fas fa-file-alt"></i>
                 <h3>Total Files</h3>
-                <p><?php echo $totalFiles; ?></p>
+                <p><?= $stats['totalFiles'] ?></p>
             </div>
             <div class="stat-card">
+                <i class="fas fa-hourglass-half"></i>
                 <h3>Pending Requests</h3>
-                <p><?php echo $pendingRequests; ?></p>
+                <p><?= $stats['pendingRequests'] ?></p>
             </div>
             <div class="stat-card">
-                <h3>Incoming Files</h3>
-                <p><?php echo $incomingFiles; ?></p>
+                <i class="fas fa-upload"></i>
+                <h3>File Uploads (7 Days)</h3>
+                <p><?= $stats['fileUploads'] ?></p>
             </div>
             <div class="stat-card">
-                <h3>Outgoing Files</h3>
-                <p><?php echo $outgoingFiles; ?></p>
+                <i class="fas fa-history"></i>
+                <h3>File Activity (7 Days)</h3>
+                <p><?= $stats['fileActivity'] ?></p>
             </div>
         </div>
+
+        <!-- Charts Grid -->
         <div class="chart-grid">
+            <!-- File Upload Trends -->
             <div class="chart-container" data-chart-type="FileUploadTrends">
-                <h3>File Upload Trends (Last 7 Days)</h3>
+                <h3>File Upload Trends</h3>
                 <canvas id="fileUploadTrendsChart"></canvas>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('FileUploadTrends')">Print Report</button>
-                    <button onclick="openDownloadModal('FileUploadTrends')">Download Report</button>
+                <div class="chart-actions">
+                    <button onclick="generateReport('FileUploadTrends')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('FileUploadTrends')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- File Distribution -->
             <div class="chart-container" data-chart-type="FileDistribution">
-                <h3>File Distribution by Document Type</h3>
+                <h3>File Distribution</h3>
                 <canvas id="fileDistributionChart"></canvas>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('FileDistribution')">Print Report</button>
-                    <button onclick="openDownloadModal('FileDistribution')">Download Report</button>
+                <div class="chart-actions">
+                    <button onclick="generateReport('FileDistribution')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('FileDistribution')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- Users Per Department -->
             <div class="chart-container" data-chart-type="UsersPerDepartment">
                 <h3>Users Per Department</h3>
                 <canvas id="usersPerDepartmentChart"></canvas>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('UsersPerDepartment')">Print Report</button>
-                    <button onclick="openDownloadModal('UsersPerDepartment')">Download Report</button>
+                <div class="chart-actions">
+                    <button onclick="generateReport('UsersPerDepartment')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('UsersPerDepartment')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- Document Copies -->
             <div class="chart-container" data-chart-type="DocumentCopies">
-                <h3>Document Copies Details</h3>
+                <h3>Document Copies</h3>
                 <canvas id="documentCopiesChart"></canvas>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('DocumentCopies')">Print Report</button>
-                    <button onclick="openDownloadModal('DocumentCopies')">Download Report</button>
+                <div class="chart-actions">
+                    <button onclick="generateReport('DocumentCopies')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('DocumentCopies')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- Pending Requests -->
             <div class="chart-container" data-chart-type="PendingRequests">
                 <h3>Pending Requests</h3>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('PendingRequests')">Print Report</button>
-                    <button onclick="openDownloadModal('PendingRequests')">Download Report</button>
+                <p class="no-data">Click to view details in table</p>
+                <div class="chart-actions">
+                    <button onclick="generateReport('PendingRequests')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('PendingRequests')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- Retrieval History -->
             <div class="chart-container" data-chart-type="RetrievalHistory">
                 <h3>Retrieval History</h3>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('RetrievalHistory')">Print Report</button>
-                    <button onclick="openDownloadModal('RetrievalHistory')">Download Report</button>
+                <p class="no-data">Click to view details in table</p>
+                <div class="chart-actions">
+                    <button onclick="generateReport('RetrievalHistory')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('RetrievalHistory')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
+
+            <!-- Access History -->
             <div class="chart-container" data-chart-type="AccessHistory">
                 <h3>Access History</h3>
-                <div class="chart-actions" style="text-align: right; margin-bottom: 10px;">
-                    <button onclick="generateReport('AccessHistory')">Print Report</button>
-                    <button onclick="openDownloadModal('AccessHistory')">Download Report</button>
-                </div>
-            </div>
-
-            <div class="modal-overlay" id="dataTableModal" style="display: none;">
-                <div class="modal-content">
-                    <button class="modal-close" onclick="closeModal()">×</button>
-                    <h3 id="modalTitle"></h3>
-                    <div class="pagination-controls" style="margin-bottom: 10px;">
-                        <label for="itemsPerPage">Items per page:</label>
-                        <select id="itemsPerPage" onchange="updatePagination()">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="all">All</option>
-                        </select>
-                        <button onclick="previousPage()" id="prevPage" disabled>Previous</button>
-                        <span id="pageInfo"></span>
-                        <button onclick="nextPage()" id="nextPage">Next</button>
-                    </div>
-                    <div id="modalTable" style="overflow-x: auto;"></div>
-                </div>
-            </div>
-
-            <div class="modal-overlay" id="downloadFormatModal" style="display: none;">
-                <div class="modal-content">
-                    <button class="modal-close" onclick="closeDownloadModal()">×</button>
-                    <h3 id="downloadModalTitle">Select Download Format</h3>
-                    <div class="download-options" style="text-align: center; margin-top: 20px;">
-                        <button onclick="downloadReport(currentChartType, 'csv')">Download as CSV</button>
-                        <button onclick="downloadReport(currentChartType, 'pdf')">Download as PDF</button>
-                    </div>
+                <p class="no-data">Click to view details in table</p>
+                <div class="chart-actions">
+                    <button onclick="generateReport('AccessHistory')"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal('AccessHistory')"><i class="fas fa-download"></i> Download Report</button>
                 </div>
             </div>
         </div>
-        <script>
-            // Pass PHP data to JavaScript
-            const fileUploadTrends = <?php echo json_encode($fileUploadTrends); ?>;
-            const fileDistribution = <?php echo json_encode($fileDistribution); ?>;
-            const usersPerDepartment = <?php echo json_encode($usersPerDepartment); ?>;
-            const documentCopies = <?php echo json_encode($documentCopies); ?>;
-            const pendingRequestsDetails = <?php echo json_encode($pendingRequestsDetails); ?>;
-            const retrievalHistory = <?php echo json_encode($retrievalHistory); ?>;
-            const accessHistory = <?php echo json_encode($accessHistory); ?>;
 
-            // Sanitize HTML output in JavaScript
-            function sanitizeHTML(str) {
-                const div = document.createElement('div');
-                div.textContent = str ?? '';
-                return div.innerHTML;
+        <!-- Modal for Data Tables -->
+        <div class="modal-overlay" id="dataTableModal" role="dialog" aria-labelledby="modalTitle" style="display: none;">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()" aria-label="Close Modal"><i class="fas fa-times"></i></button>
+                <h3 id="modalTitle"></h3>
+                <div class="pagination-controls">
+                    <label for="itemsPerPage">Items per page:</label>
+                    <select id="itemsPerPage" onchange="updatePagination()">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="all">All</option>
+                    </select>
+                    <button onclick="previousPage()" id="prevPage" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+                    <span id="pageInfo"></span>
+                    <button onclick="nextPage()" id="nextPage"><i class="fas fa-chevron-right"></i> Next</button>
+                </div>
+                <div id="modalTable" class="data-table"></div>
+            </div>
+        </div>
+
+        <!-- Modal for Download Format -->
+        <div class="modal-overlay" id="downloadFormatModal" role="dialog" aria-labelledby="downloadModalTitle" style="display: none;">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeDownloadModal()" aria-label="Close Download Modal"><i class="fas fa-times"></i></button>
+                <h3 id="downloadModalTitle">Select Download Format</h3>
+                <div class="download-options">
+                    <button onclick="downloadReport(currentChartType, 'csv')"><i class="fas fa-file-csv"></i> Download as CSV</button>
+                    <button onclick="downloadReport(currentChartType, 'pdf')"><i class="fas fa-file-pdf"></i> Download as PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pass PHP data to JavaScript -->
+    <script>
+        const dashboardData = {
+            FileUploadTrends: <?= json_encode($fileUploadTrends, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            FileUploadTrendsTable: <?= json_encode($fileUploadTrendsTable, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            FileDistribution: <?= json_encode($fileDistribution, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            UsersPerDepartment: <?= json_encode($usersPerDepartment, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            DocumentCopies: <?= json_encode($documentCopies, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            PendingRequests: <?= json_encode($pendingRequests, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            RetrievalHistory: <?= json_encode($retrievalHistory, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>,
+            AccessHistory: <?= json_encode($accessHistory, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>
+        };
+    </script>
+    <script>
+        // Constants for configuration
+        const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 'all'];
+        const CHART_CONFIG = {
+            FileUploadTrends: {
+                type: 'line',
+                label: 'File Uploads',
+                title: 'File Upload Trends',
+                xAxis: 'Date',
+                yAxis: 'Number of Uploads',
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                processData: (data) => {
+                    const uploadDates = [...new Set(data.map(item => item.date))];
+                    return {
+                        labels: uploadDates,
+                        data: uploadDates.map(date =>
+                            data.filter(item => item.date === date).reduce((sum, item) => sum + parseInt(item.count), 0)
+                        ),
+                    };
+                },
+                dataKey: 'FileUploadTrends'
+            },
+            FileDistribution: {
+                type: 'pie',
+                label: 'Files by Department',
+                title: 'File Distribution by Department',
+                xAxis: 'Department',
+                yAxis: 'Number of Files',
+                borderColor: '#27ae60',
+                backgroundColor: '#2ecc71',
+                processData: (data) => ({
+                    labels: data.map(item => item.department_name),
+                    data: data.map(item => item.count),
+                }),
+                dataKey: 'FileDistribution'
+            },
+            UsersPerDepartment: {
+                type: 'bar',
+                label: 'Users per Department',
+                title: 'Users Per Department',
+                xAxis: 'Department',
+                yAxis: 'Number of Users',
+                borderColor: '#c0392b',
+                backgroundColor: '#e74c3c',
+                processData: (data) => ({
+                    labels: data.map(item => item.department_name),
+                    data: data.map(item => item.user_count),
+                }),
+                dataKey: 'UsersPerDepartment'
+            },
+            DocumentCopies: {
+                type: 'bar',
+                label: 'Copy Count per File',
+                title: 'Document Copies Details',
+                xAxis: 'File Name',
+                yAxis: 'Number of Copies',
+                borderColor: '#f39c12',
+                backgroundColor: '#f1c40f',
+                processData: (data) => ({
+                    labels: data.map(item => item.file_name),
+                    data: data.map(item => item.copy_count),
+                }),
+                dataKey: 'DocumentCopies'
+            },
+            PendingRequests: {
+                title: 'Pending Requests',
+                processData: () => ({ labels: [], data: [] }),
+                dataKey: 'PendingRequests'
+            },
+            RetrievalHistory: {
+                title: 'Retrieval History',
+                processData: () => ({ labels: [], data: [] }),
+                dataKey: 'RetrievalHistory'
+            },
+            AccessHistory: {
+                title: 'Access History',
+                processData: () => ({ labels: [], data: [] }),
+                dataKey: 'AccessHistory'
+            }
+        };
+
+        // Utility Functions
+        const sanitizeHTML = (str) => {
+            const div = document.createElement('div');
+            div.textContent = str ?? '';
+            return div.innerHTML;
+        };
+
+        const escapeCsvField = (str) => {
+            if (str == null) return '""';
+            const stringified = String(str);
+            if (stringified.includes('"') || stringified.includes(',') || stringified.includes('\n')) {
+                return `"${stringified.replace(/"/g, '""')}"`;
+            }
+            return `"${stringified}"`;
+        };
+
+        // Chart Initialization
+        const initializeChart = (canvasId, config, data) => {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                console.warn(`Canvas element with ID ${canvasId} not found`);
+                return null;
             }
 
-            // Escape CSV field
-            function escapeCsvField(str) {
-                if (str === null || str === undefined) return '""';
-                const stringified = String(str);
-                if (stringified.includes('"') || stringified.includes(',') || stringified.includes('\n')) {
-                    return `"${stringified.replace(/"/g, '""')}"`;
-                }
-                return `"${stringified}"`;
+            if (!data || data.length === 0) {
+                canvas.parentElement.insertAdjacentHTML(
+                    'beforeend',
+                    '<p class="no-data">No data available for this chart.</p>'
+                );
+                return null;
             }
 
-            // Pagination variables
-            let currentPage = 1;
-            let itemsPerPage = 5;
-            let currentData = [];
-            let currentChartType = '';
-
-            // Initialize charts
-            function initializeCharts() {
-                // File Upload Trends (Line Chart)
-                if (fileUploadTrends.length > 0) {
-                    const uploadDates = [...new Set(fileUploadTrends.map(item => new Date(item.upload_date).toLocaleDateString()))];
-                    const uploadCounts = uploadDates.map(date =>
-                        fileUploadTrends.filter(item => new Date(item.upload_date).toLocaleDateString() === date).length
-                    );
-                    new Chart(document.getElementById('fileUploadTrendsChart'), {
-                        type: 'line',
-                        data: {
-                            labels: uploadDates,
-                            datasets: [{
-                                label: 'File Uploads',
-                                data: uploadCounts,
-                                borderColor: '#3498db',
-                                backgroundColor: 'rgba(52, 152, 219, 0.2)',
-                                fill: true,
-                                tension: 0.4
-                            }]
+            const { labels, data: chartData } = config.processData(data);
+            const chart = new Chart(canvas, {
+                type: config.type,
+                data: {
+                    labels,
+                    datasets: [{
+                        label: config.label,
+                        data: chartData,
+                        borderColor: config.borderColor,
+                        backgroundColor: config.backgroundColor,
+                        borderWidth: 1,
+                        fill: config.type === 'line',
+                        tension: config.type === 'line' ? 0.4 : undefined,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.5,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 20 } },
+                        title: { display: true, text: config.title, font: { size: 16 } }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: config.xAxis, font: { size: 14 } },
+                            ticks: { autoSkip: true, maxTicksLimit: 10 }
                         },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'File Upload Trends (Last 7 Days)'
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Date'
-                                    }
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Number of Uploads'
-                                    },
-                                    beginAtZero: true
-                                }
-                            }
+                        y: {
+                            title: { display: true, text: config.yAxis, font: { size: 14 } },
+                            beginAtZero: true
                         }
-                    });
-                } else {
-                    document.getElementById('fileUploadTrendsChart').parentElement.innerHTML += '<p>No data available for File Upload Trends.</p>';
+                    }
                 }
+            });
+            return chart;
+        };
 
-                // File Distribution (Bar Chart)
-                if (fileDistribution.length > 0) {
-                    const docTypes = [...new Set(fileDistribution.map(item => item.document_type))];
-                    const docCounts = docTypes.map(type =>
-                        fileDistribution.filter(item => item.document_type === type).length
-                    );
-                    new Chart(document.getElementById('fileDistributionChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: docTypes,
-                            datasets: [{
-                                label: 'Files by Document Type',
-                                data: docCounts,
-                                backgroundColor: '#2ecc71',
-                                borderColor: '#27ae60',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'File Distribution by Document Type'
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Document Type'
-                                    }
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Number of Files'
-                                    },
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    document.getElementById('fileDistributionChart').parentElement.innerHTML += '<p>No data available for File Distribution.</p>';
-                }
+        // Table Generation for Modal and PDF
+        const generateTableContent = (chartType, page = 1, itemsPerPage = 5, forPdf = false) => {
+            const dataKey = chartType === 'FileUploadTrends' ? 'FileUploadTrendsTable' : chartType;
+            const data = dashboardData[dataKey] || [];
+            if (!data.length) return '<p class="no-data">No data available.</p>';
 
-                // Users Per Department (Bar Chart)
-                if (usersPerDepartment.length > 0) {
-                    new Chart(document.getElementById('usersPerDepartmentChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: usersPerDepartment.map(item => item.department_name),
-                            datasets: [{
-                                label: 'Users per Department',
-                                data: usersPerDepartment.map(item => item.user_count),
-                                backgroundColor: '#e74c3c',
-                                borderColor: '#c0392b',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Users Per Department'
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'Department'
-                                    }
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Number of Users'
-                                    },
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    document.getElementById('usersPerDepartmentChart').parentElement.innerHTML += '<p>No data available for Users Per Department.</p>';
-                }
+            const start = forPdf ? 0 : (page - 1) * itemsPerPage;
+            const end = forPdf ? data.length : (itemsPerPage === 'all' ? data.length : start + itemsPerPage);
+            const slicedData = data.slice(start, end);
 
-                // Document Copies (Bar Chart)
-                if (documentCopies.length > 0) {
-                    new Chart(document.getElementById('documentCopiesChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: documentCopies.map(item => item.file_name),
-                            datasets: [{
-                                label: 'Copy Count per File',
-                                data: documentCopies.map(item => item.copy_count),
-                                backgroundColor: '#f1c40f',
-                                borderColor: '#f39c12',
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Document Copies Details'
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    title: {
-                                        display: true,
-                                        text: 'File Name'
-                                    }
-                                },
-                                y: {
-                                    title: {
-                                        display: true,
-                                        text: 'Number of Copies'
-                                    },
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    document.getElementById('documentCopiesChart').parentElement.innerHTML += '<p>No data available for Document Copies.</p>';
-                }
-            }
+            const tableHeaders = {
+                FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
+                FileDistribution: ['Department', 'File Count'],
+                UsersPerDepartment: ['Department', 'User Count'],
+                DocumentCopies: ['File Name', 'Copy Count', 'Offices with Copy'],
+                PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
+                RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
+                AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
+            };
 
-            // Generate table content with pagination
-            function generateTableContent(chartType, page = 1, itemsPerPage = 5) {
-                let tableContent = '';
-                let data;
-
+            const headers = tableHeaders[chartType] || [];
+            const tableRows = slicedData.map(entry => {
                 switch (chartType) {
                     case 'FileUploadTrends':
-                        data = fileUploadTrends;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>File Name</th>
-                                        <th>Document Type</th>
-                                        <th>Uploader</th>
-                                        <th>Uploader's Department</th>
-                                        <th>Intended Destination</th>
-                                        <th>Upload Date/Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.document_name)}</td>
-                                            <td>${sanitizeHTML(entry.document_type)}</td>
-                                            <td>${sanitizeHTML(entry.uploader_name)}</td>
-                                            <td>${sanitizeHTML(entry.uploader_department || 'None')}${entry.uploader_subdepartment ? ' / ' + sanitizeHTML(entry.uploader_subdepartment) : ''}</td>
-                                            <td>${sanitizeHTML(entry.target_department_name || 'None')}</td>
-                                            <td>${new Date(entry.upload_date).toLocaleString()}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
+                        return `
+                            <tr>
+                                <td>${sanitizeHTML(entry.file_id)}</td>
+                                <td>${sanitizeHTML(entry.file_name)}</td>
+                                <td>${new Date(entry.upload_date).toLocaleString()}</td>
+                                <td>${sanitizeHTML(entry.uploader_name)}</td>
+                                <td>${sanitizeHTML(entry.department_name || 'None')}</td>
+                                <td>${sanitizeHTML(entry.document_type || 'None')}</td>
+                            </tr>`;
                     case 'FileDistribution':
-                        data = fileDistribution;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>File Name</th>
-                                        <th>Document Type</th>
-                                        <th>Sender</th>
-                                        <th>Recipient</th>
-                                        <th>Time Sent</th>
-                                        <th>Time Received</th>
-                                        <th>Department/Subdepartment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.document_name)}</td>
-                                            <td>${sanitizeHTML(entry.document_type)}</td>
-                                            <td>${sanitizeHTML(entry.sender_name || 'None')}</td>
-                                            <td>${sanitizeHTML(entry.receiver_name || 'None')}</td>
-                                            <td>${entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'}</td>
-                                            <td>${entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'}</td>
-                                            <td>${sanitizeHTML(entry.department_name || 'None')}${entry.sub_department_name ? ' / ' + sanitizeHTML(entry.sub_department_name) : ''}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
+                        return `
+                            <tr>
+                                <td>${sanitizeHTML(entry.department_name)}</td>
+                                <td>${sanitizeHTML(entry.count)}</td>
+                            </tr>`;
                     case 'UsersPerDepartment':
-                        data = usersPerDepartment;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Department</th>
-                                        <th>User Count</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.department_name)}</td>
-                                            <td>${sanitizeHTML(entry.user_count.toString())}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
+                        return `
+                            <tr>
+                                <td>${sanitizeHTML(entry.department_name)}</td>
+                                <td>${sanitizeHTML(entry.user_count)}</td>
+                            </tr>`;
                     case 'DocumentCopies':
-                        data = documentCopies;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>File Name</th>
-                                        <th>Copy Count</th>
-                                        <th>Offices with Copy</th>
-                                        <th>Physical Duplicates</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.file_name)}</td>
-                                            <td>${sanitizeHTML(entry.copy_count.toString())}</td>
-                                            <td>${sanitizeHTML(entry.offices_with_copy || 'None')}</td>
-                                            <td>${sanitizeHTML(entry.physical_duplicates || 'None')}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
+                        return `
+                            <tr>
+                                <td>${sanitizeHTML(entry.file_name)}</td>
+                                <td>${sanitizeHTML(entry.copy_count)}</td>
+                                <td>${sanitizeHTML(entry.offices_with_copy || 'None')}</td>
+                            </tr>`;
                     case 'PendingRequests':
-                        data = pendingRequestsDetails;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>File Name</th>
-                                        <th>Requester</th>
-                                        <th>Requester's Department</th>
-                                        <th>Physical Storage</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.file_name)}</td>
-                                            <td>${sanitizeHTML(entry.requester_name)}</td>
-                                            <td>${sanitizeHTML(entry.requester_department || 'None')}${entry.requester_subdepartment ? ' / ' + sanitizeHTML(entry.requester_subdepartment) : ''}</td>
-                                            <td>${sanitizeHTML(entry.physical_storage || 'None')}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
                     case 'RetrievalHistory':
-                        data = retrievalHistory;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Type</th>
-                                        <th>Status</th>
-                                        <th>Time</th>
-                                        <th>User</th>
-                                        <th>File Name</th>
-                                        <th>Department</th>
-                                        <th>Physical Storage</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
-                                            <td>${sanitizeHTML(entry.type)}</td>
-                                            <td>${sanitizeHTML(entry.status)}</td>
-                                            <td>${new Date(entry.time).toLocaleString()}</td>
-                                            <td>${sanitizeHTML(entry.user_name)}</td>
-                                            <td>${sanitizeHTML(entry.file_name)}</td>
-                                            <td>${sanitizeHTML(entry.department_name || 'None')}</td>
-                                            <td>${sanitizeHTML(entry.physical_storage || 'None')}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
                     case 'AccessHistory':
-                        data = accessHistory;
-                        tableContent = data.length > 0 ? `
-                            <table class="chart-data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Time</th>
-                                        <th>User</th>
-                                        <th>File Name</th>
-                                        <th>Type</th>
-                                        <th>Department</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.slice((page - 1) * itemsPerPage, page * itemsPerPage).map(entry => `
-                                        <tr>
-                                            <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
-                                            <td>${new Date(entry.time).toLocaleString()}</td>
-                                            <td>${sanitizeHTML(entry.user_name)}</td>
-                                            <td>${sanitizeHTML(entry.file_name)}</td>
-                                            <td>${sanitizeHTML(entry.type)}</td>
-                                            <td>${sanitizeHTML(entry.department_name || 'None')}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        ` : '<p>No data available.</p>';
-                        break;
+                        return `
+                            <tr>
+                                <td>${sanitizeHTML(entry.transaction_id)}</td>
+                                <td>${new Date(entry.time).toLocaleString()}</td>
+                                <td>${sanitizeHTML(entry.username)}</td>
+                                <td>${sanitizeHTML(entry.file_name)}</td>
+                                <td>${sanitizeHTML(entry.department_name || 'None')}</td>
+                            </tr>`;
+                    default:
+                        return '';
                 }
-                currentData = data;
-                return tableContent;
+            }).join('');
+
+            return `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            ${headers.map(header => `<th>${sanitizeHTML(header)}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            `;
+        };
+
+        // Generate Report Content for Print and PDF
+        const generateReportContent = (chartType) => {
+            const reportContent = generateTableContent(chartType, 1, 'all', true);
+            const canvas = document.getElementById(`${chartType}Chart`);
+            let chartImage = '';
+            if (canvas && CHART_CONFIG[chartType].type) {
+                chartImage = canvas.toDataURL('image/png', 1.0);
             }
-
-            // Update pagination controls
-            function updatePagination() {
-                const itemsPerPageSelect = document.getElementById('itemsPerPage');
-                itemsPerPage = itemsPerPageSelect.value === 'all' ? currentData.length : parseInt(itemsPerPageSelect.value);
-                currentPage = 1;
-                renderTable();
-            }
-
-            // Go to previous page
-            function previousPage() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderTable();
-                }
-            }
-
-            // Go to next page
-            function nextPage() {
-                const maxPage = Math.ceil(currentData.length / itemsPerPage);
-                if (currentPage < maxPage) {
-                    currentPage++;
-                    renderTable();
-                }
-            }
-
-            // Render table with pagination
-            function renderTable() {
-                const modalTable = document.getElementById('modalTable');
-                modalTable.innerHTML = generateTableContent(currentChartType, currentPage, itemsPerPage);
-
-                const prevButton = document.getElementById('prevPage');
-                const nextButton = document.getElementById('nextPage');
-                const pageInfo = document.getElementById('pageInfo');
-
-                const maxPage = Math.ceil(currentData.length / itemsPerPage);
-                prevButton.disabled = currentPage === 1;
-                nextButton.disabled = currentPage === maxPage || currentData.length === 0;
-                pageInfo.textContent = `Page ${currentPage} of ${maxPage || 1}`;
-            }
-
-            // Open modal with table
-            function openModal(container) {
-                const chartType = container.getAttribute('data-chart-type');
-                currentChartType = chartType;
-                currentPage = 1;
-                const modal = document.getElementById('dataTableModal');
-                const modalTitle = document.getElementById('modalTitle');
-
-                // Set title
-                modalTitle.textContent = container.querySelector('h3').textContent;
-
-                // Render table
-                renderTable();
-
-                // Show modal
-                modal.style.display = 'flex';
-            }
-
-            // Close modal
-            function closeModal() {
-                const modal = document.getElementById('dataTableModal');
-                modal.style.display = 'none';
-                document.getElementById('modalTable').innerHTML = '';
-            }
-
-            // Open download format modal
-            function openDownloadModal(chartType) {
-                currentChartType = chartType;
-                const modal = document.getElementById('downloadFormatModal');
-                const modalTitle = document.getElementById('downloadModalTitle');
-                modalTitle.textContent = `Select Download Format for ${chartType} Report`;
-                modal.style.display = 'flex';
-            }
-
-            // Close download format modal
-            function closeDownloadModal() {
-                const modal = document.getElementById('downloadFormatModal');
-                modal.style.display = 'none';
-            }
-
-            // Handle chart clicks to open modal
-            document.querySelectorAll('.chart-container').forEach(container => {
-                container.addEventListener('click', (e) => {
-                    // Ignore clicks on buttons or within chart-actions
-                    if (e.target.tagName === 'BUTTON' || e.target.closest('.chart-actions')) return;
-
-                    // Open modal with table
-                    openModal(container);
-                });
+            const currentDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
 
-            // Generate report content
-            function generateReportContent(chartType) {
-                let data;
-                let tableRows = '';
-                let chartImage = '';
-
-                switch (chartType) {
-                    case 'FileUploadTrends':
-                        data = fileUploadTrends;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.document_name)}</td>
-                            <td>${sanitizeHTML(entry.document_type)}</td>
-                            <td>${sanitizeHTML(entry.uploader_name)}</td>
-                            <td>${sanitizeHTML(entry.uploader_department || 'None')}${entry.uploader_subdepartment ? ' / ' + sanitizeHTML(entry.uploader_subdepartment) : ''}</td>
-                            <td>${sanitizeHTML(entry.target_department_name || 'None')}</td>
-                            <td>${new Date(entry.upload_date).toLocaleString()}</td>
-                        </tr>
-                    `).join('');
-                        chartImage = document.getElementById('fileUploadTrendsChart')?.toDataURL('image/png') || '';
-                        break;
-                    case 'FileDistribution':
-                        data = fileDistribution;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.document_name)}</td>
-                            <td>${sanitizeHTML(entry.document_type)}</td>
-                            <td>${sanitizeHTML(entry.sender_name || 'None')}</td>
-                            <td>${sanitizeHTML(entry.receiver_name || 'None')}</td>
-                            <td>${entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'}</td>
-                            <td>${entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'}</td>
-                            <td>${sanitizeHTML(entry.department_name || 'None')}${entry.sub_department_name ? ' / ' + sanitizeHTML(entry.sub_department_name) : ''}</td>
-                        </tr>
-                    `).join('');
-                        chartImage = document.getElementById('fileDistributionChart')?.toDataURL('image/png') || '';
-                        break;
-                    case 'UsersPerDepartment':
-                        data = usersPerDepartment;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.department_name)}</td>
-                            <td>${sanitizeHTML(entry.user_count.toString())}</td>
-                        </tr>
-                    `).join('');
-                        chartImage = document.getElementById('usersPerDepartmentChart')?.toDataURL('image/png') || '';
-                        break;
-                    case 'DocumentCopies':
-                        data = documentCopies;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.file_name)}</td>
-                            <td>${sanitizeHTML(entry.copy_count.toString())}</td>
-                            <td>${sanitizeHTML(entry.offices_with_copy || 'None')}</td>
-                            <td>${sanitizeHTML(entry.physical_duplicates || 'None')}</td>
-                        </tr>
-                    `).join('');
-                        chartImage = document.getElementById('documentCopiesChart')?.toDataURL('image/png') || '';
-                        break;
-                    case 'PendingRequests':
-                        data = pendingRequestsDetails;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.file_name)}</td>
-                            <td>${sanitizeHTML(entry.requester_name)}</td>
-                            <td>${sanitizeHTML(entry.requester_department || 'None')}${entry.requester_subdepartment ? ' / ' + sanitizeHTML(entry.requester_subdepartment) : ''}</td>
-                            <td>${sanitizeHTML(entry.physical_storage || 'None')}</td>
-                        </tr>
-                    `).join('');
-                        break;
-                    case 'RetrievalHistory':
-                        data = retrievalHistory;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
-                            <td>${sanitizeHTML(entry.type)}</td>
-                            <td>${sanitizeHTML(entry.status)}</td>
-                            <td>${new Date(entry.time).toLocaleString()}</td>
-                            <td>${sanitizeHTML(entry.user_name)}</td>
-                            <td>${sanitizeHTML(entry.file_name)}</td>
-                            <td>${sanitizeHTML(entry.department_name || 'None')}</td>
-                            <td>${sanitizeHTML(entry.physical_storage || 'None')}</td>
-                        </tr>
-                    `).join('');
-                        break;
-                    case 'AccessHistory':
-                        data = accessHistory;
-                        tableRows = data.map(entry => `
-                        <tr>
-                            <td>${sanitizeHTML(entry.transaction_id.toString())}</td>
-                            <td>${new Date(entry.time).toLocaleString()}</td>
-                            <td>${sanitizeHTML(entry.user_name)}</td>
-                            <td>${sanitizeHTML(entry.file_name)}</td>
-                            <td>${sanitizeHTML(entry.type)}</td>
-                            <td>${sanitizeHTML(entry.department_name || 'None')}</td>
-                        </tr>
-                    `).join('');
-                        break;
-                }
-
-                return `
-                <html>
+            return `
+                <!DOCTYPE html>
+                <html lang="en">
                     <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>${chartType} Report - ArcHive</title>
+                        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
                         <style>
                             body { 
-                                font-family: Arial, sans-serif; 
-                                margin: 20px; 
-                                color: #333; 
+                                font-family: 'Inter', Arial, sans-serif; 
+                                margin: 0.3in auto; /* Centered with equal top/bottom margins */
+                                padding: 0 0.5in; /* Equal left/right padding */
+                                color: #2d3748; 
+                                line-height: 1.4;
+                                background-color: #ffffff;
+                                width: 8.5in;
+                                box-sizing: border-box;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
                             }
                             h1 { 
-                                font-size: 24px; 
+                                font-size: 18px; 
                                 text-align: center; 
-                                margin-bottom: 10px; 
-                                color: #34495e; 
+                                margin: 0.2in 0 10px 0;
+                                color: #2c3e50; 
+                                font-weight: 600;
+                                width: 100%;
                             }
                             h2 { 
-                                font-size: 18px; 
-                                margin-top: 20px; 
-                                color: #34495e; 
+                                font-size: 12px; 
+                                text-align: center; 
+                                margin: 0 0 15px 0; 
+                                color: #4a5568; 
+                                font-weight: 400;
+                                width: 100%;
+                            }
+                            h3 {
+                                font-size: 14px;
+                                margin: 15px 0 10px 0;
+                                color: #2c3e50;
+                                font-weight: 500;
+                                text-align: center;
+                                width: 100%;
                             }
                             img { 
-                                max-width: 600px; 
+                                max-width: 100%; 
+                                width: 450px; 
+                                height: auto;
                                 display: block; 
-                                margin: 10px auto; 
+                                margin: 0 auto 15px auto; /* Centered with adjusted margins */
+                                border: 1px solid #e2e8f0;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                             }
                             table { 
                                 width: 100%; 
-                                max-width: 1000px; 
+                                max-width: 750px; 
                                 border-collapse: collapse; 
-                                margin: 20px auto; 
-                                font-size: 10pt; 
-                                background-color: #fff; 
-                                box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+                                margin: 10px auto; /* Centered table */
+                                font-size: 8pt; 
+                                background-color: #ffffff; 
+                                box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
                             }
                             th, td { 
-                                border: 1px solid #ddd; 
-                                padding: 8px; 
+                                border: 1px solid #e2e8f0; 
+                                padding: 6px 8px; /* Slightly increased padding for better spacing */
                                 text-align: left; 
                                 word-wrap: break-word; 
                             }
                             th { 
-                                background-color: #f0f0f0; 
-                                font-weight: bold; 
-                                color: #34495e; 
+                                background-color: #50c878; 
+                                color: #ffffff; 
+                                font-weight: 500; 
                                 text-transform: uppercase; 
+                                font-size: 7pt;
+                                text-align: center; /* Center table headers */
                             }
                             td { 
-                                color: #333; 
+                                color: #2d3748; 
+                                font-size: 7pt;
                             }
                             tr:nth-child(even) { 
-                                background-color: #f9f9f9; 
+                                background-color: #f9fafb; 
                             }
                             tr:hover { 
                                 background-color: #f1f5f9; 
                             }
+                            .no-data {
+                                text-align: center;
+                                font-size: 8pt;
+                                color: #4a5568;
+                                margin: 10px 0;
+                                width: 100%;
+                            }
                             @media print {
-                                body { margin: 0; }
-                                table { font-size: 9pt; }
-                                th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
-                                tr:nth-child(even) { background-color: #f9f9f9 !important; -webkit-print-color-adjust: exact; }
+                                body { 
+                                    margin: 0.3in auto; /* Centered margins for print */
+                                    padding: 0 0.5in;
+                                    -webkit-print-color-adjust: exact; 
+                                    print-color-adjust: exact;
+                                    width: 8.5in;
+                                    box-sizing: border-box;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                table { 
+                                    font-size: 7pt; 
+                                    margin: 10px auto; /* Ensure table is centered */
+                                }
+                                th { 
+                                    background-color: #50c878 !important; 
+                                    color: #ffffff !important;
+                                    text-align: center !important;
+                                }
+                                td {
+                                    text-align: left;
+                                }
+                                tr:nth-child(even) { 
+                                    background-color: #f9fafb !important; 
+                                }
+                                img {
+                                    max-width: 100% !important;
+                                    width: 450px !important;
+                                    height: auto !important;
+                                    margin: 0 auto 15px auto !important; /* Centered for print */
+                                }
                             }
                         </style>
                     </head>
                     <body>
-                        <h1>${chartType} Report</h1>
-                        ${chartImage ? `<img src="${chartImage}" alt="${chartType} Chart">` : ''}
-                        <h2>Data Table</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    ${
-                                        chartType === 'FileUploadTrends' ? `
-                                            <th>File Name</th>
-                                            <th>Document Type</th>
-                                            <th>Uploader</th>
-                                            <th>Uploader's Department</th>
-                                            <th>Intended Destination</th>
-                                            <th>Upload Date/Time</th>
-                                        ` : chartType === 'FileDistribution' ? `
-                                            <th>File Name</th>
-                                            <th>Document Type</th>
-                                            <th>Sender</th>
-                                            <th>Recipient</th>
-                                            <th>Time Sent</th>
-                                            <th>Time Received</th>
-                                            <th>Department/Subdepartment</th>
-                                        ` : chartType === 'UsersPerDepartment' ? `
-                                            <th>Department</th>
-                                            <th>User Count</th>
-                                        ` : chartType === 'DocumentCopies' ? `
-                                            <th>File Name</th>
-                                            <th>Copy Count</th>
-                                            <th>Offices with Copy</th>
-                                            <th>Physical Duplicates</th>
-                                        ` : chartType === 'PendingRequests' ? `
-                                            <th>File Name</th>
-                                            <th>Requester</th>
-                                            <th>Requester's Department</th>
-                                            <th>Physical Storage</th>
-                                        ` : chartType === 'RetrievalHistory' ? `
-                                            <th>Transaction ID</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Time</th>
-                                            <th>User</th>
-                                            <th>File Name</th>
-                                            <th>Department</th>
-                                            <th>Physical Storage</th>
-                                        ` : chartType === 'AccessHistory' ? `
-                                            <th>Transaction ID</th>
-                                            <th>Time</th>
-                                            <th>User</th>
-                                            <th>File Name</th>
-                                            <th>Type</th>
-                                            <th>Department</th>
-                                        ` : ''
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>${tableRows}</tbody>
-                        </table>
+                        <h1>${sanitizeHTML(CHART_CONFIG[chartType].title)}</h1>
+                        <h2>Generated on: ${currentDate}</h2>
+                        ${chartImage ? `<img src="${chartImage}" alt="${sanitizeHTML(chartType)} Chart">` : '<p class="no-data">No chart available for this report.</p>'}
+                        <h3>Data Table</h3>
+                        ${reportContent}
                     </body>
                 </html>
-                `;
-            }
+            `;
+        };
 
-            // Generate printable report
-            function generateReport(chartType) {
-                const reportContent = generateReportContent(chartType);
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(reportContent);
-                printWindow.document.close();
-                printWindow.onload = function() {
-                    printWindow.focus();
+        // Generate Printable Report
+        const generateReport = (chartType) => {
+            const reportContent = generateReportContent(chartType);
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(reportContent);
+            printWindow.document.close();
+            printWindow.onload = () => {
+                printWindow.focus();
+                setTimeout(() => {
                     printWindow.print();
-                };
-            }
+                }, 500);
+            };
+        };
 
-            // Download report as CSV or PDF
-function downloadReport(chartType, format) {
-    let data;
-    let csvContent = '';
-    let headers = [];
-    let rows = [];
-
-    // Map chartType to the correct data array
-    const dataMap = {
-        'FileUploadTrends': fileUploadTrends,
-        'FileDistribution': fileDistribution,
-        'UsersPerDepartment': usersPerDepartment,
-        'DocumentCopies': documentCopies,
-        'PendingRequests': pendingRequestsDetails,
-        'RetrievalHistory': retrievalHistory,
-        'AccessHistory': accessHistory
-    };
-
-    data = dataMap[chartType] || [];
-
-    // Debug log to check data availability
-    console.log(`${chartType} data:`, data);
-    if (data.length === 0) {
-        alert('No data available for this report. The PDF will be empty. Please ensure the database has relevant records.');
-        closeDownloadModal();
-        return;
-    }
-
-    if (format === 'csv') {
-        switch (chartType) {
-            case 'FileUploadTrends':
-                csvContent += 'File Name,Document Type,Uploader,Uploader\'s Department,Intended Destination,Upload Date/Time\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.document_name),
-                        escapeCsvField(entry.document_type),
-                        escapeCsvField(entry.uploader_name),
-                        escapeCsvField(entry.uploader_department || 'None') + (entry.uploader_subdepartment ? ' / ' + escapeCsvField(entry.uploader_subdepartment) : ''),
-                        escapeCsvField(entry.target_department_name || 'None'),
-                        escapeCsvField(new Date(entry.upload_date).toLocaleString())
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'FileDistribution':
-                csvContent += 'File Name,Document Type,Sender,Recipient,Time Sent,Time Received,Department/Subdepartment\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.document_name),
-                        escapeCsvField(entry.document_type),
-                        escapeCsvField(entry.sender_name || 'None'),
-                        escapeCsvField(entry.receiver_name || 'None'),
-                        escapeCsvField(entry.time_sent ? new Date(entry.time_sent).toLocaleString() : 'N/A'),
-                        escapeCsvField(entry.time_received ? new Date(entry.time_received).toLocaleString() : 'N/A'),
-                        escapeCsvField((entry.department_name || 'None') + (entry.sub_department_name ? ' / ' + entry.sub_department_name : ''))
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'UsersPerDepartment':
-                csvContent += 'Department,User Count\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.department_name),
-                        escapeCsvField(entry.user_count)
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'DocumentCopies':
-                csvContent += 'File Name,Copy Count,Offices with Copy,Physical Duplicates\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.file_name),
-                        escapeCsvField(entry.copy_count),
-                        escapeCsvField(entry.offices_with_copy || 'None'),
-                        escapeCsvField(entry.physical_duplicates || 'None')
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'PendingRequests':
-                csvContent += 'File Name,Requester,Requester\'s Department,Physical Storage\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.file_name),
-                        escapeCsvField(entry.requester_name),
-                        escapeCsvField((entry.requester_department || 'None') + (entry.requester_subdepartment ? ' / ' + entry.requester_subdepartment : '')),
-                        escapeCsvField(entry.physical_storage || 'None')
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'RetrievalHistory':
-                csvContent += 'Transaction ID,Type,Status,Time,User,File Name,Department,Physical Storage\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.transaction_id),
-                        escapeCsvField(entry.type),
-                        escapeCsvField(entry.status),
-                        escapeCsvField(new Date(entry.time).toLocaleString()),
-                        escapeCsvField(entry.user_name),
-                        escapeCsvField(entry.file_name),
-                        escapeCsvField(entry.department_name || 'None'),
-                        escapeCsvField(entry.physical_storage || 'None')
-                    ].join(',') + '\n';
-                });
-                break;
-            case 'AccessHistory':
-                csvContent += 'Transaction ID,Time,User,File Name,Type,Department\n';
-                data.forEach(entry => {
-                    csvContent += [
-                        escapeCsvField(entry.transaction_id),
-                        escapeCsvField(new Date(entry.time).toLocaleString()),
-                        escapeCsvField(entry.user_name),
-                        escapeCsvField(entry.file_name),
-                        escapeCsvField(entry.type),
-                        escapeCsvField(entry.department_name || 'None')
-                    ].join(',') + '\n';
-                });
-                break;
-            default:
-                alert('Download not implemented for this report type.');
+        // Download Report as CSV or PDF
+        const downloadReport = (chartType, format) => {
+            const dataKey = chartType === 'FileUploadTrends' ? 'FileUploadTrendsTable' : chartType;
+            const data = dashboardData[dataKey] || [];
+            if (!data.length) {
+                alert('No data available for download.');
                 closeDownloadModal();
                 return;
-        }
+            }
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `${chartType}_Report.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    } else if (format === 'pdf') {
-        if (!window.html2pdf) {
-            console.error('html2pdf.js not loaded.');
-            alert('html2pdf.js library failed to load. Check CDN or host locally.');
+            if (format === 'csv') {
+                const headers = {
+                    FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
+                    FileDistribution: ['Department', 'File Count'],
+                    UsersPerDepartment: ['Department', 'User Count'],
+                    DocumentCopies: ['File Name', 'Copy Count', 'Offices with Copy'],
+                    PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
+                    RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
+                    AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
+                };
+
+                let csvContent = headers[chartType].map(escapeCsvField).join(',') + '\n';
+                data.forEach(entry => {
+                    let row;
+                    switch (chartType) {
+                        case 'FileUploadTrends':
+                            row = [
+                                entry.file_id || '',
+                                entry.file_name || '',
+                                entry.upload_date ? new Date(entry.upload_date).toLocaleString() : 'N/A',
+                                entry.uploader_name || '',
+                                entry.department_name || 'None',
+                                entry.document_type || 'None'
+                            ];
+                            break;
+                        case 'FileDistribution':
+                            row = [
+                                entry.department_name || '',
+                                entry.count || 0
+                            ];
+                            break;
+                        case 'UsersPerDepartment':
+                            row = [
+                                entry.department_name || '',
+                                entry.user_count || 0
+                            ];
+                            break;
+                        case 'DocumentCopies':
+                            row = [
+                                entry.file_name || '',
+                                entry.copy_count || 0,
+                                entry.offices_with_copy || 'None'
+                            ];
+                            break;
+                        case 'PendingRequests':
+                        case 'RetrievalHistory':
+                        case 'AccessHistory':
+                            row = [
+                                entry.transaction_id || '',
+                                entry.time ? new Date(entry.time).toLocaleString() : 'N/A',
+                                entry.username || '',
+                                entry.file_name || '',
+                                entry.department_name || 'None'
+                            ];
+                            break;
+                        default:
+                            alert('Download not implemented for this report type.');
+                            closeDownloadModal();
+                            return;
+                    }
+                    csvContent += row.map(escapeCsvField).join(',') + '\n';
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${chartType}_Report.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            } else if (format === 'pdf') {
+                const reportContent = generateReportContent(chartType);
+                const pdfWindow = window.open('about:blank', '_blank');
+                pdfWindow.document.write(reportContent);
+                pdfWindow.document.close();
+
+                pdfWindow.onload = () => {
+                    const opt = {
+                        margin: [0.3, 0.5, 0.5, 0.5], // Adjusted: [top, right, bottom, left] in inches
+                        filename: `${chartType}_Report_${new Date().toISOString().replace(/[-:T.]/g, '')}.pdf`,
+                        image: { type: 'png', quality: 1.0 },
+                        html2canvas: { 
+                            scale: 2, 
+                            useCORS: true,
+                            width: 816, // 8.5in at 96dpi
+                            windowWidth: 816
+                        },
+                        jsPDF: { 
+                            unit: 'in', 
+                            format: 'letter', 
+                            orientation: 'portrait',
+                            putOnlyUsedFonts: true
+                        }
+                    };
+
+                    try {
+                        html2pdf().from(pdfWindow.document.body).set(opt).save().then(() => {
+                            console.log('PDF generated successfully for', chartType);
+                            setTimeout(() => {
+                                pdfWindow.close();
+                            }, 500);
+                        }).catch(error => {
+                            console.error('PDF generation error:', error);
+                            alert('Error generating PDF: ' + error.message);
+                            pdfWindow.close();
+                        });
+                    } catch (error) {
+                        console.error('PDF generation error:', error);
+                        alert('Error generating PDF: ' + error.message);
+                        pdfWindow.close();
+                    }
+                };
+            } else {
+                alert('Invalid format selected.');
+            }
             closeDownloadModal();
-            return;
-        }
+        };
 
-        const reportContent = generateReportContent(chartType);
-        const element = document.createElement('div');
-        element.innerHTML = reportContent;
+        // Sidebar Toggle
+        const toggleSidebar = () => {
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const topNav = document.querySelector('.top-nav');
+            sidebar.classList.toggle('minimized');
+            mainContent.classList.toggle('resized');
+            topNav.classList.toggle('resized');
+        };
 
-        html2pdf().from(element).set({
-            margin: [0.5, 0.5, 0.5, 0.5],
-            filename: `${chartType}_Report.pdf`,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        }).save().then(() => {
-            console.log(`PDF generated for ${chartType}`);
-        }).catch((err) => {
-            console.error('PDF generation failed:', err);
-            alert('Failed to generate PDF. Check console for errors.');
-        });
-    } else {
-        alert('Invalid format selected.');
-    }
-    closeDownloadModal();
-}
+        // Modal Functions
+        let currentChartType = '';
+        let currentPage = 1;
+        let itemsPerPage = ITEMS_PER_PAGE_OPTIONS[0];
 
-            // Sidebar toggle function
-            function toggleSidebar() {
-                const sidebar = document.querySelector('.sidebar');
-                const mainContent = document.querySelector('.main-content');
-                sidebar.classList.toggle('minimized');
-                mainContent.classList.toggle('sidebar-expanded');
-                mainContent.classList.toggle('sidebar-minimized');
+        const openModal = (chartType) => {
+            currentChartType = chartType;
+            currentPage = 1;
+            const modal = document.getElementById('dataTableModal');
+            const modalTitle = document.getElementById('modalTitle');
+            modalTitle.textContent = CHART_CONFIG[chartType].title || chartType;
+            renderTable();
+            modal.style.display = 'flex';
+        };
+
+        const closeModal = () => {
+            const modal = document.getElementById('dataTableModal');
+            modal.style.display = 'none';
+            document.getElementById('modalTable').innerHTML = '';
+        };
+
+        const openDownloadModal = (chartType) => {
+            currentChartType = chartType;
+            const modal = document.getElementById('downloadFormatModal');
+            const modalTitle = document.getElementById('downloadModalTitle');
+            modalTitle.textContent = `Select Download Format for ${CHART_CONFIG[chartType].title || chartType} Report`;
+            modal.style.display = 'flex';
+        };
+
+        const closeDownloadModal = () => {
+            const modal = document.getElementById('downloadFormatModal');
+            modal.style.display = 'none';
+        };
+
+        const updatePagination = () => {
+            const itemsPerPageSelect = document.getElementById('itemsPerPage');
+            itemsPerPage = itemsPerPageSelect.value === 'all' ? dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length || 1 : parseInt(itemsPerPageSelect.value);
+            currentPage = 1;
+            renderTable();
+        };
+
+        const previousPage = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
             }
+        };
 
-            // Initialize charts on page load
-            document.addEventListener('DOMContentLoaded', () => {
-                initializeCharts();
-                // Update main-content class based on sidebar state
-                const sidebar = document.querySelector('.sidebar');
-                const mainContent = document.querySelector('.main-content');
-                mainContent.classList.add(sidebar.classList.contains('minimized') ? 'sidebar-minimized' : 'sidebar-expanded');
+        const nextPage = () => {
+            const maxPage = Math.ceil(dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length / itemsPerPage) || 1;
+            if (currentPage < maxPage) {
+                currentPage++;
+                renderTable();
+            }
+        };
+
+        const renderTable = () => {
+            const modalTable = document.getElementById('modalTable');
+            modalTable.innerHTML = generateTableContent(currentChartType, currentPage, itemsPerPage);
+
+            const prevButton = document.getElementById('prevPage');
+            const nextButton = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+
+            const maxPage = Math.ceil(dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length / itemsPerPage) || 1;
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === maxPage || !dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length;
+            pageInfo.textContent = `Page ${currentPage} of ${maxPage}`;
+        };
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const charts = {
+                FileUploadTrends: initializeChart('fileUploadTrendsChart', CHART_CONFIG.FileUploadTrends, dashboardData.FileUploadTrends),
+                FileDistribution: initializeChart('fileDistributionChart', CHART_CONFIG.FileDistribution, dashboardData.FileDistribution),
+                UsersPerDepartment: initializeChart('usersPerDepartmentChart', CHART_CONFIG.UsersPerDepartment, dashboardData.UsersPerDepartment),
+                DocumentCopies: initializeChart('documentCopiesChart', CHART_CONFIG.DocumentCopies, dashboardData.DocumentCopies)
+            };
+
+            document.querySelectorAll('.chart-container').forEach(container => {
+                container.addEventListener('click', (e) => {
+                    if (e.target.closest('.chart-actions')) return;
+                    const chartType = container.dataset.chartType;
+                    if (chartType) openModal(chartType);
+                });
             });
-        </script>
-        <style>
-            .chart-container {
-                cursor: pointer;
-                position: relative;
-                padding: 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                margin-bottom: 20px;
-                background-color: #fff;
+
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main-content');
+            const topNav = document.querySelector('.top-nav');
+            if (sidebar && sidebar.classList.contains('minimized')) {
+                mainContent.classList.add('resized');
+                topNav.classList.add('resized');
             }
 
-            .chart-data-table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 10pt;
-                background-color: #fff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            }
-
-            .chart-data-table th,
-            .chart-data-table td {
-                border: 1px solid #e0e0e0;
-                padding: 10px;
-                text-align: left;
-                word-wrap: break-word;
-            }
-
-            .chart-data-table th {
-                background-color: #f0f0f0;
-                font-weight: 600;
-                color: #34495e;
-                text-transform: uppercase;
-                font-size: 9pt;
-            }
-
-            .chart-data-table td {
-                color: #333;
-                font-size: 9pt;
-            }
-
-            .chart-data-table tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
-
-            .chart-data-table tr:hover {
-                background-color: #f1f5f9;
-            }
-
-            .chart-actions {
-                margin-top: 10px;
-                text-align: center;
-            }
-
-            .chart-actions button {
-                padding: 8px 16px;
-                background-color: #34495e;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 10pt;
-            }
-
-            .chart-actions button:hover {
-                background-color: #2c3e50;
-            }
-
-            .modal-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 1000;
-                padding-top: 20px;
-            }
-
-            .modal-content {
-                background: #fff;
-                padding: 20px;
-                border-radius: 5px;
-                max-width: 50%;
-                max-height: 80%;
-                overflow-y: auto;
-                position: relative;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            }
-
-            .modal-close {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: #34495e;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
-                cursor: pointer;
-                line-height: 30px;
-                text-align: center;
-            }
-
-            .modal-close:hover {
-                background: #2c3e50;
-            }
-
-            .pagination-controls {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 15px;
-                font-size: 10pt;
-                color: #34495e;
-            }
-
-            .pagination-controls select {
-                padding: 5px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            .pagination-controls button {
-                padding: 6px 12px;
-                background-color: #34495e;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-
-            .pagination-controls button:disabled {
-                background-color: #95a5a6;
-                cursor: not-allowed;
-            }
-
-            .pagination-controls button:hover:not(:disabled) {
-                background-color: #2c3e50;
-            }
-
-            .pagination-controls span {
-                font-weight: 500;
-            }
-
-            .download-options button {
-                padding: 10px 20px;
-                margin: 0 10px;
-                background-color: #34495e;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 12pt;
-            }
-
-            .download-options button:hover {
-                background-color: #2c3e50;
-            }
-        </style>
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    closeDownloadModal();
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>

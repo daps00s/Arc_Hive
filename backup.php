@@ -137,11 +137,12 @@ if (isset($_GET['check_auto_backup']) && $_GET['check_auto_backup'] == '1') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['backup'])) {
     try {
         $backupFile = createBackup($pdo, $backupDir, false);
-        $notification = 'success|Backup created successfully: ' . basename($backupFile);
         // Trigger download
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . basename($backupFile) . '"');
         readfile($backupFile);
+        // Redirect to show success message
+        header('Location: backup.php?message=success%7CManual%20backup%20created%20and%20downloaded%20successfully:%20' . urlencode(basename($backupFile)));
         exit;
     } catch (Exception $e) {
         $notification = 'error|Backup failed: ' . $e->getMessage();
@@ -231,7 +232,6 @@ if ($next_backup <= $now) {
         include 'admin_menu.php';
     ?>
 
-
     <div class="main-content">
         <div class="content-area">
             <div class="content-wrapper">
@@ -247,97 +247,149 @@ if ($next_backup <= $now) {
                     Creating automatic backup...
                 </div>
 
+                <!-- Success Message -->
+                <div id="successMessage" style="display: none;" class="success-message">
+                    Action completed successfully!
+                </div>
+
                 <div class="content-header">
                     <h1 class="content-title">Database Backup System (Philippines - Tarlac Time)</h1>
                 </div>
 
                 <!-- Current Time Display -->
-                <div class="current-time">
-                    <h3>Current Time (Asia/Manila)</h3>
-                    <p id="currentTime"><?php echo date('Y-m-d h:i:s A'); ?></p>
-                    <p>Next Scheduled Backup: <span id="nextBackup"><?php echo $next_backup->format('Y-m-d h:i A'); ?></span></p>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Current Time (Asia/Manila)</h3>
+                    </div>
+                    <div class="card-body">
+                        <p id="currentTime"><?php echo date('Y-m-d h:i:s A'); ?></p>
+                        <p>Next Scheduled Backup: <span id="nextBackup"><?php echo $next_backup->format('Y-m-d h:i A'); ?></span></p>
+                    </div>
                 </div>
 
                 <!-- Manual backup form -->
-                <form method="POST" id="backupForm" onsubmit="return confirmBackup();">
-                    <button type="submit" name="backup" class="btn-primary">
-                        <i class="fas fa-plus"></i> Create Manual Backup
-                    </button>
-                </form>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Create Manual Backup</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="backupForm" action="backup.php">
+                            <input type="hidden" name="backup" value="1">
+                            <button type="button" onclick="showModal('create', 'create a new backup')" class="btn-primary">
+                                <i class="fas fa-plus"></i> Create Manual Backup
+                            </button>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Automatic backup settings -->
-                <div class="backup-settings">
-                    <h3>Automatic Backup Settings</h3>
-                    <form method="POST" onsubmit="return confirmSettingsUpdate();">
-                        <div class="input-group">
-                            <label for="backup_date">Backup Date (Asia/Manila):</label>
-                            <input type="date" id="backup_date" name="backup_date" value="<?php echo $backup_date; ?>" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="backup_hour">Backup Time (Asia/Manila):</label>
-                            <div class="time-inputs">
-                                <input type="number" id="backup_hour" name="backup_hour" min="1" max="12" value="<?php echo $display_hour; ?>" required placeholder="HH">
-                                <span>:</span>
-                                <input type="number" id="backup_minute" name="backup_minute" min="0" max="59" value="<?php printf("%02d", $backup_minute); ?>" required placeholder="MM">
-                                <select name="am_pm" required>
-                                    <option value="AM" <?php echo $am_pm == 'AM' ? 'selected' : ''; ?>>AM</option>
-                                    <option value="PM" <?php echo $am_pm == 'PM' ? 'selected' : ''; ?>>PM</option>
-                                </select>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Automatic Backup Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" id="settingsForm">
+                            <div class="input-group">
+                                <label for="backup_date" class="input-label">Backup Date (Asia/Manila):</label>
+                                <input type="date" id="backup_date" name="backup_date" value="<?php echo $backup_date; ?>" required class="input-field">
                             </div>
-                        </div>
-                        <button type="submit" name="update_settings" class="btn-primary">Update Settings</button>
-                    </form>
+                            <div class="input-group">
+                                <label for="backup_hour" class="input-label">Backup Time (Asia/Manila):</label>
+                                <div class="time-inputs">
+                                    <input type="number" id="backup_hour" name="backup_hour" min="1" max="12" value="<?php echo $display_hour; ?>" required placeholder="HH" class="input-field time-input">
+                                    <span class="time-divider">:</span>
+                                    <input type="number" id="backup_minute" name="backup_minute" min="0" max="59" value="<?php printf("%02d", $backup_minute); ?>" required placeholder="MM" class="input-field time-input">
+                                    <select name="am_pm" required class="input-field select-field">
+                                        <option value="AM" <?php echo $am_pm == 'AM' ? 'selected' : ''; ?>>AM</option>
+                                        <option value="PM" <?php echo $am_pm == 'PM' ? 'selected' : ''; ?>>PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" onclick="showModal('update', 'update the backup settings')" class="btn-primary">Update Settings</button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- List existing backups -->
-                <div class="backup-list">
-                    <h3>Existing Backups</h3>
-                    <?php if (empty($backupFiles)): ?>
-                        <p>No backups found.</p>
-                    <?php else: ?>
-                        <table class="data-table" id="backupsTable">
-                            <thead>
-                                <tr>
-                                    <th>Filename</th>
-                                    <th>Type</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="backupsTableBody">
-                                <?php foreach ($backupFiles as $file): ?>
-                                    <?php
-                                    $filename = basename($file);
-                                    $isAuto = strpos($filename, 'auto_backup_') === 0;
-                                    ?>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Existing Backups</h3>
+                    </div>
+                    <div class="card-body">
+                        <?php if (empty($backupFiles)): ?>
+                            <p>No backups found.</p>
+                        <?php else: ?>
+                            <table class="data-table" id="backupsTable">
+                                <thead>
                                     <tr>
-                                        <td><?php echo htmlspecialchars($filename); ?></td>
-                                        <td class="backup-type-<?php echo $isAuto ? 'auto' : 'manual'; ?>">
-                                            <?php echo $isAuto ? 'Automatic' : 'Manual'; ?>
-                                        </td>
-                                        <td><?php echo date('Y-m-d H:i:s', filemtime($file)); ?></td>
-                                        <td>
-                                            <button class="btn-action download" onclick="window.location.href='<?php echo htmlspecialchars($file); ?>'">
-                                                <i class="fas fa-download"></i>
-                                            </button>
-                                            <button class="btn-action delete" onclick="if(confirm('Are you sure you want to delete this backup?')) window.location.href='backup.php?delete=<?php echo urlencode($filename); ?>'">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
+                                        <th>Filename</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
+                                </thead>
+                                <tbody id="backupsTableBody">
+                                    <?php foreach ($backupFiles as $file): ?>
+                                        <?php
+                                        $filename = basename($file);
+                                        $isAuto = strpos($filename, 'auto_backup_') === 0;
+                                        ?>
+                                        <tr>
+                                            <td><?php echo htmlspecialchars($filename); ?></td>
+                                            <td class="backup-type-<?php echo $isAuto ? 'auto' : 'manual'; ?>">
+                                                <?php echo $isAuto ? 'Automatic' : 'Manual'; ?>
+                                            </td>
+                                            <td><?php echo date('Y-m-d H:i:s', filemtime($file)); ?></td>
+                                            <td>
+                                                <button class="btn-action download" onclick="showModal('download', 'download this backup', '<?php echo htmlspecialchars($file); ?>')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="btn-action delete" onclick="showModal('delete', 'delete this backup', 'backup.php?delete=<?php echo urlencode($filename); ?>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Confirmation Modal -->
+                <div id="confirmationModal" class="modal">
+                    <div class="modal-content">
+                        <h3>Confirm Action</h3>
+                        <p id="modalMessage"></p>
+                        <div id="confirmInputGroup" style="display: none; margin-bottom: 20px;">
+                            <label for="confirmInput" class="input-label">Type CONFIRM to proceed:</label>
+                            <input type="text" id="confirmInput" class="input-field" placeholder="CONFIRM">
+                        </div>
+                        <div class="modal-actions">
+                            <button id="modalConfirm" class="btn-primary" disabled>Confirm</button>
+                            <button id="modalCancel" class="btn-secondary">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <style>
+        :root {
+            --primary-green: #2ecc71;
+            --primary-green-dark: #27ae60;
+            --secondary-green: #27ae60;
+            --background-light: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --border-color: #e0e0e0;
+            --hover-bg: #ecf0f1;
+        }
+
         .content-area {
             padding: 20px 0;
-            background-color: #f8f9fa;
+            background-color: var(--background-light);
             width: 100%;
         }
 
@@ -356,26 +408,28 @@ if ($next_backup <= $now) {
 
         .content-title {
             font-size: 24px;
-            color: #2c3e50;
+            color: var(--text-dark);
             font-weight: 600;
         }
 
-        .current-time {
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            padding: 15px;
-            background: #fff;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        .current-time h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .card-header {
+            background: var(--primary-green);
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            font-weight: 500;
         }
 
-        .current-time p {
-            color: #34495e;
-            font-size: 16px;
+        .card-body {
+            padding: 20px;
         }
 
         .notification-toast {
@@ -392,16 +446,30 @@ if ($next_backup <= $now) {
         }
 
         .notification-toast.success {
-            background-color: #2ecc71;
+            background-color: var(--primary-green);
         }
 
         .notification-toast.error {
             background-color: #e74c3c;
         }
 
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 6px;
+            background-color: var(--primary-green);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            z-index: 1100;
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+        }
+
         .btn-primary {
             color: #fff;
-            background-color: #3498db;
+            background-color: var(--primary-green);
             border: none;
             padding: 10px 20px;
             border-radius: 6px;
@@ -415,7 +483,7 @@ if ($next_backup <= $now) {
         }
 
         .btn-primary:hover {
-            background-color: #2980b9;
+            background-color: var(--primary-green-dark);
             transform: translateY(-1px);
         }
 
@@ -423,71 +491,88 @@ if ($next_backup <= $now) {
             transform: translateY(0);
         }
 
-        .backup-settings {
-            margin-top: 20px;
+        .btn-primary:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .backup-settings h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .btn-secondary {
+            color: var(--text-dark);
+            background-color: #f1f3f5;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .backup-settings form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
         }
 
         .backup-settings .input-group {
             display: flex;
             flex-direction: column;
+            margin-bottom: 15px;
         }
 
-        .backup-settings .time-inputs {
+        .input-label {
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        .time-inputs {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
         }
 
-        .backup-settings label {
-            font-weight: 500;
-            color: #2c3e50;
-            margin-bottom: 5px;
+        .time-input {
+            width: 60px;
         }
 
-        .backup-settings input,
-        .backup-settings select {
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            width: 100px;
+        .select-field {
+            width: 80px;
         }
 
-        .backup-settings input[type="date"] {
-            width: 150px;
+        .time-divider {
+            font-size: 16px;
+            color: var(--text-dark);
         }
 
-        .backup-settings select {
-            width: 100px;
-        }
-
-        .backup-settings input::-webkit-outer-spin-button,
-        .backup-settings input::-webkit-inner-spin-button {
+        .input-field::-webkit-outer-spin-button,
+        .input-field::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        .backup-settings input[type=number] {
+        .input-field[type=number] {
             -moz-appearance: textfield;
-        }
-
-        .backup-list {
-            margin-top: 20px;
-        }
-
-        .backup-list h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
         }
 
         .data-table {
@@ -500,26 +585,30 @@ if ($next_backup <= $now) {
         .data-table td {
             padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .data-table th {
-            background-color: #f8f9fa;
+            background-color: var(--primary-green);
+            color: white;
             font-weight: 600;
-            color: #2c3e50;
+        }
+
+        .data-table td {
+            background-color: var(--card-bg);
         }
 
         .data-table tr:hover {
-            background-color: #f1f3f5;
+            background-color: var(--hover-bg);
         }
 
         .backup-type-auto {
-            color: #2ecc71;
+            color: var(--primary-green);
             font-weight: bold;
         }
 
         .backup-type-manual {
-            color: #3498db;
+            color: var(--secondary-green);
             font-weight: bold;
         }
 
@@ -535,12 +624,12 @@ if ($next_backup <= $now) {
         }
 
         .btn-action.download {
-            background-color: rgba(52, 152, 219, 0.1);
-            color: #3498db;
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--primary-green);
         }
 
         .btn-action.download:hover {
-            background-color: #3498db;
+            background-color: var(--primary-green);
             color: white;
         }
 
@@ -554,12 +643,61 @@ if ($next_backup <= $now) {
             color: white;
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .modal-content p {
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #confirmInputGroup .input-label {
+            margin-bottom: 8px;
+        }
+
+        #confirmInput {
+            width: 100%;
+            max-width: 200px;
+        }
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
-
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -570,7 +708,6 @@ if ($next_backup <= $now) {
             from {
                 opacity: 1;
             }
-
             to {
                 opacity: 0;
             }
@@ -581,8 +718,8 @@ if ($next_backup <= $now) {
                 padding: 0 15px;
             }
 
-            .backup-settings input,
-            .backup-settings select {
+            .input-field,
+            .select-field {
                 width: 100%;
             }
 
@@ -591,9 +728,22 @@ if ($next_backup <= $now) {
                 align-items: flex-start;
             }
 
-            .btn-primary {
+            .time-input {
+                width: 100%;
+            }
+
+            .select-field {
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
                 width: 100%;
                 justify-content: center;
+            }
+
+            #confirmInput {
+                max-width: 100%;
             }
         }
     </style>
@@ -670,6 +820,7 @@ if ($next_backup <= $now) {
                                     a.click();
                                     document.body.removeChild(a);
                                     window.URL.revokeObjectURL(url);
+                                    showSuccessMessage('Automatic backup downloaded successfully');
                                     return {
                                         status: 'success',
                                         message: 'Automatic backup created and downloaded'
@@ -733,8 +884,59 @@ if ($next_backup <= $now) {
                 });
         }
 
-        function confirmBackup() {
-            return confirm('Are you sure you want to create a new backup?');
+        function showModal(action, message, url = '') {
+            const modal = document.getElementById('confirmationModal');
+            const modalMessage = document.getElementById('modalMessage');
+            const confirmInputGroup = document.getElementById('confirmInputGroup');
+            const confirmInput = document.getElementById('confirmInput');
+            const confirmButton = document.getElementById('modalConfirm');
+
+            modalMessage.textContent = `Are you sure you want to ${message}?`;
+            confirmButton.disabled = action === 'delete';
+            confirmInputGroup.style.display = action === 'delete' ? 'block' : 'none';
+            confirmInput.value = '';
+            modal.style.display = 'flex';
+
+            confirmInput.oninput = function() {
+                confirmButton.disabled = confirmInput.value !== 'CONFIRM';
+            };
+
+            confirmButton.onclick = function() {
+                if (action === 'delete' && confirmInput.value !== 'CONFIRM') {
+                    return;
+                }
+                modal.style.display = 'none';
+                if (action === 'create') {
+                    const form = document.getElementById('backupForm');
+                    form.submit();
+                } else if (action === 'update') {
+                    if (confirmSettingsUpdate()) {
+                        document.getElementById('settingsForm').submit();
+                    }
+                } else if (action === 'download') {
+                    window.location.href = url;
+                    showSuccessMessage('Backup downloaded successfully');
+                } else if (action === 'delete') {
+                    window.location.href = url;
+                    showSuccessMessage('Backup deleted successfully');
+                }
+            };
+
+            const cancelButton = document.getElementById('modalCancel');
+            cancelButton.onclick = function() {
+                modal.style.display = 'none';
+                confirmInput.value = '';
+                confirmButton.disabled = action === 'delete';
+            };
+        }
+
+        function showSuccessMessage(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
         }
 
         function confirmSettingsUpdate() {
@@ -747,8 +949,9 @@ if ($next_backup <= $now) {
                 alert('Invalid input. Please use hours 1-12, minutes 0-59, valid AM/PM, and date in YYYY-MM-DD format.');
                 return false;
             }
-            setScheduledTime(); // Update scheduled time on settings update
-            return confirm('Are you sure you want to update the automatic backup settings?');
+            setScheduledTime();
+            showSuccessMessage('Backup settings updated successfully');
+            return true;
         }
 
         // Sidebar toggle function

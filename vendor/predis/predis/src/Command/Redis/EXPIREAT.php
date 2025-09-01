@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 use Predis\Command\Traits\Expire\ExpireOptions;
 
 /**
@@ -31,10 +31,5 @@ class EXPIREAT extends RedisCommand
     public function getId()
     {
         return 'EXPIREAT';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

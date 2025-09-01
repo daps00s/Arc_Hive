@@ -20,7 +20,7 @@ class ImageContext extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.LatLongRect lat_long_rect = 1;</code>
      */
-    protected $lat_long_rect = null;
+    private $lat_long_rect = null;
     /**
      * List of languages to use for TEXT_DETECTION. In most cases, an empty value
      * yields the best results since it enables automatic language detection. For
@@ -39,25 +39,25 @@ class ImageContext extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.CropHintsParams crop_hints_params = 4;</code>
      */
-    protected $crop_hints_params = null;
+    private $crop_hints_params = null;
     /**
      * Parameters for product search.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.ProductSearchParams product_search_params = 5;</code>
      */
-    protected $product_search_params = null;
+    private $product_search_params = null;
     /**
      * Parameters for web detection.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.WebDetectionParams web_detection_params = 6;</code>
      */
-    protected $web_detection_params = null;
+    private $web_detection_params = null;
     /**
      * Parameters for text detection and document text detection.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.TextDetectionParams text_detection_params = 12;</code>
      */
-    protected $text_detection_params = null;
+    private $text_detection_params = null;
 
     /**
      * Constructor.

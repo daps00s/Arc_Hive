@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\TimeSeries;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/ts.del/
@@ -24,10 +24,5 @@ class TSDEL extends RedisCommand
     public function getId()
     {
         return 'TS.DEL';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\CountMinSketch;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see https://redis.io/commands/cms.initbydim/
@@ -24,10 +24,5 @@ class CMSINITBYDIM extends RedisCommand
     public function getId()
     {
         return 'CMS.INITBYDIM';
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

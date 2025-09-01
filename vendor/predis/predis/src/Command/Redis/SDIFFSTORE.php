@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 /**
  * @see http://redis.io/commands/sdiffstore
@@ -37,10 +37,5 @@ class SDIFFSTORE extends RedisCommand
         }
 
         parent::setArguments($arguments);
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForAllArguments($prefix);
     }
 }

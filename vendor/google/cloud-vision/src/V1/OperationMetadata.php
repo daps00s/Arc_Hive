@@ -20,19 +20,19 @@ class OperationMetadata extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.OperationMetadata.State state = 1;</code>
      */
-    protected $state = 0;
+    private $state = 0;
     /**
      * The time when the batch request was received.
      *
      * Generated from protobuf field <code>.google.protobuf.Timestamp create_time = 5;</code>
      */
-    protected $create_time = null;
+    private $create_time = null;
     /**
      * The time when the operation result was last updated.
      *
      * Generated from protobuf field <code>.google.protobuf.Timestamp update_time = 6;</code>
      */
-    protected $update_time = null;
+    private $update_time = null;
 
     /**
      * Constructor.

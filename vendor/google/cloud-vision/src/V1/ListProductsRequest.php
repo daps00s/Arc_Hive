@@ -22,19 +22,19 @@ class ListProductsRequest extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string parent = 1 [(.google.api.field_behavior) = REQUIRED, (.google.api.resource_reference) = {</code>
      */
-    protected $parent = '';
+    private $parent = '';
     /**
      * The maximum number of items to return. Default 10, maximum 100.
      *
      * Generated from protobuf field <code>int32 page_size = 2;</code>
      */
-    protected $page_size = 0;
+    private $page_size = 0;
     /**
      * The next_page_token returned from a previous List request, if any.
      *
      * Generated from protobuf field <code>string page_token = 3;</code>
      */
-    protected $page_token = '';
+    private $page_token = '';
 
     /**
      * @param string $parent Required. The project OR ProductSet from which Products should be listed.

@@ -21,7 +21,7 @@ class ProductSearchParams extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.BoundingPoly bounding_poly = 9;</code>
      */
-    protected $bounding_poly = null;
+    private $bounding_poly = null;
     /**
      * The resource name of a [ProductSet][google.cloud.vision.v1.ProductSet] to
      * be searched for similar images.
@@ -30,7 +30,7 @@ class ProductSearchParams extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string product_set = 6 [(.google.api.resource_reference) = {</code>
      */
-    protected $product_set = '';
+    private $product_set = '';
     /**
      * The list of product categories to search in. Currently, we only consider
      * the first category, and either "homegoods-v2", "apparel-v2", "toys-v2",
@@ -54,7 +54,7 @@ class ProductSearchParams extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>string filter = 8;</code>
      */
-    protected $filter = '';
+    private $filter = '';
 
     /**
      * Constructor.

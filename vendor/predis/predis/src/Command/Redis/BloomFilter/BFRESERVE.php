@@ -12,7 +12,7 @@
 
 namespace Predis\Command\Redis\BloomFilter;
 
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 use Predis\Command\Traits\BloomFilters\Expansion;
 
 /**
@@ -45,10 +45,5 @@ class BFRESERVE extends RedisCommand
 
         $this->setExpansion($arguments);
         $this->filterArguments();
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

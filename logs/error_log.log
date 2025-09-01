@@ -1803,3 +1803,203 @@ Stack trace:
 [18-Aug-2025 18:08:06 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 288
 [18-Aug-2025 18:08:07 Europe/Berlin] [2025-08-18 18:08:07] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Report page (users_department_id=5)
 [18-Aug-2025 18:08:07 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 197
+[21-Aug-2025 12:35:10 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:35:10 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:09 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:09 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:11 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:11 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:13 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:13 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:14 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:14 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:49 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:49 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:50 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:50 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:50 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:50 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:51 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:53 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:54 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:55 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:55 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:55 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:55 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:56 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:57 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:36:57 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:37:11 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:37:11 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:39:55 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:39:55 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:40:03 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:40:03 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 383
+[21-Aug-2025 12:51:41 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 12:51:41 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 12:57:59 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 12:57:59 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 12:58:00 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.physical_storage_path' in 'field list'
+[21-Aug-2025 12:58:00 Europe/Berlin] [2025-08-21 12:58:00] User 15 (user) accessed My Report page (users_department_id=16)
+[21-Aug-2025 12:58:00 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 197
+[21-Aug-2025 12:59:27 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 12:59:27 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 13:00:18 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 13:00:18 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 13:00:18 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[21-Aug-2025 13:00:18 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[21-Aug-2025 20:28:45 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:28:45 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:28:55 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:28:55 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:28:55 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\my-Folder.php on line 205
+[21-Aug-2025 20:28:55 Europe/Berlin] [2025-08-21 20:28:55] User 15 (user) accessed My Folder page
+[21-Aug-2025 20:28:55 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\Arc_Hive-main\my-Folder.php on line 288
+[21-Aug-2025 20:29:03 Europe/Berlin] Error fetching document types in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:29:03 Europe/Berlin] Error fetching department files in department_folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:29:03 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\Department_folder.php on line 351
+[21-Aug-2025 20:29:03 Europe/Berlin] [2025-08-21 20:29:03] User 15 (user) accessed Department Folder page for department ID 16
+[21-Aug-2025 20:29:09 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:29:09 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[21-Aug-2025 20:29:09 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\my-Folder.php on line 205
+[21-Aug-2025 20:29:09 Europe/Berlin] [2025-08-21 20:29:09] User 15 (user) accessed My Folder page
+[21-Aug-2025 20:29:09 Europe/Berlin] PHP Warning:  Undefined variable $departmentId in C:\xampp\htdocs\Arc_Hive-main\my-Folder.php on line 288
+[21-Aug-2025 20:29:24 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:29:24 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:30:09 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:30:09 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:30:47 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:30:47 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\folders.php on line 384
+[21-Aug-2025 20:32:45 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 20:32:45 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[21-Aug-2025 20:32:45 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[21-Aug-2025 20:32:45 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:46 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:46 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:46 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:46 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:54 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:54 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:54 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:54 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:55 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:55 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[22-Aug-2025 14:00:55 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[22-Aug-2025 14:00:55 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\Arc_Hive-main\my-report.php on line 167
+[23-Aug-2025 09:23:45 Europe/Berlin] Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'f.file_type' in 'field list' | Line: 179
+[23-Aug-2025 09:29:05 Europe/Berlin] Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.extracted_text' in 'where clause' | Line: 179
+[23-Aug-2025 09:44:00 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 09:52:13 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 09:54:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 09:54:22 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 64
+[23-Aug-2025 09:54:22 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 65
+[23-Aug-2025 09:54:22 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 66
+[23-Aug-2025 09:54:22 Europe/Berlin] Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 83
+[23-Aug-2025 09:54:22 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: generateResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 152 and defined in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Arc_Hive-main\upload_handler.php(152): generateResponse(false, 'Upload failed: ...', Array, '42S22')
+#1 C:\xampp\htdocs\Arc_Hive-main\test_search.php(176): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 10
+Error in test_search.php: SQLSTATE[HY093]: Invalid parameter number | Line: 208Error in test_search.php: SQLSTATE[HY093]: Invalid parameter number | Line: 208Error in test_search.php: SQLSTATE[HY093]: Invalid parameter number | Line: 208[23-Aug-2025 10:09:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 10:09:16 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 64
+[23-Aug-2025 10:09:16 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 65
+[23-Aug-2025 10:09:16 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 66
+[23-Aug-2025 10:09:16 Europe/Berlin] Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 83
+[23-Aug-2025 10:09:16 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: generateResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 152 and defined in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Arc_Hive-main\upload_handler.php(152): generateResponse(false, 'Upload failed: ...', Array, '42S22')
+#1 C:\xampp\htdocs\Arc_Hive-main\test_search.php(175): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 10
+[23-Aug-2025 10:09:24 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 10:09:24 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 64
+[23-Aug-2025 10:09:24 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 65
+[23-Aug-2025 10:09:24 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 66
+[23-Aug-2025 10:09:24 Europe/Berlin] Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 83
+[23-Aug-2025 10:09:24 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: generateResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 152 and defined in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Arc_Hive-main\upload_handler.php(152): generateResponse(false, 'Upload failed: ...', Array, '42S22')
+#1 C:\xampp\htdocs\Arc_Hive-main\test_search.php(175): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 10
+[23-Aug-2025 10:15:07 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 10:15:07 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 67
+[23-Aug-2025 10:15:07 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 68
+[23-Aug-2025 10:15:07 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 69
+[23-Aug-2025 10:15:07 Europe/Berlin] Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 91
+[23-Aug-2025 10:15:07 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: generateResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 158 and defined in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Arc_Hive-main\upload_handler.php(158): generateResponse(false, 'Upload failed: ...', Array, '42S22')
+#1 C:\xampp\htdocs\Arc_Hive-main\test_search.php(158): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 10
+[23-Aug-2025 10:15:18 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 2
+[23-Aug-2025 10:15:18 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 67
+[23-Aug-2025 10:15:18 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 68
+[23-Aug-2025 10:15:18 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 69
+[23-Aug-2025 10:15:18 Europe/Berlin] Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 91
+[23-Aug-2025 10:15:18 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: generateResponse(): Argument #4 ($statusCode) must be of type int, string given, called in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 158 and defined in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php:10
+Stack trace:
+#0 C:\xampp\htdocs\Arc_Hive-main\upload_handler.php(158): generateResponse(false, 'Upload failed: ...', Array, '42S22')
+#1 C:\xampp\htdocs\Arc_Hive-main\test_search.php(158): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\Arc_Hive-main\upload_handler.php on line 10
+[23-Aug-2025 10:16:59 Europe/Berlin] Upload error: Upload handler failed with HTTP code: 404 | Line: 169
+[23-Aug-2025 10:17:14 Europe/Berlin] Upload error: Upload handler failed with HTTP code: 404 | Line: 169
+[23-Aug-2025 10:17:20 Europe/Berlin] Upload error: Upload handler failed with HTTP code: 404 | Line: 169
+Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 131 | File: C:\xampp\htdocs\Arc_Hive-main\upload_handler.phpUpload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 131 | File: C:\xampp\htdocs\Arc_Hive-main\upload_handler.phpUpload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 131 | File: C:\xampp\htdocs\Arc_Hive-main\upload_handler.phpUpload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 131 | File: C:\xampp\htdocs\Arc_Hive-main\upload_handler.phpUpload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size' in 'field list' | Line: 131 | File: C:\xampp\htdocs\Arc_Hive-main\upload_handler.phpError in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.content' in 'field list' | Line: 118Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.content' in 'field list' | Line: 118Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.content' in 'field list' | Line: 118Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.content' in 'field list' | Line: 118Error in test_search.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'tr.content' in 'field list' | Line: 118[01-Sep-2025 07:52:52 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 07:52:52 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 07:52:52 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 07:52:52 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 07:52:56 Europe/Berlin] Error fetching departments in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.users_department' doesn't exist
+[01-Sep-2025 07:52:56 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[01-Sep-2025 07:52:56 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[01-Sep-2025 07:52:56 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-Folder.php on line 205
+[01-Sep-2025 07:52:56 Europe/Berlin] [2025-09-01 07:52:56] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
+[01-Sep-2025 09:00:34 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:00:34 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:00:34 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 09:00:34 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 09:14:47 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:14:47 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 09:14:47 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:14:47 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167

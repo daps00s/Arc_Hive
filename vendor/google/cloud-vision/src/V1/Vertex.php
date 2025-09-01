@@ -21,13 +21,13 @@ class Vertex extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>int32 x = 1;</code>
      */
-    protected $x = 0;
+    private $x = 0;
     /**
      * Y coordinate.
      *
      * Generated from protobuf field <code>int32 y = 2;</code>
      */
-    protected $y = 0;
+    private $y = 0;
 
     /**
      * Constructor.

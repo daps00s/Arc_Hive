@@ -1,0 +1,354 @@
+/* doc_type_management.css - Styles for document type management page */
+/* Depends on admin-interface.css for root variables and base styles */
+
+@import 'admin-interface.css';
+
+.document-type-section {
+    margin: 20px 0;
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.document-card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    transition: var(--transition);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+
+.document-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+.document-card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.document-card h3 i {
+    transition: transform 0.3s;
+}
+
+.document-card.expanded h3 i {
+    transform: rotate(180deg);
+}
+
+.fields-container {
+    display: none;
+    padding: 15px;
+    background: #f9fbfc;
+    border-radius: 6px;
+    margin-top: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.fields-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-background);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.fields-table th,
+.fields-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.fields-table th {
+    background: #eef2f6;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.fields-table tr:hover {
+    background: #f1f5f9;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.action-buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.action-buttons .edit-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.action-buttons .edit-btn:hover {
+    background: var(--primary-hover);
+}
+
+.action-buttons .delete-btn {
+    background: var(--danger-color);
+    color: white;
+}
+
+.action-buttons .delete-btn:hover {
+    background: #c0392b;
+}
+
+.action-buttons .reorder-btn {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.action-buttons .reorder-btn:hover {
+    background: var(--secondary-hover);
+}
+
+.open-modal-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.open-modal-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 260px;
+    width: calc(100% - 260px);
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.resized {
+    left: 60px;
+    width: calc(100% - 60px);
+}
+
+.modal-content {
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    font-size: 24px;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.form-container {
+    display: grid;
+    gap: 15px;
+}
+
+.form-container input,
+.form-container select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(80, 200, 120, 0.3);
+    outline: none;
+}
+
+.form-container label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.form-container button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.form-container button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.form-container button[aria-label="Cancel"] {
+    background: var(--text-secondary);
+}
+
+.form-container button[aria-label="Cancel"]:hover {
+    background: #6c757d;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: var(--text-color);
+}
+
+.sortable-field {
+    padding: 12px;
+    background: #f9fbfc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 8px;
+    cursor: move;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.sortable-field.ui-sortable-helper {
+    opacity: 0.8;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
+}
+
+.sortable-placeholder {
+    border: 2px dashed var(--border-color);
+    background: #f1f5f9;
+    height: 40px;
+    border-radius: var(--border-radius);
+    margin-bottom: 8px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.pagination button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.pagination button:disabled {
+    background: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.loading .download-loading {
+    margin-right: 8px;
+}
+
+@media (max-width: 1024px) {
+    .modal {
+        left: 60px;
+        width: calc(100% - 60px);
+    }
+
+    .document-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .modal {
+        left: 0;
+        width: 100%;
+    }
+
+    .document-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .fields-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

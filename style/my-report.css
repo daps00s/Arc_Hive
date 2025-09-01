@@ -78,40 +78,43 @@ body {
     flex-wrap: wrap;
 }
 
-.filter-container select,
-.filter-container input {
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 0.9rem;
+.interval-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.interval-btn {
     background: var(--card-background);
-    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
     cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
     transition: var(--transition);
 }
 
-.filter-container select:focus,
-.filter-container input:focus {
+.interval-btn.active,
+.interval-btn:hover,
+.interval-btn:focus {
+    background: var(--primary-color);
+    color: white;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
     outline: none;
 }
 
-.filter-container select {
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'><path d='M5 7l5 5 5-5H5z'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
-    padding-right: 30px;
-}
-
-#dateRange {
+.date-range {
     display: none;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
-#dateRange label {
+.date-range.active {
+    display: flex;
+}
+
+.date-range label {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -119,11 +122,51 @@ body {
     color: white;
 }
 
+.date-range input {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    background: var(--card-background);
+    color: var(--text-color);
+    transition: var(--transition);
+}
+
+.date-range input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+    outline: none;
+}
+
+.filter-container select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'><path d='M5 7l5 5 5-5H5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    padding-right: 30px;
+    min-width: 150px;
+}
+
+.filter-container select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(80, 200, 120, 0.2);
+    outline: none;
+}
+
 .filter-container button {
     background: var(--primary-color);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 8px 16px;
     border-radius: var(--border-radius);
     cursor: pointer;
     font-weight: 500;
@@ -140,6 +183,14 @@ body {
 .filter-container button:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+}
+
+.filter-container button#clearFilter {
+    background: var(--danger-color);
+}
+
+.filter-container button#clearFilter:hover {
+    background: #c53030;
 }
 
 .toggle-btn {
@@ -180,25 +231,39 @@ body {
     border-bottom: 2px solid var(--primary-color);
 }
 
-#print-header h2 {
-    font-size: 1.25rem;
-    margin: 10px 0;
+#print-header h1,
+#print-header p {
+    margin: 5px 0;
+}
+
+/* Alert */
+.alert {
+    padding: 16px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.alert.error {
+    background: rgba(229, 62, 62, 0.1);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
 }
 
 /* Chart Container */
 .chart-container {
-    width: 80%;
     max-width: 900px;
     margin: 30px auto;
     padding: 25px;
     background: var(--card-background);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    contain: layout;
+    position: relative;
 }
 
-#fileActivityChart {
-    width: 100%;
+.chart-container canvas {
+    width: 100% !important;
+    height: auto !important;
     max-height: 400px;
 }
 
@@ -207,7 +272,6 @@ body {
     justify-content: center;
     gap: 12px;
     margin-top: 20px;
-    flex-wrap: wrap;
 }
 
 .chart-actions button {
@@ -278,12 +342,22 @@ body {
     max-width: 200px;
 }
 
+.files-table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
 .files-table tr:hover {
     background: #f5f5f5;
 }
 
 .files-table tr:last-child td {
     border-bottom: none;
+}
+
+.files-table .no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
 }
 
 /* Table Controls */
@@ -327,6 +401,23 @@ body {
     background: var(--card-background);
 }
 
+/* Loading Spinner */
+.loading-spinner {
+    display: none;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .top-nav {
@@ -336,6 +427,11 @@ body {
 
     .main-content {
         margin-left: 60px;
+    }
+
+    .chart-container,
+    .files-table {
+        width: 90%;
     }
 }
 
@@ -350,11 +446,12 @@ body {
 
     .main-content {
         margin-left: 60px;
+        padding: 80px 16px 16px;
     }
 
     .chart-container,
     .files-table {
-        width: 90%;
+        width: 100%;
     }
 
     .files-table table {
@@ -368,6 +465,15 @@ body {
 
     .table-controls select {
         min-width: 120px;
+    }
+
+    .interval-buttons {
+        flex-wrap: wrap;
+    }
+
+    .interval-btn {
+        flex: 1 1 calc(50% - 8px);
+        text-align: center;
     }
 }
 
@@ -385,25 +491,27 @@ body {
         padding: 70px 10px 10px;
     }
 
-    .chart-container,
-    .files-table {
-        width: 100%;
-    }
-
     .filter-container {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .filter-container select,
-    .filter-container input,
-    .filter-container button {
+    .interval-buttons {
+        flex-direction: column;
+    }
+
+    .interval-btn {
         width: 100%;
     }
 
-    #dateRange {
+    .date-range {
         flex-direction: column;
         gap: 8px;
+    }
+
+    .filter-container select,
+    .filter-container button {
+        width: 100%;
     }
 
     .table-controls {

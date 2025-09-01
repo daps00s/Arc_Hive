@@ -113,12 +113,4 @@ class Options implements OptionsInterface
 
         return;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __set($option, $value)
-    {
-        $this->options[$option] = $value;
-    }
 }

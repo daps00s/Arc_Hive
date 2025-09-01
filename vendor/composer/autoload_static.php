@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
+class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
@@ -91,10 +91,15 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
             'FontLib\\' => 8,
             'Firebase\\JWT\\' => 13,
         ),
+        'E' => 
+        array (
+            'Endroid\\QrCode\\' => 15,
+        ),
         'D' => 
         array (
             'Dotenv\\' => 7,
             'Dompdf\\' => 7,
+            'DASPRiD\\Enum\\' => 13,
         ),
         'C' => 
         array (
@@ -104,6 +109,7 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         'B' => 
         array (
             'Brick\\Math\\' => 11,
+            'BaconQrCode\\' => 12,
         ),
     );
 
@@ -126,7 +132,7 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         ),
         'Svg\\' => 
         array (
-            0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',
+            0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg',
         ),
         'Sabberworm\\CSS\\' => 
         array (
@@ -315,11 +321,15 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         ),
         'FontLib\\' => 
         array (
-            0 => __DIR__ . '/..' . '/dompdf/php-font-lib/src/FontLib',
+            0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
         ),
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Endroid\\QrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/endroid/qr-code/src',
         ),
         'Dotenv\\' => 
         array (
@@ -328,6 +338,10 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         'Dompdf\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/dompdf/src',
+        ),
+        'DASPRiD\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
         ),
         'Composer\\Pcre\\' => 
         array (
@@ -340,6 +354,10 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         'Brick\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
+        ),
+        'BaconQrCode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 
@@ -356,6 +374,7 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'GPBMetadata\\GrpcGcp' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/GPBMetadata/GrpcGcp.php',
         'Grpc\\Gcp\\AffinityConfig' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/AffinityConfig.php',
@@ -363,8 +382,19 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
         'Grpc\\Gcp\\ApiConfig' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/ApiConfig.php',
         'Grpc\\Gcp\\ChannelPoolConfig' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/ChannelPoolConfig.php',
         'Grpc\\Gcp\\MethodConfig' => __DIR__ . '/..' . '/google/grpc-gcp/src/generated/Grpc/Gcp/MethodConfig.php',
+        'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'TCPDF' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf.php',
+        'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',
+        'TCPDFBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_1d.php',
+        'TCPDF_COLORS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_colors.php',
+        'TCPDF_FILTERS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_filters.php',
+        'TCPDF_FONTS' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_fonts.php',
+        'TCPDF_FONT_DATA' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_font_data.php',
+        'TCPDF_IMAGES' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_images.php',
+        'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_static.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
@@ -372,10 +402,10 @@ class ComposerStaticInit1535534dc97d141e1dd18867031b2d9d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit1535534dc97d141e1dd18867031b2d9d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit1535534dc97d141e1dd18867031b2d9d::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit1535534dc97d141e1dd18867031b2d9d::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit1535534dc97d141e1dd18867031b2d9d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda::$classMap;
 
         }, null, ClassLoader::class);
     }

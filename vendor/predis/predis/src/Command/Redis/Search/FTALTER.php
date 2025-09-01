@@ -13,7 +13,7 @@
 namespace Predis\Command\Redis\Search;
 
 use Predis\Command\Argument\Search\SchemaFields\FieldInterface;
-use Predis\Command\PrefixableCommand as RedisCommand;
+use Predis\Command\Command as RedisCommand;
 
 class FTALTER extends RedisCommand
 {
@@ -38,10 +38,5 @@ class FTALTER extends RedisCommand
             $commandArguments,
             $schema
         ));
-    }
-
-    public function prefixKeys($prefix)
-    {
-        $this->applyPrefixForFirstArgument($prefix);
     }
 }

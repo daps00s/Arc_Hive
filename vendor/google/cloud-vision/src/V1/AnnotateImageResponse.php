@@ -60,37 +60,37 @@ class AnnotateImageResponse extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.TextAnnotation full_text_annotation = 12;</code>
      */
-    protected $full_text_annotation = null;
+    private $full_text_annotation = null;
     /**
      * If present, safe-search annotation has completed successfully.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.SafeSearchAnnotation safe_search_annotation = 6;</code>
      */
-    protected $safe_search_annotation = null;
+    private $safe_search_annotation = null;
     /**
      * If present, image properties were extracted successfully.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.ImageProperties image_properties_annotation = 8;</code>
      */
-    protected $image_properties_annotation = null;
+    private $image_properties_annotation = null;
     /**
      * If present, crop hints have completed successfully.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.CropHintsAnnotation crop_hints_annotation = 11;</code>
      */
-    protected $crop_hints_annotation = null;
+    private $crop_hints_annotation = null;
     /**
      * If present, web detection has completed successfully.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.WebDetection web_detection = 13;</code>
      */
-    protected $web_detection = null;
+    private $web_detection = null;
     /**
      * If present, product search has completed successfully.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.ProductSearchResults product_search_results = 14;</code>
      */
-    protected $product_search_results = null;
+    private $product_search_results = null;
     /**
      * If set, represents the error message for the operation.
      * Note that filled-in image annotations are guaranteed to be
@@ -98,14 +98,14 @@ class AnnotateImageResponse extends \Google\Protobuf\Internal\Message
      *
      * Generated from protobuf field <code>.google.rpc.Status error = 9;</code>
      */
-    protected $error = null;
+    private $error = null;
     /**
      * If present, contextual information is needed to understand where this image
      * comes from.
      *
      * Generated from protobuf field <code>.google.cloud.vision.v1.ImageAnnotationContext context = 21;</code>
      */
-    protected $context = null;
+    private $context = null;
 
     /**
      * Constructor.

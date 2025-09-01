@@ -3,6 +3,7 @@ ob_start();
 session_start();
 require 'db_connection.php';
 require 'log_activity.php';
+require 'notification.php';
 require 'vendor/autoload.php'; // Load Composer autoloader for phpdotenv
 
 use Dotenv\Dotenv;
@@ -67,30 +68,6 @@ function validateCsrfToken(string $csrfToken): bool
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $csrfToken);
 }
 
-/**
- * Sends an access notification using the transactions table.
- *
- * @param int $userId
- * @param string $message
- * @param int|null $fileId
- * @param string $type
- * @return bool
- */
-function sendAccessNotification(int $userId, string $message, ?int $fileId, string $type): bool
-{
-    global $pdo;
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO transactions (user_id, file_id, transaction_type, transaction_status, transaction_time, message)
-            VALUES (?, ?, ?, 'pending', NOW(), ?)
-        ");
-        return $stmt->execute([$userId, $fileId, $type, $message]);
-    } catch (PDOException $e) {
-        error_log("Database error in sendAccessNotification: " . $e->getMessage());
-        return false;
-    }
-}
-
 try {
     // Validate request method
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -113,7 +90,7 @@ try {
     $username = $user['username'];
 
     $fileId = filter_var($input['file_id'] ?? null, FILTER_VALIDATE_INT);
-    $action = filter_var($input['action'] ?? null, FILTER_SANITIZE_STRING);
+    $action = filter_var($input['action'] ?? null, FILTER_SANITIZE_SPECIAL_CHARS);
 
     if (!$fileId || !$action || !in_array($action, ['request', 'approve', 'deny'])) {
         sendResponse(false, 'Missing or invalid parameters.', 400);
@@ -140,7 +117,7 @@ try {
         $stmt = $pdo->prepare("
             SELECT user_id
             FROM transactions
-            WHERE file_id = ? AND user_id = ? AND transaction_type IN ('file_sent', 'co-ownership')
+            WHERE file_id = ? AND user_id = ? AND transaction_type IN ('file_sent', 'co-ownership') AND transaction_status = 'accepted'
         ");
         $stmt->execute([$fileId, $userId]);
         if ($stmt->fetch()) {
@@ -150,18 +127,18 @@ try {
 
         // Log access request
         $stmt = $pdo->prepare("
-            INSERT INTO transactions (user_id, file_id, transaction_type, transaction_status, transaction_time, message)
+            INSERT INTO transactions (user_id, file_id, transaction_type, transaction_status, transaction_time, description)
             VALUES (?, ?, 'access_request', 'pending', NOW(), ?)
         ");
         $stmt->execute([$userId, $fileId, "Access request for file '{$file['file_name']}' by $username"]);
 
         // Notify file owner
         $ownerMessage = "$username has requested access to your file '{$file['file_name']}'.";
-        if (!sendAccessNotification($file['owner_id'], $ownerMessage, $fileId, 'notification')) {
+        if (!sendAccessNotification($file['owner_id'], $ownerMessage, $fileId, 'access_request')) {
             error_log("Failed to notify owner ID: {$file['owner_id']} for file ID: $fileId");
         }
 
-        logActivity($userId, "Requested access to file '{$file['file_name']}'", $fileId);
+        logActivity($userId, "Requested access to file '{$file['file_name']}'", $fileId, null, null, 'file_request');
         $pdo->commit();
         sendResponse(true, 'Access request sent successfully.', 200);
     } else {
@@ -218,13 +195,13 @@ try {
             error_log("Failed to notify requester ID: $requesterId, Message: $requesterMessage");
         }
 
-        logActivity($userId, "You have $newStatus the access request from $requesterUsername for your file '$fileName'", $fileId);
+        logActivity($userId, "You have $newStatus the access request from $requesterUsername for your file '$fileName'", $fileId, null, null, $action === 'approve' ? 'file_approve' : 'file_reject');
 
         if ($action === 'approve') {
             // Grant access via file transfer
             $stmt = $pdo->prepare("
-                INSERT INTO transactions (file_id, user_id, transaction_type, transaction_status, transaction_time, message)
-                VALUES (?, ?, 'file_sent', 'completed', NOW(), ?)
+                INSERT INTO transactions (file_id, user_id, transaction_type, transaction_status, transaction_time, description)
+                VALUES (?, ?, 'file_sent', 'accepted', NOW(), ?)
             ");
             if (!$stmt->execute([$fileId, $requesterId, "File access granted to $requesterUsername"])) {
                 $pdo->rollBack();
@@ -233,7 +210,7 @@ try {
 
             // Grant co-ownership
             $stmt = $pdo->prepare("
-                INSERT INTO transactions (file_id, user_id, transaction_type, transaction_status, transaction_time, message)
+                INSERT INTO transactions (file_id, user_id, transaction_type, transaction_status, transaction_time, description)
                 VALUES (?, ?, 'co-ownership', 'completed', NOW(), ?)
             ");
             $stmt->execute([$fileId, $requesterId, "Co-ownership granted to $requesterUsername"]);

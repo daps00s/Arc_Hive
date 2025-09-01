@@ -13,6 +13,8 @@
 namespace Predis\Command\Redis;
 
 use Predis\Command\Command as RedisCommand;
+use Predis\Command\Strategy\StrategyResolverInterface;
+use Predis\Command\Strategy\SubcommandStrategyResolver;
 
 /**
  * @see https://redis.io/commands/?name=function
@@ -22,6 +24,16 @@ use Predis\Command\Command as RedisCommand;
  */
 class FUNCTIONS extends RedisCommand
 {
+    /**
+     * @var StrategyResolverInterface
+     */
+    private $strategyResolver;
+
+    public function __construct()
+    {
+        $this->strategyResolver = new SubcommandStrategyResolver();
+    }
+
     public function getId()
     {
         return 'FUNCTION';
@@ -29,102 +41,10 @@ class FUNCTIONS extends RedisCommand
 
     public function setArguments(array $arguments)
     {
-        switch ($arguments[0]) {
-            case 'FLUSH':
-                $this->setFlushArguments($arguments);
-                break;
+        $strategy = $this->strategyResolver->resolve('functions', strtolower($arguments[0]));
+        $arguments = $strategy->processArguments($arguments);
 
-            case 'LIST':
-                $this->setListArguments($arguments);
-                break;
-
-            case 'LOAD':
-                $this->setLoadArguments($arguments);
-                break;
-
-            case 'RESTORE':
-                $this->setRestoreArguments($arguments);
-                break;
-
-            default:
-                parent::setArguments($arguments);
-        }
-
+        parent::setArguments($arguments);
         $this->filterArguments();
-    }
-
-    /**
-     * @param  array $arguments
-     * @return void
-     */
-    private function setFlushArguments(array $arguments): void
-    {
-        $processedArguments = [$arguments[0]];
-
-        if (array_key_exists(1, $arguments) && null !== $arguments[1]) {
-            $processedArguments[] = strtoupper($arguments[1]);
-        }
-
-        parent::setArguments($processedArguments);
-    }
-
-    /**
-     * @param  array $arguments
-     * @return void
-     */
-    private function setListArguments(array $arguments): void
-    {
-        $processedArguments = [$arguments[0]];
-
-        if (array_key_exists(1, $arguments) && null !== $arguments[1]) {
-            array_push($processedArguments, 'LIBRARYNAME', $arguments[1]);
-        }
-
-        if (array_key_exists(2, $arguments) && true === $arguments[2]) {
-            $processedArguments[] = 'WITHCODE';
-        }
-
-        parent::setArguments($processedArguments);
-    }
-
-    /**
-     * @param  array $arguments
-     * @return void
-     */
-    private function setLoadArguments(array $arguments): void
-    {
-        if (count($arguments) <= 2) {
-            parent::setArguments($arguments);
-
-            return;
-        }
-
-        $processedArguments = [$arguments[0]];
-        $replace = array_pop($arguments);
-
-        if (is_bool($replace) && $replace) {
-            $processedArguments[] = 'REPLACE';
-        } elseif (!is_bool($replace)) {
-            $processedArguments[] = $replace;
-        }
-
-        $processedArguments[] = $arguments[1];
-
-        parent::setArguments($processedArguments);
-    }
-
-    /**
-     * @param  array $arguments
-     * @return void
-     */
-    private function setRestoreArguments(array $arguments): void
-    {
-        $processedArguments = [$arguments[0], $arguments[1]];
-
-        if (array_key_exists(2, $arguments) && null !== $arguments[2]) {
-            $processedArguments[] = strtoupper($arguments[2]);
-        }
-
-        parent::setArguments($processedArguments);
     }
 }
