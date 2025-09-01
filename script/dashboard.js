@@ -102,32 +102,32 @@ $(document).ready(function() {
     });
 
     // Add change event for access level to toggle department fields
-$('#accessLevel').on('change', function() {
-    const value = $(this).val();
-    if (value === 'department' || value === 'sub_department') {
-        $('#departmentContainer').removeClass('hidden');
-        $('#departmentSelect').prop('disabled', false);
-        $('#subDepartmentSelect').prop('disabled', value === 'department');
-        $('#fileInput').prop('disabled', $('#hardcopyCheckbox').is(':checked'));
-    } else {
-        $('#departmentContainer').addClass('hidden');
-        $('#departmentSelect').prop('disabled', true);
-        $('#subDepartmentSelect').prop('disabled', true);
-        $('#fileInput').prop('disabled', $('#hardcopyCheckbox').is(':checked'));
-    }
-    fetchStorageSuggestion();
-});
+    $('#accessLevel').on('change', function() {
+        const value = $(this).val();
+        if (value === 'department' || value === 'sub_department') {
+            $('#departmentContainer').removeClass('hidden');
+            $('#departmentSelect').prop('disabled', false);
+            $('#subDepartmentSelect').prop('disabled', value === 'department');
+            $('#fileInput').prop('disabled', $('#hardcopyCheckbox').is(':checked'));
+        } else {
+            $('#departmentContainer').addClass('hidden');
+            $('#departmentSelect').prop('disabled', true);
+            $('#subDepartmentSelect').prop('disabled', true);
+            $('#fileInput').prop('disabled', $('#hardcopyCheckbox').is(':checked'));
+        }
+        fetchStorageSuggestion();
+    });
 
     // Add change event for department to fetch sub-departments
-$('#departmentSelect').on('change', function() {
-    const deptId = $(this).val();
-    if (deptId) {
-        fetchSubDepartments(deptId);
-    } else {
-        $('#subDepartmentSelect').empty().append('<option value="">No Sub-Department</option>').prop('disabled', true);
-    }
-    fetchStorageSuggestion();
-});
+    $('#departmentSelect').on('change', function() {
+        const deptId = $(this).val();
+        if (deptId) {
+            fetchSubDepartments(deptId);
+        } else {
+            $('#subDepartmentSelect').empty().append('<option value="">No Sub-Department</option>').prop('disabled', true);
+        }
+        fetchStorageSuggestion();
+    });
 
     // Add change event for sub-department
     $('#subDepartmentSelect').on('change', function() {
@@ -135,22 +135,22 @@ $('#departmentSelect').on('change', function() {
     });
 
     // Hardcopy checkbox toggle
-$('#hardcopyCheckbox').on('change', function() {
-    if ($(this).is(':checked')) {
-        $('#hardcopyOptions').removeClass('hidden');
-        $('#fileInput').prop('disabled', true).val('');
-        $('#filePreviewArea').empty();
-        $('#hardcopyFileName').prop('disabled', false);
-        fetchStorageSuggestion();
-    } else {
-        $('#hardcopyOptions').addClass('hidden');
-        $('#fileInput').prop('disabled', false);
-        $('#storageSuggestion').empty().addClass('hidden');
-        $('#physicalStorage').val('').prop('disabled', true);
-        $('#hardcopyFileName').val('').prop('disabled', true);
-        $('#hardcopySearchContainer').addClass('hidden');
-    }
-});
+    $('#hardcopyCheckbox').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#hardcopyOptions').removeClass('hidden');
+            $('#fileInput').prop('disabled', true).val('');
+            $('#filePreviewArea').empty();
+            $('#hardcopyFileName').prop('disabled', false);
+            fetchStorageSuggestion();
+        } else {
+            $('#hardcopyOptions').addClass('hidden');
+            $('#fileInput').prop('disabled', false);
+            $('#storageSuggestion').empty().addClass('hidden');
+            $('#physicalStorage').val('').prop('disabled', true);
+            $('#hardcopyFileName').val('').prop('disabled', true);
+            $('#hardcopySearchContainer').addClass('hidden');
+        }
+    });
 
     // Hardcopy option change
     $('input[name="hardcopyOption"]').on('change', function() {
@@ -491,66 +491,68 @@ $('#hardcopyCheckbox').on('change', function() {
             notyf.error('Please enter a search query');
         }
     });
-function fetchDepartments() {
-    $.ajax({
-        url: 'api/file_operations.php',
-        method: 'POST',
-        data: {
-            action: 'fetch_sub_departments',
-            csrf_token: csrfToken
-        },
-        success: function(data) {
-            console.log('Fetch departments response:', data);
-            if (data.success && data.sub_departments) {
-                const select = $('#departmentSelect').empty().append('<option value="">Select Department</option>');
-                data.sub_departments.forEach(dept => {
-                    select.append(`<option value="${dept.department_id}">${dept.department_name}</option>`);
-                });
-                fetchStorageSuggestion(); // Trigger suggestion after initial load
-            } else {
-                notyf.error(data.message || 'Failed to fetch departments');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Departments fetch error:', status, error, xhr.responseText);
-            notyf.error('Failed to fetch departments');
-        }
-    });
-}
-    // Fetch sub-departments
-function fetchSubDepartments(deptId) {
-    $.ajax({
-        url: 'api/file_operations.php',
-        method: 'POST',
-        data: {
-            action: 'fetch_sub_departments',
-            department_id: deptId,
-            csrf_token: csrfToken
-        },
-        success: function(data) {
-            console.log('Sub-departments response:', data);
-            const select = $('#subDepartmentSelect').empty().append('<option value="">No Sub-Department</option>');
-            if (data.success && data.sub_departments) {
-                if (data.sub_departments.length === 0) {
-                    console.warn('No sub-departments found for department ID:', deptId);
+
+    function fetchDepartments() {
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'fetch_sub_departments',
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('Fetch departments response:', data);
+                if (data.success && data.sub_departments) {
+                    const select = $('#departmentSelect').empty().append('<option value="">Select Department</option>');
+                    data.sub_departments.forEach(dept => {
+                        select.append(`<option value="${dept.department_id}">${dept.department_name}</option>`);
+                    });
+                    fetchStorageSuggestion(); // Trigger suggestion after initial load
+                } else {
+                    notyf.error(data.message || 'Failed to fetch departments');
                 }
-                data.sub_departments.forEach(dept => {
-                    select.append(`<option value="${dept.department_id}">${dept.department_name}</option>`);
-                });
-                select.prop('disabled', data.sub_departments.length === 0);
-            } else {
-                notyf.error(data.message || 'Failed to load sub-departments');
-                select.prop('disabled', true);
+            },
+            error: function(xhr, status, error) {
+                console.error('Departments fetch error:', status, error, xhr.responseText);
+                notyf.error('Failed to fetch departments');
             }
-            fetchStorageSuggestion();
-        },
-        error: function(xhr, status, error) {
-            console.error('Sub-departments fetch error:', status, error, xhr.responseText);
-            notyf.error('Failed to load sub-departments');
-            $('#subDepartmentSelect').prop('disabled', true);
-        }
-    });
-}
+        });
+    }
+
+    // Fetch sub-departments
+    function fetchSubDepartments(deptId) {
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'fetch_sub_departments',
+                department_id: deptId,
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('Sub-departments response:', data);
+                const select = $('#subDepartmentSelect').empty().append('<option value="">No Sub-Department</option>');
+                if (data.success && data.sub_departments) {
+                    if (data.sub_departments.length === 0) {
+                        console.warn('No sub-departments found for department ID:', deptId);
+                    }
+                    data.sub_departments.forEach(dept => {
+                        select.append(`<option value="${dept.department_id}">${dept.department_name}</option>`);
+                    });
+                    select.prop('disabled', data.sub_departments.length === 0);
+                } else {
+                    notyf.error(data.message || 'Failed to load sub-departments');
+                    select.prop('disabled', true);
+                }
+                fetchStorageSuggestion();
+            },
+            error: function(xhr, status, error) {
+                console.error('Sub-departments fetch error:', status, error, xhr.responseText);
+                notyf.error('Failed to load sub-departments');
+                $('#subDepartmentSelect').prop('disabled', true);
+            }
+        });
+    }
 
     // Fetch document fields
     function fetchDocumentFields(docTypeId) {
@@ -829,71 +831,10 @@ function fetchSubDepartments(deptId) {
         const $fileItem = $(this).closest('.file-item');
         const fileId = $fileItem.data('file-id');
         const action = $(this).attr('class');
+        $('.file-menu').addClass('hidden');
 
         if (action === 'file-info') {
-            $.ajax({
-                url: 'api/file_operations.php',
-                method: 'POST',
-                data: {
-                    action: 'fetch_file_info',
-                    file_id: fileId,
-                    csrf_token: csrfToken
-                },
-                success: function(data) {
-                    console.log('File info response:', data);
-                    if (data.success) {
-                        const $detailsTab = $('#detailsTab').empty();
-                        $detailsTab.append('<div class="file-info-section"><strong>Access:</strong> ' + (data.file.access_level || 'Unknown') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>QR Code:</strong> ' + (data.file.qr_path ? 'Available' : 'Not Available') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>File Type:</strong> ' + (data.file.file_type || data.file.document_type || 'Unknown') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>File Size:</strong> ' + 
-                            (data.file.file_size ? (data.file.file_size / 1024).toFixed(2) + ' KB' : 'N/A') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>Category:</strong> ' + (data.file.document_type || 'Unknown') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>Uploader:</strong> ' + (data.file.uploader_name || 'Unknown') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>Upload Date:</strong> ' + 
-                            (data.file.upload_date ? new Date(data.file.upload_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>Physical Location:</strong> ' + (data.file.physical_location || 'None') + '</div>');
-                        $detailsTab.append('<div class="file-info-section"><strong>Document Type:</strong> ' + (data.file.document_type || 'Unknown') + '</div>');
-                        if (data.formatted_fields && data.formatted_fields.length > 0) {
-                            let fieldsHtml = '<div class="file-info-section"><strong>Fields:</strong><ul class="fields-list">';
-                            data.formatted_fields.forEach(field => {
-                                fieldsHtml += `<li>${field.key}: ${field.value}</li>`;
-                            });
-                            fieldsHtml += '</ul></div>';
-                            $detailsTab.append(fieldsHtml);
-                        } else {
-                            $detailsTab.append('<div class="file-info-section"><strong>Fields:</strong> None</div>');
-                        }
-                        $('#fileSentTo').text(data.activity.sent_to ? data.activity.sent_to.join(', ') : 'None');
-                        $('#fileReceivedBy').text(data.activity.received_by ? data.activity.received_by.join(', ') : 'None');
-                        $('#fileCopiedBy').text(data.activity.copied_by ? data.activity.copied_by.join(', ') : 'None');
-                        $('#fileRenamedTo').text(data.activity.renamed_to || 'None');
-                        const $preview = $('#filePreview').empty();
-                        if (data.file.file_type && data.file.file_type.startsWith('image/')) {
-                            $preview.append(
-                                `<img src="${data.file.file_path}" alt="Preview of ${data.file.file_name}" style="max-width: 100%; max-height: 200px;">`
-                            );
-                        } else if (data.file.file_type === 'application/pdf') {
-                            $preview.append('<i class="fas fa-file-pdf fa-3x"></i><p>PDF Preview Not Available</p>');
-                        } else {
-                            $preview.append('<i class="fas fa-file fa-3x"></i><p>No Preview Available</p>');
-                        }
-                        $('#fileInfoSidebar')
-                            .removeClass('hidden')
-                            .css({ right: '-400px' })
-                            .animate({ right: '0' }, 300);
-                    } else {
-                        notyf.error(data.message || 'Failed to load file information');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('File info fetch error:', status, error, xhr.responseText);
-                    notyf.error('Failed to load file information');
-                }
-            });
+            window.populateFileInfoSidebar(fileId, csrfToken);
         }
-        $('.file-menu').addClass('hidden');
     });
-
-
 });
