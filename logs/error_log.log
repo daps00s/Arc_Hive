@@ -2003,3 +2003,27 @@ Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size'
 [01-Sep-2025 09:14:47 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
 [01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
 [01-Sep-2025 09:14:47 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive-main\my-report.php on line 167
+[03-Sep-2025 03:46:51 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 03:46:51 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 03:46:51 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 03:46:51 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:24:19 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:24:19 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:24:19 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:24:19 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:24:23 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:24:23 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:24:23 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:24:23 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:31:17 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:31:17 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:31:17 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:31:17 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:31:20 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:31:20 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:31:20 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:31:20 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:36:39 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:36:39 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[03-Sep-2025 04:36:39 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[03-Sep-2025 04:36:39 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167

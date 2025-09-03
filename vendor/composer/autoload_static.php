@@ -17,10 +17,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
     );
 
     public static $prefixLengthsPsr4 = array (
-        'Z' => 
-        array (
-            'ZipStream\\' => 10,
-        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Php80\\' => 23,
@@ -38,7 +34,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
         ),
         'P' => 
         array (
-            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
@@ -46,13 +41,11 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
             'Predis\\' => 7,
             'PhpOption\\' => 10,
             'PhpOffice\\PhpWord\\' => 18,
-            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PhpOffice\\Math\\' => 15,
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
-            'Matrix\\' => 7,
             'Masterminds\\' => 12,
         ),
         'G' => 
@@ -101,11 +94,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
             'Dompdf\\' => 7,
             'DASPRiD\\Enum\\' => 13,
         ),
-        'C' => 
-        array (
-            'Composer\\Pcre\\' => 14,
-            'Complex\\' => 8,
-        ),
         'B' => 
         array (
             'Brick\\Math\\' => 11,
@@ -114,10 +102,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
     );
 
     public static $prefixDirsPsr4 = array (
-        'ZipStream\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
-        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -154,10 +138,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
         array (
             0 => __DIR__ . '/..' . '/ramsey/collection/src',
         ),
-        'Psr\\SimpleCache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -187,10 +167,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
         array (
             0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
         ),
-        'PhpOffice\\PhpSpreadsheet\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
-        ),
         'PhpOffice\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/math/src/Math',
@@ -198,10 +174,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
-        ),
-        'Matrix\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
         ),
         'Masterminds\\' => 
         array (
@@ -342,14 +314,6 @@ class ComposerStaticInitb51087ddf5e9aceec0b2bd2f93f7dcda
         'DASPRiD\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/dasprid/enum/src',
-        ),
-        'Composer\\Pcre\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/composer/pcre/src',
-        ),
-        'Complex\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
         'Brick\\Math\\' => 
         array (
