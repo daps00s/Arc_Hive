@@ -41,11 +41,8 @@ $pdo = new PDO($dsn, $username, $password, $options);
 
 // Fetch admin details
 try {
-    $adminStmt = executeQuery(
-        $pdo,
-        "SELECT user_id, username, role FROM users WHERE user_id = ?",
-        [$_SESSION['user_id']]
-    );
+    $adminStmt = $pdo->prepare("SELECT user_id, username, role FROM users WHERE user_id = ?");
+    $adminStmt->execute([$_SESSION['user_id']]);
     $admin = $adminStmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$admin) {
@@ -68,7 +65,8 @@ $statisticsQueries = [
 $stats = [];
 foreach ($statisticsQueries as $key => $query) {
     try {
-        $stmt = executeQuery($pdo, $query);
+        $stmt = $pdo->prepare($query);
+        $stmt->execute();
         $stats[$key] = $stmt->fetchColumn() ?: 0;
     } catch (Exception $e) {
         error_log("Error fetching statistic {$key}: " . $e->getMessage());
@@ -81,7 +79,8 @@ foreach ($statisticsQueries as $key => $query) {
 function fetchData(PDO $pdo, string $query, array $params = []): array
 {
     try {
-        $stmt = executeQuery($pdo, $query, $params);
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     } catch (Exception $e) {
         error_log("Error fetching data: " . $e->getMessage());
@@ -160,34 +159,7 @@ $reportData = [
 ] = $reportData;
 
 // Generate CSRF token
-function generateCsrfToken(): string
-{
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
-
-$csrfToken = generateCsrfToken();
-
-// Database query execution with error handling
-function executeQuery(PDO $pdo, string $query, array $params = []): PDOStatement
-{
-    try {
-        $stmt = $pdo->prepare($query);
-        $stmt->execute($params);
-        return $stmt;
-    } catch (PDOException $e) {
-        error_log("Database error in executeQuery: " . $e->getMessage());
-        throw new RuntimeException("Database operation failed", 0, $e);
-    }
-}
-
-// Sanitize output
-function sanitizeOutput(?string $data): string
-{
-    return htmlspecialchars($data ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
-}
+$csrfToken = bin2hex(random_bytes(16));
 
 // Generate CSV
 function generateCSV($data, $report) {
@@ -205,85 +177,9 @@ function generateCSV($data, $report) {
     exit;
 }
 
-// Generate Word using PHPWord
-function generateWord($data, $report) {
-    try {
-        require_once 'vendor/autoload.php';
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        $section = $phpWord->addSection();
-        $table = $section->addTable();
-
-        // Headers
-        $headers = [
-            'FileUploadTrends' => ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
-            'FileDistribution' => ['Department', 'File Count'],
-            'UsersPerDepartment' => ['Department', 'User Count'],
-            'DocumentCopies' => ['File Name', 'Copy Count', 'Offices with Copy'],
-            'PendingRequests' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-            'RetrievalHistory' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-            'AccessHistory' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
-        ];
-        $header = $headers[$report] ?? array_keys($data[0]);
-
-        $table->addRow();
-        foreach ($header as $col) {
-            $table->addCell(2000)->addText($col, ['bold' => true], ['alignment' => 'center']);
-        }
-
-        // Data
-        foreach ($data as $row) {
-            $table->addRow();
-            switch ($report) {
-                case 'FileUploadTrends':
-                    $table->addCell(2000)->addText($row['file_id'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['file_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText(isset($row['upload_date']) ? date('Y-m-d H:i:s', strtotime($row['upload_date'])) : 'N/A');
-                    $table->addCell(2000)->addText($row['uploader_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['department_name'] ?? 'None');
-                    $table->addCell(2000)->addText($row['document_type'] ?? 'None');
-                    break;
-                case 'FileDistribution':
-                    $table->addCell(2000)->addText($row['department_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['count'] ?? '0');
-                    break;
-                case 'UsersPerDepartment':
-                    $table->addCell(2000)->addText($row['department_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['user_count'] ?? '0');
-                    break;
-                case 'DocumentCopies':
-                    $table->addCell(2000)->addText($row['file_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['copy_count'] ?? '0');
-                    $table->addCell(2000)->addText($row['offices_with_copy'] ?? 'None');
-                    break;
-                case 'PendingRequests':
-                case 'RetrievalHistory':
-                case 'AccessHistory':
-                    $table->addCell(2000)->addText($row['transaction_id'] ?? 'N/A');
-                    $table->addCell(2000)->addText(isset($row['time']) ? date('Y-m-d H:i:s', strtotime($row['time'])) : 'N/A');
-                    $table->addCell(2000)->addText($row['username'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['file_name'] ?? 'N/A');
-                    $table->addCell(2000)->addText($row['department_name'] ?? 'None');
-                    break;
-            }
-        }
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Disposition: attachment;filename="' . $report . '_Report_' . date('YmdHis') . '.docx"');
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $writer->save("php://output");
-        exit;
-    } catch (Exception $e) {
-        error_log("Word generation error: " . $e->getMessage());
-        header('HTTP/1.1 500 Internal Server Error');
-        echo "Error generating Word: " . htmlspecialchars($e->getMessage());
-        exit;
-    }
-}
-
 // Generate PDF using TCPDF
 function generatePDF($chartType, $data, $title) {
     try {
-        // Check if TCPDF exists
         if (!file_exists('vendor/tecnickcom/tcpdf/tcpdf.php')) {
             error_log("TCPDF library not found at vendor/tecnickcom/tcpdf/tcpdf.php");
             header('HTTP/1.1 500 Internal Server Error');
@@ -292,91 +188,128 @@ function generatePDF($chartType, $data, $title) {
         }
         require_once('vendor/tecnickcom/tcpdf/tcpdf.php');
 
-        // Clean output buffer to prevent corruption
         while (ob_get_level()) ob_end_clean();
 
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         
-        // Disable header and footer for simplicity
         $pdf->SetPrintHeader(false);
         $pdf->SetPrintFooter(false);
         
-        // Set document information
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('ArcHive');
         $pdf->SetTitle($title . ' Report');
         $pdf->SetSubject('Report generated from ArcHive Dashboard');
         
-        // Set margins (left, top, right, in mm)
         $pdf->SetMargins(15, 15, 15);
         $pdf->SetAutoPageBreak(TRUE, 15);
         
-        // Set font
         $pdf->SetFont('helvetica', '', 10);
         
-        // Add a page
         $pdf->AddPage();
         
-        // Add title
         $pdf->SetFont('helvetica', 'B', 16);
         $pdf->Cell(0, 10, $title, 0, 1, 'C');
         
-        // Add generation date
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Cell(0, 10, 'Generated on: ' . date('F j, Y, g:i A'), 0, 1, 'C'); // Includes time
+        $pdf->Cell(0, 10, 'Generated on: ' . date('F j, Y, g:i A'), 0, 1, 'C');
         
-        error_log("PDF data for $title: " . print_r($data, true)); // Debug log for data contents
+        error_log("PDF data for $title: " . print_r($data, true));
 
         if (empty($data)) {
             $pdf->Write(0, 'No data available.', '', 0, 'C');
         } else {
-            // Define headers based on chartType
-            $headers = [
-                'FileUploadTrends' => ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
-                'FileDistribution' => ['Department', 'File Count'],
-                'UsersPerDepartment' => ['Department', 'User Count'],
-                'DocumentCopies' => ['File Name', 'Copy Count', 'Offices with Copy'],
-                'PendingRequests' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                'RetrievalHistory' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                'AccessHistory' => ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
-            ];
+            $header = array_keys($data[0]);
 
-            $header = $headers[$chartType] ?? array_keys($data[0]);
+            $pdf->SetFillColor(80, 200, 120);
+            $pdf->SetTextColor(255, 255, 255);
+            $cellWidth = 180 / count($header);
 
-            // Generate table using TCPDF's MultiCell for better control
-            $pdf->SetFillColor(80, 200, 120); // Header background
-            $pdf->SetTextColor(255, 255, 255); // White text
-            $cellWidth = 180 / count($header); // Distribute width evenly
-
-            // Header row
             foreach ($header as $col) {
-                $pdf->MultiCell($cellWidth, 7, $col, 1, 'C', 1, 0, '', '', true, 0, false, true, 7, 'M');
+                $label = ucwords(str_replace('_', ' ', $col));
+                $pdf->MultiCell($cellWidth, 7, $label, 1, 'C', 1, 0, '', '', true, 0, false, true, 7, 'M');
             }
             $pdf->Ln();
 
-            // Data rows
-            $pdf->SetFillColor(255, 255, 255); // White background
-            $pdf->SetTextColor(0, 0, 0); // Black text
+            $pdf->SetFillColor(255, 255, 255);
+            $pdf->SetTextColor(0, 0, 0);
             $fill = 0;
             foreach ($data as $row) {
                 foreach ($header as $col) {
-                    $value = $row[strtolower(str_replace(' ', '_', $col))] ?? $row[$col] ?? 'N/A';
-                    if (in_array($col, ['Upload Date', 'Time']) && !empty($value)) {
+                    $value = $row[$col] ?? 'N/A';
+                    if (in_array($col, ['upload_date', 'transaction_time', 'time']) && !empty($value)) {
                         $value = date('Y-m-d H:i:s', strtotime($value));
                     }
                     $pdf->MultiCell($cellWidth, 6, $value, 1, 'L', $fill, 0, '', '', true, 0, false, true, 6, 'M');
                 }
                 $pdf->Ln();
-                $fill = !$fill; // Alternate row color
+                $fill = !$fill;
             }
         }
         
-        // Output PDF
         $pdf->Output($title . '_Report_' . date('YmdHis') . '.pdf', 'D');
     } catch (Exception $e) {
         error_log("PDF generation error: " . $e->getMessage());
         header('HTTP/1.1 500 Internal Server Error');
         echo "Error generating PDF: " . htmlspecialchars($e->getMessage());
+        exit;
+    }
+}
+
+// Generate Word using PHPWord
+function generateWord($data, $report) {
+    try {
+        if (!file_exists('vendor/autoload.php')) {
+            error_log("PHPWord autoload not found at vendor/autoload.php");
+            header('HTTP/1.1 500 Internal Server Error');
+            echo "Error: PHPWord library not found.";
+            exit;
+        }
+        require_once 'vendor/autoload.php';
+
+        while (ob_get_level()) ob_end_clean();
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $table = $section->addTable();
+
+        $header = array_keys($data[0]);
+
+        $table->addRow();
+        foreach ($header as $col) {
+            $label = ucwords(str_replace('_', ' ', $col));
+            $table->addCell(2000)->addText($label, ['bold' => true], ['alignment' => 'center']);
+        }
+
+        error_log("Word data for $report: " . print_r($data, true));
+
+        if (empty($data)) {
+            $section->addText('No data available.');
+        } else {
+            foreach ($data as $row) {
+                $table->addRow();
+                foreach ($header as $col) {
+                    $value = $row[$col] ?? 'N/A';
+                    if (in_array($col, ['upload_date', 'transaction_time', 'time']) && !empty($value)) {
+                        $value = date('Y-m-d H:i:s', strtotime($value));
+                    }
+                    $table->addCell(2000)->addText($value);
+                }
+            }
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Disposition: attachment;filename="' . $report . '_Report_' . date('YmdHis') . '.docx"');
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save('php://output');
+        exit;
+    } catch (Exception $e) {
+        error_log("Word generation error: " . $e->getMessage());
+        header('HTTP/1.1 500 Internal Server Error');
+        echo "Error generating Word: " . htmlspecialchars($e->getMessage());
         exit;
     }
 }
@@ -420,14 +353,15 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             die("No data available for download.");
         }
     } elseif ($_GET['download'] === 'pdf') {
-        error_log("Attempting PDF for $report with data count: " . count($data)); // Debug log
+        error_log("Attempting PDF for $report with data count: " . count($data));
         if (!empty($data)) {
-            generatePDF($report, $data, $report); // Pass $data directly
+            generatePDF($report, $data, $report);
         } else {
             error_log("No data available for PDF download: $report");
             die("No data available for download.");
         }
     } elseif ($_GET['download'] === 'word') {
+        error_log("Attempting Word for $report with data count: " . count($data));
         if (!empty($data)) {
             generateWord($data, $report);
         } else {
@@ -463,7 +397,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
     <?php include 'admin_menu.php'; ?>
 
     <div class="top-nav">
-        <h2>Welcome, <?= sanitizeOutput($admin['username']) ?>!</h2>
+        <h2>Welcome, <?= htmlspecialchars($admin['username']) ?>!</h2>
         <button class="toggle-btn" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
             <i class="fas fa-bars"></i>
         </button>
@@ -471,7 +405,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
 
     <div class="main-content">
         <?php if (isset($errorMessage)): ?>
-            <div class="error-message"><i class="fas fa-exclamation-circle"></i> <?= sanitizeOutput($errorMessage) ?></div>
+            <div class="error-message"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($errorMessage) ?></div>
         <?php endif; ?>
 
         <!-- Statistics Cards -->
@@ -794,13 +728,13 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             const slicedData = data.slice(start, end);
 
             const tableHeaders = {
-                FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
-                FileDistribution: ['Department', 'File Count'],
-                UsersPerDepartment: ['Department', 'User Count'],
+                FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department Name', 'Document Type'],
+                FileDistribution: ['Department Name', 'File Count'],
+                UsersPerDepartment: ['Department Name', 'User Count'],
                 DocumentCopies: ['File Name', 'Copy Count', 'Offices with Copy'],
-                PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
+                PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name'],
+                RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name'],
+                AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name']
             };
 
             const headers = tableHeaders[chartType] || [];
@@ -1047,13 +981,13 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
 
             if (format === 'csv') {
                 const headers = {
-                    FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department', 'Document Type'],
-                    FileDistribution: ['Department', 'File Count'],
-                    UsersPerDepartment: ['Department', 'User Count'],
+                    FileUploadTrends: ['File ID', 'File Name', 'Upload Date', 'Uploader', 'Department Name', 'Document Type'],
+                    FileDistribution: ['Department Name', 'File Count'],
+                    UsersPerDepartment: ['Department Name', 'User Count'],
                     DocumentCopies: ['File Name', 'Copy Count', 'Offices with Copy'],
-                    PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                    RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department'],
-                    AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department']
+                    PendingRequests: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name'],
+                    RetrievalHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name'],
+                    AccessHistory: ['Transaction ID', 'Time', 'Username', 'File Name', 'Department Name']
                 };
 
                 let csvContent = headers[chartType].map(escapeCsvField).join(',') + '\n';
