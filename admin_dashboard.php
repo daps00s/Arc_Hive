@@ -314,10 +314,12 @@ function generateWord($data, $report) {
     }
 }
 
-// Handle CSV and PDF downloads
+// Handle CSV, PDF, and Word downloads
 if (isset($_GET['download']) && isset($_GET['report'])) {
     $report = $_GET['report'];
     $data = [];
+
+    // Select which dataset to export
     switch ($report) {
         case 'FileUploadTrends':
             $data = $fileUploadTrendsTable;
@@ -345,6 +347,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             die("Invalid report type.");
     }
 
+    // CSV
     if ($_GET['download'] === 'csv') {
         if (!empty($data)) {
             generateCSV($data, $report);
@@ -352,6 +355,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             error_log("No data available for CSV download: $report");
             die("No data available for download.");
         }
+
+    // PDF
     } elseif ($_GET['download'] === 'pdf') {
         error_log("Attempting PDF for $report with data count: " . count($data));
         if (!empty($data)) {
@@ -360,19 +365,61 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             error_log("No data available for PDF download: $report");
             die("No data available for download.");
         }
+
+    // Word
     } elseif ($_GET['download'] === 'word') {
-        error_log("Attempting Word for $report with data count: " . count($data));
-        if (!empty($data)) {
-            generateWord($data, $report);
-        } else {
+        require_once __DIR__ . '/vendor/autoload.php';
+
+        if (empty($data)) {
             error_log("No data available for Word download: $report");
             die("No data available for download.");
         }
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+
+        // Title
+        $section->addText("Report: " . htmlspecialchars($report), ['bold' => true, 'size' => 16]);
+
+        // Table
+        $table = $section->addTable();
+
+        // Header row
+        $headers = array_keys($data[0]);
+        $table->addRow();
+        foreach ($headers as $header) {
+            $table->addCell(3000)->addText($header, ['bold' => true]);
+        }
+
+        // Data rows
+        foreach ($data as $row) {
+            $table->addRow();
+            foreach ($row as $cell) {
+                $table->addCell(3000)->addText((string)$cell);
+            }
+        }
+
+        // Clean output buffer before sending file
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+
+        // Output Word file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        header('Content-Disposition: attachment;filename="' . $report . '.docx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save('php://output');
+        exit();
+
+    // Invalid format
     } else {
         error_log("Invalid download format for report: $report");
         die("Invalid download format.");
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -392,6 +439,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="lib/chart.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
 </head>
 <body class="admin-dashboard">
     <?php include 'admin_menu.php'; ?>
@@ -1059,6 +1108,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                 alert('Invalid format selected.');
             }
             closeDownloadModal();
+
+            
         };
 
         // Sidebar Toggle

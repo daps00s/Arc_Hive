@@ -3,7 +3,7 @@
         'name' => 'rivzr/arc-hive-defense',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6575d586ddee0cc8ea34acbbb75042c4b344502e',
+        'reference' => '172ac553a821fed3a03990775f503e808cc9cc05',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -358,7 +358,7 @@
         'rivzr/arc-hive-defense' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6575d586ddee0cc8ea34acbbb75042c4b344502e',
+            'reference' => '172ac553a821fed3a03990775f503e808cc9cc05',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
