@@ -484,6 +484,11 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                 <h3>File Activity (7 Days)</h3>
                 <p><?= $stats['fileActivity'] ?></p>
             </div>
+            <div class="stat-card">
+                <i class="fas fa-user"></i>
+                <h3>Activity logs </h3>
+                <p><?= $stats['Activity_logs'] ?></p>
+            </div>
         </div>
 
         <!-- Charts Grid -->

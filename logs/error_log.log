@@ -2035,3 +2035,12 @@ Upload error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'file_size'
 [03-Sep-2025 07:46:12 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
 [03-Sep-2025 07:46:12 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
 [03-Sep-2025 07:46:12 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[04-Sep-2025 05:06:19 Europe/Berlin] Error fetching user details in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[04-Sep-2025 05:06:19 Europe/Berlin] Error fetching document copies in my-report.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.user_departments' doesn't exist
+[04-Sep-2025 05:06:19 Europe/Berlin] PHP Warning:  Undefined variable $userDepartments in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[04-Sep-2025 05:06:19 Europe/Berlin] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-report.php on line 167
+[04-Sep-2025 05:06:25 Europe/Berlin] Error fetching departments in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.users_department' doesn't exist
+[04-Sep-2025 05:06:25 Europe/Berlin] Error fetching document types in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[04-Sep-2025 05:06:25 Europe/Berlin] Error fetching user files in my-folder.php: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'arc-hive-maindb.documents_type_fields' doesn't exist
+[04-Sep-2025 05:06:25 Europe/Berlin] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in C:\xampp\htdocs\GitHub.com\Arc_Hive\my-Folder.php on line 205
+[04-Sep-2025 05:06:25 Europe/Berlin] [2025-09-04 05:06:25] User 14 (Sgt Caleb Steven A Lagunilla PA (Res)) accessed My Folder page
