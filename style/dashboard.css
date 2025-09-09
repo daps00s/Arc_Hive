@@ -36,6 +36,17 @@ body {
     min-height: 100vh;
 }
 
+.fas.fa-bell,
+.fas.fa-history {
+   color: var(--primary-color);
+   transition: color 0.3s ease; /* smooth transition */
+}
+
+.fas.fa-bell:hover,
+.fas.fa-history:hover {
+   color: var(--primary-hover); /* change to another variable/color */
+}
+
 .main-container {
     flex: 1;
     margin-left: var(--sidebar-width);
@@ -235,24 +246,6 @@ select.error {
     min-height: calc(100vh - calc(var(--spacing-unit) * 8));
 }
 
-.notifications-sidebar {
-    position: fixed;
-    top: calc(var(--spacing-unit) * 8);
-    right: 0;
-    width: var(--notifications-width);
-    height: calc(100vh - calc(var(--spacing-unit) * 8));
-    background: var(--card-background);
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.05);
-    border-radius: var(--border-radius);
-    padding: calc(var(--spacing-unit) * 2.5);
-    overflow-y: auto;
-    z-index: 900;
-    transition: transform var(--transition);
-}
-
-.notifications-sidebar.hidden {
-    transform: translateX(100%);
-}
 
 .choose-file-button {
     background: var(--primary-color);
@@ -973,4 +966,114 @@ select.error {
         transform: translateX(0);
     }
 
+}
+
+
+#filePreview {
+    max-height: 400px;
+    overflow: auto;
+    margin: 20px 0;
+}
+.notification-actions {
+    display: flex;
+    gap: 10px;
+}
+.accept-notification {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.reject-notification {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* style/dashboard.css */
+.file-item.selectable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.file-item.selectable.selected {
+    background-color: #e0f7fa;
+    border: 2px solid #007bff;
+}
+
+.recipient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: #f9f9f9;
+}
+
+.recipient-item .remove-recipient {
+    cursor: pointer;
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.recipient-list.scrollable {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.no-recipients {
+    color: #888;
+    text-align: center;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.clickable-notification {
+    cursor: pointer;
+}
+
+.clickable-notification:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid var(--primary-color);
+}
+
+.file-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    max-height: 300px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.file-preview-container img.file-preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+.file-preview-container p {
+    margin: 10px 0 0;
+    color: #666;
+}
+
+.file-preview-container i {
+    color: #666;
 }

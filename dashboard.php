@@ -89,16 +89,17 @@ $queries = [
         'params' => [$userId]
     ],
     // Notifications
-    [
-        'sql' => "
-            SELECT t.transaction_id AS id, t.file_id, t.transaction_status, t.transaction_time AS timestamp, 
-                   t.description AS message, COALESCE(f.file_name, 'Unknown File') AS file_name
-            FROM transactions t
-            LEFT JOIN files f ON t.file_id = f.file_id
-            WHERE t.user_id = ? AND t.transaction_type = 'notification'
-            ORDER BY t.transaction_time DESC",
-        'params' => [$userId]
-    ],
+   // Notifications
+[
+    'sql' => "
+        SELECT t.transaction_id AS id, t.file_id, t.transaction_status, t.transaction_time AS timestamp, 
+               t.description AS message, COALESCE(f.file_name, 'Unknown File') AS file_name
+        FROM transactions t
+        LEFT JOIN files f ON t.file_id = f.file_id
+        WHERE t.user_id = ? AND t.transaction_type IN ('notification', 'file_sent', 'receive_notification')
+        ORDER BY t.transaction_time DESC",
+    'params' => [$userId]
+],
     // Activity logs
     [
         'sql' => "
@@ -163,11 +164,45 @@ $filesReceived = $results[4] ?? [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
     <title>Arc-Hive Dashboard</title>
+    <!-- Add Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel="stylesheet" href="style/client-sidebar.css">
     <link rel="stylesheet" href="style/dashboard.css">
     <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+<style>
+    #preview {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
+        min-height: 200px;
+        text-align: center;
+        background: #f8f8f8;
+    }
+    #preview img {
+        max-width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+    #preview pre {
+        text-align: left;
+        background: #f8f8f8;
+        padding: 10px;
+        border-radius: 4px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    #preview embed {
+        width: 100%;
+        height: 400px;
+    }
+    #previewError {
+        color: red;
+        text-align: center;
+    }
+</style>
 </head>
 
 <body>
@@ -201,10 +236,13 @@ $filesReceived = $results[4] ?? [];
                     <input type="text" id="searchInput" name="query" placeholder="Search files and content..." aria-label="Search files and content">
                     <button type="submit" class="search-button" aria-label="Search"><i class="fas fa-search"></i></button>
                 </form>
-                <button class="notifications-toggle" aria-label="Toggle Notifications">
+                <button class="btn notifications-toggle position-relative" data-bs-toggle="offcanvas" data-bs-target="#notificationsOffcanvas" aria-label="Toggle Notifications">
                     <i class="fas fa-bell"></i>
                     <?php if (count(array_filter($notifications, fn($n) => $n['transaction_status'] === 'pending')) > 0): ?>
-                        <span class="notification-badge"><?= count(array_filter($notifications, fn($n) => $n['transaction_status'] === 'pending')) ?></span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                            <?= count(array_filter($notifications, fn($n) => $n['transaction_status'] === 'pending')) ?>
+                            <span class="visually-hidden">unread notifications</span>
+                        </span>
                     <?php endif; ?>
                 </button>
                 <button id="activityLogTrigger" class="activity-log-toggle" aria-label="View Activity Log">
@@ -212,26 +250,37 @@ $filesReceived = $results[4] ?? [];
                 </button>
             </div>
         </nav>
-        <div class="notifications-sidebar hidden">
-            <h3>Notifications</h3>
-            <button class="mark-all-read">Mark all as read</button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="notificationsOffcanvas" aria-labelledby="notificationsOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h3 class="offcanvas-title" id="notificationsOffcanvasLabel">Notifications</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+            <button class="btn mark-all-read w-100 mb-3">Mark all as read</button>
             <?php if (empty($notifications)): ?>
-                <p class="no-notifications">No notifications available.</p>
+                <p class="text-muted text-center no-notifications">No notifications available.</p>
             <?php else: ?>
-                <?php foreach ($notifications as $notification): ?>
-                    <div class="notification-item <?= $notification['transaction_status'] === 'pending' ? 'pending' : '' ?>" data-notification-id="<?= htmlspecialchars($notification['id']) ?>" data-file-id="<?= htmlspecialchars($notification['file_id']) ?>">
-                        <p><?= htmlspecialchars($notification['message']) ?> (File: <?= htmlspecialchars($notification['file_name']) ?>)</p>
-                        <small><?= date('M d, Y H:i', strtotime($notification['timestamp'])) ?></small>
-                        <?php if ($notification['transaction_status'] === 'pending'): ?>
-                            <div class="notification-actions">
-                                <button class="accept-file">Accept</button>
-                                <button class="deny-file">Deny</button>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
+                <div class="list-group">
+<?php foreach ($notifications as $notification): ?>
+    <?php $isClickable = $notification['transaction_type'] === 'file_sent' || $notification['transaction_type'] === 'receive_notification'; ?>
+    <div class="list-group-item list-group-item-action <?= $notification['transaction_status'] === 'pending' ? 'notification-item-pending' : '' ?> <?= $isClickable ? 'clickable-notification' : '' ?>" 
+        data-notification-id="<?= htmlspecialchars($notification['id']) ?>" 
+        data-file-id="<?= htmlspecialchars($notification['file_id']) ?>"
+        data-file-name="<?= htmlspecialchars($notification['file_name']) ?>">
+        <p class="notification-message mb-1"><?= htmlspecialchars($notification['message']) ?> (File: <?= htmlspecialchars($notification['file_name']) ?>)</p>
+        <small class="text-muted"><?= date('M d, Y H:i', strtotime($notification['timestamp'])) ?></small>
+        <?php if ($notification['transaction_status'] === 'pending' && $notification['transaction_type'] === 'notification'): ?>
+            <div class="notification-actions d-flex gap-2 mt-2">
+                <button class="btn btn-sm btn-success accept-notification" data-notification-id="<?= htmlspecialchars($notification['id']) ?>" data-file-id="<?= htmlspecialchars($notification['file_id']) ?>">Accept</button>
+                <button class="btn btn-sm btn-danger reject-notification" data-notification-id="<?= htmlspecialchars($notification['id']) ?>" data-file-id="<?= htmlspecialchars($notification['file_id']) ?>">Reject</button>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endforeach; ?>
+                </div>
             <?php endif; ?>
         </div>
+    </div>
         <main class="main-content">
             <section class="user-profile-time">
                 <div class="profile-info">
@@ -266,6 +315,7 @@ $filesReceived = $results[4] ?? [];
             <section class="action-buttons">
                 <button id="uploadFileButton" class="action-button"><i class="fas fa-upload"></i> Upload File</button>
                 <button id="sendFileButton" class="action-button"><i class="fas fa-paper-plane"></i> Send File</button>
+                <button id="scannerButton" class="action-button"><i class="fas fa-qrcode"></i> Scan QR</button>
             </section>
             <section class="recent-files">
                 <div class="recent-files">
@@ -449,12 +499,266 @@ $filesReceived = $results[4] ?? [];
                     </form>
                 </div>
             </div>
+            <div id="qrScannerModal" class="modal hidden">
+                <div class="modal-content">
+                    <h3>Scan QR Code</h3>
+                    <button class="close-modal" id="closeQrScannerModal"><i class="fas fa-times"></i></button>
+                    <div class="modal-section">
+                        <div id="reader" class="qr-reader" aria-label="QR code scanner"></div>
+                        <div class="qr-controls">
+                            <button type="button" id="chooseQrFileButton" class="choose-file-button">Choose Image</button>
+                            <input type="file" id="qr-input-file" accept="image/*" hidden>
+                            <button type="button" id="stopScannerButton" class="action-button">Stop Scanner</button>
+                        </div>
+                        <div id="result" class="scan-result" aria-live="polite"></div>
+                        <div id="error" class="scan-error" aria-live="assertive"></div>
+                    </div>
+                </div>
+            </div>
+                <div id="recipientFileModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>File Preview</h3>
+        <button class="close-modal" id="closeRecipientFileModal"><i class="fas fa-times"></i></button>
+        <div id="recipientFileModalPreview" class="file-preview" aria-label="File preview"></div>
+        <div id="recipientFileModalButtons" class="action-buttons"></div>
+    </div>
+</div>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1300;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal:not(.hidden) {
+        display: flex;
+    }
+
+    .modal-content {
+        background: var(--card-background, #fff);
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .modal-content h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 16px;
+        line-height: 1.2;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: var(--text-secondary, #6c757d);
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        padding: 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+        background: var(--danger-hover, #f8d7da);
+        color: var(--danger-color, #dc3545);
+        outline: none;
+    }
+
+    .file-preview {
+        text-align: center;
+        padding: 16px;
+        border: 1px solid var(--border-color, #dee2e6);
+        border-radius: 8px;
+        background: var(--background-secondary, #f8f9fa);
+        min-height: 200px;
+        max-height: 500px;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .file-preview img {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 6px;
+        object-fit: contain;
+    }
+
+    .file-preview pre {
+        text-align: left;
+        background: #f8f8f8;
+        padding: 10px;
+        border-radius: 4px;
+        max-height: 100%;
+        overflow-y: auto;
+        font-size: 0.875rem;
+        color: var(--text-color, #212529);
+        margin: 0;
+    }
+
+    .file-preview embed {
+        width: 100%;
+        height: 100%;
+        max-height: 500px;
+        border: none;
+    }
+
+    .file-preview p.error {
+        color: var(--danger-color, #dc3545);
+        font-size: 0.875rem;
+        margin: 8px 0 0;
+    }
+
+    .file-preview i {
+        font-size: 2.5rem;
+        color: var(--text-secondary, #6c757d);
+    }
+
+    .file-preview p {
+        font-size: 0.875rem;
+        color: var(--text-secondary, #6c757d);
+        margin: 8px 0 0;
+    }
+
+    .action-buttons {
+        margin-top: 16px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .action-buttons .btn {
+        padding: 8px 16px;
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .modal-content {
+            width: 95%;
+            max-height: 80vh;
+        }
+
+        .file-preview {
+            max-height: 300px;
+        }
+    }
+</style>
+
+<script>
+    // Close recipient file modal
+    $('#closeRecipientFileModal').on('click', function() {
+        $('#recipientFileModal').addClass('hidden');
+    });
+</script>
             <?php include 'templates/file_info_sidebar.php'; ?>
+            <?php include 'templates/recipient_file_sidebar.php'; ?>
         </main>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="script/dashboard.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        // QR Scanner Modal Logic
+        let html5QrcodeScanner = null;
 
+        // Open QR Scanner Modal
+        document.getElementById('scannerButton').addEventListener('click', () => {
+            const qrModal = document.getElementById('qrScannerModal');
+            qrModal.classList.remove('hidden');
+            startScanner();
+        });
+
+        // Close QR Scanner Modal
+        document.getElementById('closeQrScannerModal').addEventListener('click', () => {
+            stopScanner();
+            document.getElementById('qrScannerModal').classList.add('hidden');
+        });
+
+        // Stop Scanner Button
+        document.getElementById('stopScannerButton').addEventListener('click', () => {
+            stopScanner();
+            document.getElementById('qrScannerModal').classList.add('hidden');
+        });
+
+        // Choose File Button
+        document.getElementById('chooseQrFileButton').addEventListener('click', () => {
+            document.getElementById('qr-input-file').click();
+        });
+
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('result').innerText = `Scanned: ${decodedText}`;
+            document.getElementById('error').innerText = '';
+            stopScanner();
+        }
+
+        function onScanFailure(error) {
+            console.warn(`Scan error: ${error}`);
+        }
+
+        function startScanner() {
+            document.getElementById('result').innerText = '';
+            document.getElementById('error').innerText = '';
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                config,
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                document.getElementById('error').innerText = `Error starting scanner: ${err}`;
+            });
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    html5QrcodeScanner.clear();
+                    document.getElementById('result').innerText = 'Scanner stopped.';
+                    document.getElementById('error').innerText = '';
+                }).catch(err => {
+                    document.getElementById('error').innerText = `Error stopping scanner: ${err}`;
+                });
+            }
+        }
+
+        // Handle file upload for QR code scanning
+        document.getElementById('qr-input-file').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('result').innerText = '';
+                document.getElementById('error').innerText = '';
+                const html5Qrcode = new Html5Qrcode("reader");
+                html5Qrcode.scanFile(file, true)
+                    .then(decodedText => {
+                        document.getElementById('result').innerText = `Scanned: ${decodedText}`;
+                    })
+                    .catch(err => {
+                        document.getElementById('error').innerText = `Error scanning file: ${err}`;
+                    });
+            }
+        });
+    </script>
+</body>
 </html>

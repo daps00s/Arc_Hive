@@ -1,0 +1,598 @@
+/* admin-logs.css - Styles for admin logs interface */
+/* Optimized for responsive tables, accessibility, enhanced UX, and custom multi-select styling */
+
+:root {
+    --primary-color: #50c878;
+    --primary-hover: #40a867;
+    --secondary-color: #2c3e50;
+    --secondary-hover: #1a252f;
+    --background-color: #f7fafc;
+    --card-background: #ffffff;
+    --text-color: #2d3748;
+    --text-secondary: #718096;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --danger-color: #e53e3e;
+    --success-color: #68d391;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Global Styles */
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* Icon Styles */
+[class*="fas"], [class*="far"], [class*="fab"] {
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--text-color);
+    transition: var(--transition);
+    aria-hidden: true;
+}
+
+[class*="far"] {
+    font-weight: 400;
+}
+
+/* Transaction Type Icons */
+.transaction-type {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.transaction-type i {
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+/* Loading indicator for download operations */
+.download-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Notification styles */
+.notyf__toast {
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.notyf__message {
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+/* Print optimization */
+@media print {
+    .no-print, .quick-filters, .filters, .chart-actions, .pagination {
+        display: none !important;
+    }
+
+    .data-table-container {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .data-table th, .data-table td {
+        font-size: 10pt;
+    }
+
+    .details-content {
+        display: block !important;
+    }
+}
+
+/* Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 260px);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 16px 24px;
+    color: #ffffff;
+    box-shadow: var(--shadow);
+    position: fixed;
+    top: 0;
+    left: 260px;
+    height: 64px;
+    z-index: 1000;
+    transition: width var(--transition), left var(--transition);
+}
+
+.top-nav.resized {
+    width: calc(100% - 60px);
+    left: 60px;
+}
+
+.top-nav h2 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.top-nav .toggle-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.top-nav .toggle-btn:hover,
+.top-nav .toggle-btn:focus {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+    outline: none;
+}
+
+.top-nav .toggle-btn i {
+    color: #ffffff;
+}
+
+.top-nav .toggle-btn:hover i {
+    color: var(--primary-hover);
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 32px;
+    padding-top: 96px;
+    margin-left: 260px;
+    transition: margin-left var(--transition);
+    overflow-y: auto;
+    min-height: 100vh;
+}
+
+.main-content.resized {
+    margin-left: 60px;
+}
+
+/* Quick Filters */
+.quick-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.quick-filters button {
+    background: var(--secondary-color);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.quick-filters button:hover,
+.quick-filters button:focus {
+    background: var(--secondary-hover);
+    outline: 2px solid var(--primary-color);
+}
+
+/* Filters Form */
+.filters {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+}
+
+.filters form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters input,
+.filters select,
+.filters button {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.filters select[multiple] {
+    height: 120px; /* Adjusted height for better visibility */
+    min-width: 150px;
+    padding: 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    color: var(--text-color);
+    cursor: pointer;
+    overflow-y: auto;
+    appearance: none; /* Remove default browser styling */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+}
+
+.filters select[multiple]:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+    background-image: none; /* Remove arrow when focused for cleaner look */
+}
+
+.filters select[multiple] option {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.filters select[multiple] option:checked {
+    background: var(--primary-color);
+    color: #ffffff;
+    border-radius: 4px;
+    margin: 2px 4px;
+}
+
+.filters select[multiple] option:hover {
+    background: var(--primary-hover);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.filters select[multiple]::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filters select[multiple]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.filters select[multiple]::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.filters select[multiple]::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-hover);
+}
+
+.filters input:focus,
+.filters select:not([multiple]):focus,
+.filters button:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.filters input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filters select:not([multiple]) {
+    min-width: 150px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+    appearance: none;
+}
+
+.filters button {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filters button:hover {
+    background: var(--primary-hover);
+}
+
+.filters button i {
+    color: #ffffff;
+}
+
+/* Data Table */
+.data-table-container {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.data-table th {
+    background: var(--primary-color);
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition);
+}
+
+.data-table th:hover {
+    background: var(--primary-hover);
+}
+
+.data-table th.asc::after {
+    content: '\2191';
+    margin-left: 5px;
+}
+
+.data-table th:not(.asc)::after {
+    content: '\2193';
+    margin-left: 5px;
+}
+
+.data-table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+.data-table .no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 20px;
+}
+
+.data-table th:focus,
+.data-table th:active {
+    outline: 2px solid var(--primary-color);
+}
+
+/* Details Toggle Button */
+.details-toggle {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px;
+    transition: var(--transition);
+}
+
+.details-toggle:hover,
+.details-toggle:focus {
+    color: var(--primary-hover);
+    outline: none;
+}
+
+.details-toggle[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+/* Details Content */
+.details-content {
+    padding: 10px;
+    background: #f9fafb;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-top: 5px;
+}
+
+.detail-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.detail-item dt {
+    font-weight: 600;
+    color: var(--text-color);
+    flex: 0 0 120px;
+}
+
+.detail-item dd {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* Export Buttons */
+.chart-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.chart-actions button {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chart-actions button:disabled {
+    background: var(--border-color);
+    cursor: not-allowed;
+}
+
+.chart-actions button i {
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+
+.chart-actions button:hover:not(:disabled) {
+    background: var(--primary-hover);
+}
+
+.chart-actions button:hover:not(:disabled) i {
+    transform: scale(1.1);
+}
+
+/* Error Message */
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    margin: 10px 0;
+    text-align: center;
+    background: rgba(229, 62, 62, 0.1);
+    padding: 8px;
+    border-radius: var(--border-radius);
+}
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1280px) {
+    .filters form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters input,
+    .filters select,
+    .filters button {
+        width: 100%;
+    }
+
+    .filters select[multiple] {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .quick-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .quick-filters button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1024px) {
+    .top-nav {
+        width: calc(100% - 60px);
+        left: 60px;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+    }
+
+    .top-nav {
+        left: 0;
+        width: 100%;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 80px 15px 15px;
+    }
+
+    .data-table {
+        font-size: 0.8rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px;
+    }
+
+    .detail-item dt {
+        flex: 0 0 100px;
+    }
+
+    .chart-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .chart-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-nav {
+        padding: 12px 16px;
+    }
+
+    .main-content {
+        padding: 70px 10px 10px;
+    }
+
+    .data-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .filters select[multiple] {
+        height: 100px;
+    }
+}

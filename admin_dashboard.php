@@ -314,50 +314,54 @@ function generateWord($data, $report) {
     }
 }
 
-// Handle CSV, PDF, and Word downloads
-if (isset($_GET['download']) && isset($_GET['report'])) {
-    $report = $_GET['report'];
+// Handle CSV, PDF, and Word downloads (now using POST for filtered data)
+if (isset($_POST['download']) && isset($_POST['report'])) {
+    $report = $_POST['report'];
     $data = [];
 
-    // Select which dataset to export
-    switch ($report) {
-        case 'FileUploadTrends':
-            $data = $fileUploadTrendsTable;
-            break;
-        case 'FileDistribution':
-            $data = $fileDistribution;
-            break;
-        case 'UsersPerDepartment':
-            $data = $usersPerDepartment;
-            break;
-        case 'DocumentCopies':
-            $data = $documentCopies;
-            break;
-        case 'PendingRequests':
-            $data = $pendingRequests;
-            break;
-        case 'RetrievalHistory':
-            $data = $retrievalHistory;
-            break;
-        case 'AccessHistory':
-            $data = $accessHistory;
-            break;
-        default:
-            error_log("Invalid report type: $report");
-            die("Invalid report type.");
+    if (isset($_POST['filtered_data'])) {
+        $data = json_decode($_POST['filtered_data'], true);
+        if (!is_array($data)) {
+            $data = [];
+        }
+    } else {
+        // Fallback to unfiltered if no filtered_data provided
+        switch ($report) {
+            case 'FileUploadTrends':
+                $data = $fileUploadTrendsTable;
+                break;
+            case 'FileDistribution':
+                $data = $fileDistribution;
+                break;
+            case 'UsersPerDepartment':
+                $data = $usersPerDepartment;
+                break;
+            case 'DocumentCopies':
+                $data = $documentCopies;
+                break;
+            case 'PendingRequests':
+                $data = $pendingRequests;
+                break;
+            case 'RetrievalHistory':
+                $data = $retrievalHistory;
+                break;
+            case 'AccessHistory':
+                $data = $accessHistory;
+                break;
+            default:
+                error_log("Invalid report type: $report");
+                die("Invalid report type.");
+        }
     }
 
-    // CSV
-    if ($_GET['download'] === 'csv') {
+    if ($_POST['download'] === 'csv') {
         if (!empty($data)) {
             generateCSV($data, $report);
         } else {
             error_log("No data available for CSV download: $report");
             die("No data available for download.");
         }
-
-    // PDF
-    } elseif ($_GET['download'] === 'pdf') {
+    } elseif ($_POST['download'] === 'pdf') {
         error_log("Attempting PDF for $report with data count: " . count($data));
         if (!empty($data)) {
             generatePDF($report, $data, $report);
@@ -365,55 +369,13 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             error_log("No data available for PDF download: $report");
             die("No data available for download.");
         }
-
-    // Word
-    } elseif ($_GET['download'] === 'word') {
-        require_once __DIR__ . '/vendor/autoload.php';
-
-        if (empty($data)) {
+    } elseif ($_POST['download'] === 'word') {
+        if (!empty($data)) {
+            generateWord($data, $report);
+        } else {
             error_log("No data available for Word download: $report");
             die("No data available for download.");
         }
-
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-        $section = $phpWord->addSection();
-
-        // Title
-        $section->addText("Report: " . htmlspecialchars($report), ['bold' => true, 'size' => 16]);
-
-        // Table
-        $table = $section->addTable();
-
-        // Header row
-        $headers = array_keys($data[0]);
-        $table->addRow();
-        foreach ($headers as $header) {
-            $table->addCell(3000)->addText($header, ['bold' => true]);
-        }
-
-        // Data rows
-        foreach ($data as $row) {
-            $table->addRow();
-            foreach ($row as $cell) {
-                $table->addCell(3000)->addText((string)$cell);
-            }
-        }
-
-        // Clean output buffer before sending file
-        if (ob_get_length()) {
-            ob_end_clean();
-        }
-
-        // Output Word file
-        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-        header('Content-Disposition: attachment;filename="' . $report . '.docx"');
-        header('Cache-Control: max-age=0');
-
-        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        $writer->save('php://output');
-        exit();
-
-    // Invalid format
     } else {
         error_log("Invalid download format for report: $report");
         die("Invalid download format.");
@@ -497,70 +459,42 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             <div class="chart-container" data-chart-type="FileUploadTrends">
                 <h3>File Upload Trends</h3>
                 <canvas id="fileUploadTrendsChart"></canvas>
-                <div class="chart-actions">
-                    <button onclick="generateReport('FileUploadTrends')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('FileUploadTrends')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- File Distribution -->
             <div class="chart-container" data-chart-type="FileDistribution">
                 <h3>File Distribution</h3>
                 <canvas id="fileDistributionChart"></canvas>
-                <div class="chart-actions">
-                    <button onclick="generateReport('FileDistribution')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('FileDistribution')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- Users Per Department -->
             <div class="chart-container" data-chart-type="UsersPerDepartment">
                 <h3>Users Per Department</h3>
                 <canvas id="usersPerDepartmentChart"></canvas>
-                <div class="chart-actions">
-                    <button onclick="generateReport('UsersPerDepartment')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('UsersPerDepartment')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- Document Copies -->
             <div class="chart-container" data-chart-type="DocumentCopies">
                 <h3>Document Copies</h3>
                 <canvas id="documentCopiesChart"></canvas>
-                <div class="chart-actions">
-                    <button onclick="generateReport('DocumentCopies')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('DocumentCopies')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- Pending Requests -->
             <div class="chart-container" data-chart-type="PendingRequests">
                 <h3>Pending Requests</h3>
                 <p class="no-data">Click to view details in table</p>
-                <div class="chart-actions">
-                    <button onclick="generateReport('PendingRequests')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('PendingRequests')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- Retrieval History -->
             <div class="chart-container" data-chart-type="RetrievalHistory">
                 <h3>Retrieval History</h3>
                 <p class="no-data">Click to view details in table</p>
-                <div class="chart-actions">
-                    <button onclick="generateReport('RetrievalHistory')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('RetrievalHistory')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
 
             <!-- Access History -->
             <div class="chart-container" data-chart-type="AccessHistory">
                 <h3>Access History</h3>
                 <p class="no-data">Click to view details in table</p>
-                <div class="chart-actions">
-                    <button onclick="generateReport('AccessHistory')"><i class="fas fa-print"></i> Print Report</button>
-                    <button onclick="openDownloadModal('AccessHistory')"><i class="fas fa-download"></i> Download Report</button>
-                </div>
             </div>
         </div>
 
@@ -581,7 +515,12 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                     <span id="pageInfo"></span>
                     <button onclick="nextPage()" id="nextPage"><i class="fas fa-chevron-right"></i> Next</button>
                 </div>
+                <div class="filter-controls"></div>
                 <div id="modalTable" class="data-table"></div>
+                <div class="report-actions">
+                    <button onclick="generateReport(currentChartType)"><i class="fas fa-print"></i> Print Report</button>
+                    <button onclick="openDownloadModal(currentChartType)"><i class="fas fa-download"></i> Download Report</button>
+                </div>
             </div>
         </div>
 
@@ -640,7 +579,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                         ),
                     };
                 },
-                dataKey: 'FileUploadTrends'
+                dataKey: 'FileUploadTrendsTable',
+                filters: { user: 'uploader_name', department: 'department_name' }
             },
             FileDistribution: {
                 type: 'pie',
@@ -654,7 +594,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                     labels: data.map(item => item.department_name),
                     data: data.map(item => item.count),
                 }),
-                dataKey: 'FileDistribution'
+                dataKey: 'FileDistribution',
+                filters: { department: 'department_name' }
             },
             UsersPerDepartment: {
                 type: 'bar',
@@ -668,7 +609,8 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                     labels: data.map(item => item.department_name),
                     data: data.map(item => item.user_count),
                 }),
-                dataKey: 'UsersPerDepartment'
+                dataKey: 'UsersPerDepartment',
+                filters: { department: 'department_name' }
             },
             DocumentCopies: {
                 type: 'bar',
@@ -682,22 +624,26 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                     labels: data.map(item => item.file_name),
                     data: data.map(item => item.copy_count),
                 }),
-                dataKey: 'DocumentCopies'
+                dataKey: 'DocumentCopies',
+                filters: {}
             },
             PendingRequests: {
                 title: 'Pending Requests',
                 processData: () => ({ labels: [], data: [] }),
-                dataKey: 'PendingRequests'
+                dataKey: 'PendingRequests',
+                filters: { user: 'username', department: 'department_name' }
             },
             RetrievalHistory: {
                 title: 'Retrieval History',
                 processData: () => ({ labels: [], data: [] }),
-                dataKey: 'RetrievalHistory'
+                dataKey: 'RetrievalHistory',
+                filters: { user: 'username', department: 'department_name' }
             },
             AccessHistory: {
                 title: 'Access History',
                 processData: () => ({ labels: [], data: [] }),
-                dataKey: 'AccessHistory'
+                dataKey: 'AccessHistory',
+                filters: { user: 'username', department: 'department_name' }
             }
         };
 
@@ -773,8 +719,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
 
         // Table Generation for Modal and Print
         const generateTableContent = (chartType, page = 1, itemsPerPage = 5, forPrint = false) => {
-            const dataKey = chartType === 'FileUploadTrends' ? 'FileUploadTrendsTable' : chartType;
-            const data = dashboardData[dataKey] || [];
+            const data = filteredData;
             if (!data.length) return '<p class="no-data">No data available.</p>';
 
             const start = forPrint ? 0 : (page - 1) * itemsPerPage;
@@ -1025,8 +970,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
 
         // Download Report as CSV, PDF, or Word
         const downloadReport = (chartType, format) => {
-            const dataKey = chartType === 'FileUploadTrends' ? 'FileUploadTrendsTable' : chartType;
-            const data = dashboardData[dataKey] || [];
+            const data = filteredData;
             if (!data.length) {
                 alert('No data available for download.');
                 closeDownloadModal();
@@ -1105,16 +1049,33 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
-            } else if (format === 'pdf') {
-                window.location.href = `?download=pdf&report=${chartType}`;
-            } else if (format === 'word') {
-                window.location.href = `?download=word&report=${chartType}`;
             } else {
-                alert('Invalid format selected.');
+                // For PDF and Word, submit POST to server with filtered data
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = window.location.href;
+                form.style.display = 'none';
+
+                const downloadInput = document.createElement('input');
+                downloadInput.name = 'download';
+                downloadInput.value = format;
+                form.appendChild(downloadInput);
+
+                const reportInput = document.createElement('input');
+                reportInput.name = 'report';
+                reportInput.value = chartType;
+                form.appendChild(reportInput);
+
+                const dataInput = document.createElement('input');
+                dataInput.name = 'filtered_data';
+                dataInput.value = JSON.stringify(data);
+                form.appendChild(dataInput);
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
             }
             closeDownloadModal();
-
-            
         };
 
         // Sidebar Toggle
@@ -1131,14 +1092,17 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
         let currentChartType = '';
         let currentPage = 1;
         let itemsPerPage = ITEMS_PER_PAGE_OPTIONS[0];
+        let filteredData = [];
 
         const openModal = (chartType) => {
             currentChartType = chartType;
             currentPage = 1;
+            filteredData = [...dashboardData[CHART_CONFIG[chartType].dataKey] || []];
             const modal = document.getElementById('dataTableModal');
             const modalTitle = document.getElementById('modalTitle');
             modalTitle.textContent = CHART_CONFIG[chartType].title || chartType;
             renderTable();
+            populateFilters(chartType);
             modal.style.display = 'flex';
         };
 
@@ -1146,6 +1110,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             const modal = document.getElementById('dataTableModal');
             modal.style.display = 'none';
             document.getElementById('modalTable').innerHTML = '';
+            document.querySelector('.filter-controls').innerHTML = '';
         };
 
         const openDownloadModal = (chartType) => {
@@ -1161,9 +1126,63 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             modal.style.display = 'none';
         };
 
+        const populateFilters = (chartType) => {
+            const filterContainer = document.querySelector('.filter-controls');
+            if (!filterContainer) return;
+            filterContainer.innerHTML = '';
+
+            const config = CHART_CONFIG[chartType];
+            if (!config.filters) return;
+
+            if (config.filters.user) {
+                const users = [...new Set(dashboardData[config.dataKey].map(item => item[config.filters.user] || ''))].filter(u => u);
+                if (users.length) {
+                    const label = document.createElement('label');
+                    label.textContent = 'Filter by User: ';
+                    filterContainer.appendChild(label);
+
+                    const select = document.createElement('select');
+                    select.id = 'userFilter';
+                    select.innerHTML = '<option value="">All Users</option>' + users.sort().map(u => `<option value="${sanitizeHTML(u)}">${sanitizeHTML(u)}</option>`).join('');
+                    select.onchange = applyFilters;
+                    filterContainer.appendChild(select);
+                }
+            }
+
+            if (config.filters.department) {
+                const depts = [...new Set(dashboardData[config.dataKey].map(item => item[config.filters.department] || ''))].filter(d => d);
+                if (depts.length) {
+                    const label = document.createElement('label');
+                    label.textContent = 'Filter by Department: ';
+                    filterContainer.appendChild(label);
+
+                    const select = document.createElement('select');
+                    select.id = 'deptFilter';
+                    select.innerHTML = '<option value="">All Departments</option>' + depts.sort().map(d => `<option value="${sanitizeHTML(d)}">${sanitizeHTML(d)}</option>`).join('');
+                    select.onchange = applyFilters;
+                    filterContainer.appendChild(select);
+                }
+            }
+        };
+
+        const applyFilters = () => {
+            const config = CHART_CONFIG[currentChartType];
+            const userFilter = document.getElementById('userFilter')?.value || '';
+            const deptFilter = document.getElementById('deptFilter')?.value || '';
+
+            filteredData = dashboardData[config.dataKey].filter(item => {
+                const user = item[config.filters.user] || '';
+                const dept = item[config.filters.department] || '';
+                return (userFilter === '' || user === userFilter) && (deptFilter === '' || dept === deptFilter);
+            });
+
+            currentPage = 1;
+            renderTable();
+        };
+
         const updatePagination = () => {
             const itemsPerPageSelect = document.getElementById('itemsPerPage');
-            itemsPerPage = itemsPerPageSelect.value === 'all' ? dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length || 1 : parseInt(itemsPerPageSelect.value);
+            itemsPerPage = itemsPerPageSelect.value === 'all' ? filteredData.length : parseInt(itemsPerPageSelect.value);
             currentPage = 1;
             renderTable();
         };
@@ -1176,7 +1195,7 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
         };
 
         const nextPage = () => {
-            const maxPage = Math.ceil(dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length / itemsPerPage) || 1;
+            const maxPage = Math.ceil(filteredData.length / itemsPerPage) || 1;
             if (currentPage < maxPage) {
                 currentPage++;
                 renderTable();
@@ -1191,9 +1210,9 @@ if (isset($_GET['download']) && isset($_GET['report'])) {
             const nextButton = document.getElementById('nextPage');
             const pageInfo = document.getElementById('pageInfo');
 
-            const maxPage = Math.ceil(dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length / itemsPerPage) || 1;
+            const maxPage = Math.ceil(filteredData.length / itemsPerPage) || 1;
             prevButton.disabled = currentPage === 1;
-            nextButton.disabled = currentPage === maxPage || !dashboardData[CHART_CONFIG[currentChartType].dataKey]?.length;
+            nextButton.disabled = currentPage === maxPage || !filteredData.length;
             pageInfo.textContent = `Page ${currentPage} of ${maxPage}`;
         };
 

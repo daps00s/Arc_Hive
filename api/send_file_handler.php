@@ -1,4 +1,5 @@
 <?php
+ob_start(); // Start output buffering to capture any unexpected output
 // api/send_file_handler.php
 session_start();
 require '../db_connection.php';
@@ -70,10 +71,38 @@ try {
     // Pre-fetch department users
     $deptUsersCache = [];
     foreach ($recipients as $recipient) {
-        if ($recipient['type'] === 'department' || $recipient['type'] === 'sub_department') {
-            $stmt = $pdo->prepare("SELECT user_id FROM user_department_assignments WHERE department_id = ?");
-            $stmt->execute([$recipient['id']]);
-            $deptUsersCache[$recipient['id']] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        if ($recipient['type'] === 'department') {
+            // Fetch users for the parent department and all its sub-departments
+            try {
+                $stmt = $pdo->prepare("
+                    SELECT DISTINCT uda.user_id
+                    FROM user_department_assignments uda
+                    LEFT JOIN departments d ON uda.department_id = d.department_id
+                    WHERE uda.department_id = ? 
+                       OR d.parent_department_id = ?
+                ");
+                $stmt->execute([$recipient['id'], $recipient['id']]);
+                $deptUsersCache[$recipient['id']] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                if (empty($deptUsersCache[$recipient['id']])) {
+                    error_log("No users found for department ID: {$recipient['id']} or its sub-departments");
+                }
+            } catch (Exception $e) {
+                error_log("Error fetching users for department ID {$recipient['id']}: " . $e->getMessage());
+                $deptUsersCache[$recipient['id']] = [];
+            }
+        } elseif ($recipient['type'] === 'sub_department') {
+            // Fetch users only for the specific sub-department
+            try {
+                $stmt = $pdo->prepare("SELECT user_id FROM user_department_assignments WHERE department_id = ?");
+                $stmt->execute([$recipient['id']]);
+                $deptUsersCache[$recipient['id']] = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                if (empty($deptUsersCache[$recipient['id']])) {
+                    error_log("No users found for sub-department ID: {$recipient['id']}");
+                }
+            } catch (Exception $e) {
+                error_log("Error fetching users for sub-department ID {$recipient['id']}: " . $e->getMessage());
+                $deptUsersCache[$recipient['id']] = [];
+            }
         }
     }
 
@@ -85,7 +114,7 @@ try {
 
     $notificationStmt = $pdo->prepare("
         INSERT INTO transactions (file_id, user_id, transaction_type, transaction_status, transaction_time, description)
-        VALUES (?, ?, 'notification', 'pending', NOW(), ?)
+        VALUES (?, ?, ?, ?, NOW(), ?)
     ");
 
     $sentRecipients = [];
@@ -105,46 +134,12 @@ try {
                 $stmt = $pdo->prepare("SELECT 1 FROM users WHERE user_id = ?");
                 $stmt->execute([$userId]);
                 if (!$stmt->fetchColumn()) {
-                    throw new Exception("Invalid user ID: $userId");
+                    error_log("Invalid user ID: $userId for file: $fileName");
+                    continue; // Skip invalid user
                 }
-            } elseif ($deptId) {
-                // Validate department exists
-                $stmt = $pdo->prepare("SELECT 1 FROM departments WHERE department_id = ?");
-                $stmt->execute([$deptId]);
-                if (!$stmt->fetchColumn()) {
-                    throw new Exception("Invalid department ID: $deptId");
-                }
-            }
-
-            if ($deptId) {
-                // Send to all users in department
-                foreach ($deptUsersCache[$deptId] as $deptUserId) {
-                    if (in_array("user:$deptUserId", $sentRecipients)) {
-                        continue;
-                    }
-
-                    $sentRecipients[] = "user:$deptUserId";
-                    $transactionData[] = [
-                        $fileId,
-                        $deptUserId,
-                        $deptId,
-                        "File '$fileName' sent for review by $senderUsername" . ($message ? " with message: $message" : "")
-                    ];
-
-                    $notificationStmt->execute([
-                        $fileId,
-                        $deptUserId,
-                        "You have received a file '$fileName' from $senderUsername for review." . ($message ? " Message: $message" : "")
-                    ]);
-
-                    $recipientCount++;
-                }
-            } else {
-                // Send to individual user
                 if (in_array("user:$userId", $sentRecipients)) {
-                    continue;
+                    continue; // Skip duplicate user
                 }
-
                 $sentRecipients[] = "user:$userId";
                 $transactionData[] = [
                     $fileId,
@@ -152,30 +147,94 @@ try {
                     null,
                     "File '$fileName' sent for review by $senderUsername" . ($message ? " with message: $message" : "")
                 ];
-
+                // Notification for receipt (no actions)
                 $notificationStmt->execute([
                     $fileId,
                     $userId,
-                    "You have received a file '$fileName' from $senderUsername for review." . ($message ? " Message: $message" : "")
+                    'notification',
+                    'received',
+                    "You have received a file '$fileName' from $senderUsername." . ($message ? " Message: $message" : "")
                 ]);
-
                 $recipientCount++;
+            } elseif ($deptId) {
+                // Validate department exists
+                $stmt = $pdo->prepare("SELECT 1 FROM departments WHERE department_id = ?");
+                $stmt->execute([$deptId]);
+                if (!$stmt->fetchColumn()) {
+                    error_log("Invalid department ID: $deptId for file: $fileName");
+                    continue; // Skip invalid department
+                }
+                if (empty($deptUsersCache[$deptId])) {
+                    error_log("Skipping department ID $deptId for file $fileName: No users assigned");
+                    continue; // Skip department with no users
+                }
+                // Send to all users in department with correct users_department_id
+                foreach ($deptUsersCache[$deptId] as $deptUserId) {
+                    if (in_array("user:$deptUserId", $sentRecipients)) {
+                        continue; // Skip duplicate user
+                    }
+                    // Fetch users_department_id for this user and department
+                    $stmt = $pdo->prepare("
+                        SELECT users_department_id 
+                        FROM user_department_assignments 
+                        WHERE user_id = ? AND department_id = ?
+                    ");
+                    $stmt->execute([$deptUserId, $deptId]);
+                    $usersDepartmentId = $stmt->fetchColumn();
+                    if (!$usersDepartmentId) {
+                        error_log("No user_department_id found for user ID: $deptUserId in department ID: $deptId for file: $fileName");
+                        continue; // Skip if no valid assignment
+                    }
+                    // Validate department user exists
+                    $stmt = $pdo->prepare("SELECT 1 FROM users WHERE user_id = ?");
+                    $stmt->execute([$deptUserId]);
+                    if (!$stmt->fetchColumn()) {
+                        error_log("Invalid department user ID: $deptUserId for file: $fileName");
+                        continue; // Skip invalid user
+                    }
+                    $sentRecipients[] = "user:$deptUserId";
+                    $transactionData[] = [
+                        $fileId,
+                        $deptUserId,
+                        $usersDepartmentId,
+                        "File '$fileName' sent for review by $senderUsername" . ($message ? " with message: $message" : "")
+                    ];
+                    // Notification for receipt (no actions)
+                    $notificationStmt->execute([
+                        $fileId,
+                        $deptUserId,
+                        'notification',
+                        'received',
+                        "You have received a file '$fileName' from $senderUsername." . ($message ? " Message: $message" : "")
+                    ]);
+                    $recipientCount++;
+                }
             }
         }
-
-        logActivity(
-            $_SESSION['user_id'],
-            "Sent file: $fileName to $recipientCount recipients",
-            $fileId,
-            null,
-            null,
-            'file_send'
-        );
     }
+
+    // Log activity after processing all files and recipients
+    logActivity(
+        $_SESSION['user_id'],
+        "Sent " . count($files) . " file(s) to $recipientCount recipients",
+        null, // No single file_id since multiple files may be sent
+        null,
+        null,
+        'file_send'
+    );
 
     // Batch insert transactions
     foreach ($transactionData as $data) {
-        $insertStmt->execute($data);
+        // $data = [$fileId, $userId, $deptId, $description]
+        $description = $data[3];
+        if ($data[2]) { // If deptId is set
+            $stmt = $pdo->prepare("SELECT department_name, parent_department_id FROM departments WHERE department_id = ?");
+            $stmt->execute([$data[2]]);
+            $dept = $stmt->fetch(PDO::FETCH_ASSOC);
+            $recipientType = $dept['parent_department_id'] ? 'sub-department' : 'department';
+            $description = str_replace("sent for review", "sent to $recipientType '{$dept['department_name']}' for review", $description);
+        }
+        $insertStmt->execute([$data[0], $data[1], $data[2], $description]);
     }
 
     $pdo->commit();
@@ -194,3 +253,4 @@ try {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Failed to send files: ' . $e->getMessage()]);
 }
+?>

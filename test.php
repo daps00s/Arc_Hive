@@ -1,197 +1,171 @@
-<?php
-// Database connection settings
-$servername = "localhost";
-$username = "root"; // Update with your DB username
-$password = ""; // Update with your DB password
-$dbname = "arc-hive-maindb";
-
-// Create database connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Initialize variables for form handling
-$success_message = "";
-$error_message = "";
-$username = "";
-$email = "";
-$role = "Client";
-$department_id = "";
-$position = 0;
-
-// Fetch departments for the dropdown
-$departments = [];
-$sql = "SELECT department_id, department_name FROM departments";
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $departments[] = $row;
-    }
-}
-
-// Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $role = $_POST['role'];
-    $department_id = $_POST['department_id'];
-    $position = (int)$_POST['position'];
-
-    // Basic validation
-    if (empty($username) || empty($email) || empty($password) || empty($department_id)) {
-        $error_message = "All fields are required.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error_message = "Invalid email format.";
-    } else {
-        // Check if username or email already exists
-        $sql = "SELECT user_id FROM users WHERE username = ? OR email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $username, $email);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows > 0) {
-            $error_message = "Username or email already exists.";
-        } else {
-            // Hash password
-            $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-            // Insert user into users table
-            $sql = "INSERT INTO users (username, password_hash, email, role, position, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssi", $username, $password_hash, $email, $role, $position);
-
-            if ($stmt->execute()) {
-                $user_id = $conn->insert_id;
-
-                // Insert into users_department table
-                $sql = "INSERT INTO users_department (user_id, department_id) VALUES (?, ?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ii", $user_id, $department_id);
-
-                if ($stmt->execute()) {
-                    $success_message = "User created successfully and assigned to department.";
-                } else {
-                    $error_message = "Failed to assign user to department.";
-                }
-            } else {
-                $error_message = "Failed to create user.";
-            }
-        }
-        $stmt->close();
-    }
-}
-
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>File Preview</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
+            max-width: 800px;
+            margin: 0 auto;
             padding: 20px;
+            background-color: #f4f4f4;
         }
-
-        .form-group {
-            margin-bottom: 15px;
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
+        h1 {
+            text-align: center;
+            color: #333;
         }
-
-        input,
-        select {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .upload-form {
+            margin-bottom: 20px;
+            text-align: center;
         }
-
-        .error {
-            color: red;
+        input[type="file"] {
+            padding: 10px;
+            margin: 10px 0;
         }
-
-        .success {
-            color: green;
-        }
-
         button {
-            padding: 10px 15px;
+            padding: 10px 20px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #0056b3;
         }
+        #preview {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            min-height: 200px;
+            text-align: center;
+        }
+        #preview img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+        #preview pre {
+            text-align: left;
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            text-align: center;
+        }
     </style>
 </head>
-
 <body>
-    <h2>Create New User</h2>
+    <div class="container">
+        <h1>File Preview</h1>
+        <form class="upload-form" method="POST" enctype="multipart/form-data">
+            <input type="file" id="fileInput" name="file" accept="image/*,text/plain,application/pdf" required>
+            <button type="submit" name="submit">Upload and Preview</button>
+        </form>
+        <div id="preview">
+            <?php
+            if (isset($_POST['submit']) && isset($_FILES['file'])) {
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'];
+                $fileType = $_FILES['file']['type'];
+                $fileName = $_FILES['file']['name'];
+                $fileTmpPath = $_FILES['file']['tmp_name'];
+                $fileError = $_FILES['file']['error'];
+                $uploadDir = 'uploads/';
+                $uploadPath = $uploadDir . basename($fileName);
 
-    <?php if ($success_message): ?>
-        <p class="success"><?php echo htmlspecialchars($success_message); ?></p>
-    <?php endif; ?>
-    <?php if ($error_message): ?>
-        <p class="error"><?php echo htmlspecialchars($error_message); ?></p>
-    <?php endif; ?>
+                // Create uploads directory if it doesn't exist
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
 
-    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" required>
+                // Validate file
+                if ($fileError === UPLOAD_ERR_OK) {
+                    if (in_array($fileType, $allowedTypes)) {
+                        // Move uploaded file to uploads directory
+                        if (move_uploaded_file($fileTmpPath, $uploadPath)) {
+                            echo "<p class='success'>File uploaded successfully!</p>";
+
+                            // Display preview based on file type
+                            if (in_array($fileType, ['image/jpeg', 'image/png', 'image/gif'])) {
+                                echo "<img src='$uploadPath' alt='Preview'>";
+                            } elseif ($fileType === 'text/plain') {
+                                $content = htmlspecialchars(file_get_contents($uploadPath));
+                                echo "<pre>$content</pre>";
+                            } elseif ($fileType === 'application/pdf') {
+                                // For PDF, we'll use an embed tag
+                                echo "<embed src='$uploadPath' width='100%' height='400px' type='application/pdf'>";
+                            }
+                        } else {
+                            echo "<p class='error'>Failed to move uploaded file.</p>";
+                        }
+                    } else {
+                        echo "<p class='error'>Unsupported file type. Please upload an image, text, or PDF file.</p>";
+                    }
+                } else {
+                    echo "<p class='error'>Error uploading file: " . $fileError . "</p>";
+                }
+            }
+            ?>
         </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label for="role">Role:</label>
-            <select id="role" name="role" required>
-                <option value="Client" <?php echo $role == 'Client' ? 'selected' : ''; ?>>Client</option>
-                <option value="Admin" <?php echo $role == 'Admin' ? 'selected' : ''; ?>>Admin</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="department_id">Department:</label>
-            <select id="department_id" name="department_id" required>
-                <option value="">Select Department</option>
-                <?php foreach ($departments as $dept): ?>
-                    <option value="<?php echo $dept['department_id']; ?>" <?php echo $department_id == $dept['department_id'] ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($dept['department_name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="position">Position/Rank:</label>
-            <input type="number" id="position" name="position" value="<?php echo htmlspecialchars($position); ?>" min="0" required>
-        </div>
-        <button type="submit">Create User</button>
-    </form>
+    </div>
+
+    <script>
+        // Client-side preview for images and text files
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            
+            // Clear previous preview
+            preview.innerHTML = '';
+
+            if (file) {
+                const fileType = file.type;
+                const reader = new FileReader();
+
+                if (fileType.startsWith('image/')) {
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'Preview';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                } else if (fileType === 'text/plain') {
+                    reader.onload = function(e) {
+                        const pre = document.createElement('pre');
+                        pre.textContent = e.target.result;
+                        preview.appendChild(pre);
+                    };
+                    reader.readAsText(file);
+                } else if (fileType === 'application/pdf') {
+                    const p = document.createElement('p');
+                    p.textContent = 'PDF preview will be shown after upload.';
+                    preview.appendChild(p);
+                } else {
+                    const p = document.createElement('p');
+                    p.className = 'error';
+                    p.textContent = 'Please select an image, text, or PDF file.';
+                    preview.appendChild(p);
+                }
+            }
+        });
+    </script>
 </body>
-
 </html>

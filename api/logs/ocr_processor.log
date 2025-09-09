@@ -446,3 +446,63 @@ operable program or batch file.
 [2025-08-30 17:10:13] [INFO] OCR completed for file ID 266 (pages: 3, execution time: 0.74909996986389s)
 [2025-08-30 17:10:13] [INFO] OCR processor finished
 >>>>>>> 2aecf55b5b45af97dd77ff24ac42487a215cdd54
+[2025-09-04 20:42:12] [INFO] Starting OCR processor
+[2025-09-04 20:42:12] [INFO] Processing specific file ID: 262
+[2025-09-04 20:42:12] [INFO] File found: C:\xampp\htdocs\GitHub.com\Arc_Hive-main\uploads\Uploads\College of Education\Technology and Livelihood Education\Sgt Caleb Steven A Lagunilla PA (Res)\User_1\UsersPerDepartment_Report_20250903064911.pdf, type: application/pdf, status: completed
+[2025-09-04 20:42:12] [INFO] Processing file ID: 262, path: C:\xampp\htdocs\GitHub.com\Arc_Hive-main\uploads\Uploads\College of Education\Technology and Livelihood Education\Sgt Caleb Steven A Lagunilla PA (Res)\User_1\UsersPerDepartment_Report_20250903064911.pdf, type: pdf
+[2025-09-04 20:42:12] [INFO] Starting text extraction for file ID 262, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub.com\Arc_Hive-main\uploads\Uploads\College of Education\Technology and Livelihood Education\Sgt Caleb Steven A Lagunilla PA (Res)\User_1\UsersPerDepartment_Report_20250903064911.pdf
+[2025-09-04 20:42:12] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub.com\Arc_Hive-main\uploads\Uploads\College of Education\Technology and Livelihood Education\Sgt Caleb Steven A Lagunilla PA (Res)\User_1\UsersPerDepartment_Report_20250903064911.pdf
+[2025-09-04 20:42:12] [INFO] PDF contains text, extracting directly
+[2025-09-04 20:42:12] [INFO] Inserted 1 pages into file_pages table
+[2025-09-04 20:42:12] [INFO] OCR completed for file ID 262 (pages: 1, execution time: 0.085336923599243s)
+[2025-09-04 20:42:12] [INFO] OCR processor finished
+[2025-09-08 14:53:28] [INFO] Starting OCR processor
+[2025-09-08 14:53:28] [INFO] Processing specific file ID: 266
+[2025-09-08 14:53:28] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\my letter.pdf, type: application/pdf, status: completed
+[2025-09-08 14:53:28] [INFO] Processing file ID: 266, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\my letter.pdf, type: pdf
+[2025-09-08 14:53:28] [INFO] Starting text extraction for file ID 266, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\my letter.pdf
+[2025-09-08 14:53:28] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\my letter.pdf
+[2025-09-08 14:53:29] [INFO] PDF contains text, extracting directly
+[2025-09-08 14:53:30] [INFO] Inserted 3 pages into file_pages table
+[2025-09-08 14:53:30] [INFO] OCR completed for file ID 266 (pages: 3, execution time: 2.2744071483612s)
+[2025-09-08 14:53:30] [INFO] OCR processor finished
+[2025-09-08 15:53:59] [INFO] Starting OCR processor
+[2025-09-08 15:53:59] [INFO] Processing specific file ID: 267
+[2025-09-08 15:53:59] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\my task.pdf, type: application/pdf, status: completed
+[2025-09-08 15:53:59] [INFO] Processing file ID: 267, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\my task.pdf, type: pdf
+[2025-09-08 15:53:59] [INFO] Starting text extraction for file ID 267, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\my task.pdf
+[2025-09-08 15:53:59] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\my task.pdf
+[2025-09-08 15:53:59] [INFO] PDF contains text, extracting directly
+[2025-09-08 15:54:00] [INFO] Inserted 3 pages into file_pages table
+[2025-09-08 15:54:00] [INFO] OCR completed for file ID 267 (pages: 3, execution time: 0.54549193382263s)
+[2025-09-08 15:54:00] [INFO] OCR processor finished
+[2025-09-08 16:39:16] [INFO] Starting OCR processor
+[2025-09-08 16:39:16] [INFO] Processing specific file ID: 268
+[2025-09-08 16:39:16] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test preview.pdf, type: application/pdf, status: completed
+[2025-09-08 16:39:16] [INFO] Processing file ID: 268, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test preview.pdf, type: pdf
+[2025-09-08 16:39:16] [INFO] Starting text extraction for file ID 268, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test preview.pdf
+[2025-09-08 16:39:16] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test preview.pdf
+[2025-09-08 16:39:17] [INFO] PDF contains text, extracting directly
+[2025-09-08 16:39:17] [INFO] Inserted 3 pages into file_pages table
+[2025-09-08 16:39:17] [INFO] OCR completed for file ID 268 (pages: 3, execution time: 0.73436808586121s)
+[2025-09-08 16:39:17] [INFO] OCR processor finished
+[2025-09-08 17:04:57] [INFO] Starting OCR processor
+[2025-09-08 17:04:57] [INFO] Processing specific file ID: 269
+[2025-09-08 17:04:57] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\test preview.pdf, type: application/pdf, status: completed
+[2025-09-08 17:04:57] [INFO] Processing file ID: 269, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\test preview.pdf, type: pdf
+[2025-09-08 17:04:58] [INFO] Starting text extraction for file ID 269, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\test preview.pdf
+[2025-09-08 17:04:58] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\test preview.pdf
+[2025-09-08 17:04:58] [INFO] PDF contains text, extracting directly
+[2025-09-08 17:04:58] [INFO] Inserted 3 pages into file_pages table
+[2025-09-08 17:04:58] [INFO] OCR completed for file ID 269 (pages: 3, execution time: 0.76221609115601s)
+[2025-09-08 17:04:58] [INFO] OCR processor finished
+[2025-09-09 07:09:32] [INFO] Starting OCR processor
+[2025-09-09 07:09:32] [INFO] Processing specific file ID: 270
+[2025-09-09 07:09:32] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test file.pdf, type: application/pdf, status: completed
+[2025-09-09 07:09:32] [INFO] Processing file ID: 270, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test file.pdf, type: pdf
+[2025-09-09 07:09:32] [INFO] Starting text extraction for file ID 270, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test file.pdf
+[2025-09-09 07:09:32] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\test file.pdf
+[2025-09-09 07:09:33] [INFO] PDF contains text, extracting directly
+[2025-09-09 07:09:33] [INFO] Inserted 3 pages into file_pages table
+[2025-09-09 07:09:33] [INFO] OCR completed for file ID 270 (pages: 3, execution time: 1.7674021720886s)
+[2025-09-09 07:09:33] [INFO] OCR processor finished

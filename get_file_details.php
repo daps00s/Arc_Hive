@@ -1,64 +1,62 @@
 <?php
 session_start();
 
-// Required dependencies with validation
+// ✅ Always send JSON
+header('Content-Type: application/json; charset=utf-8');
+ob_clean();
+
+// ---- Required files check ----
 $requiredFiles = ['db_connection.php'];
 foreach ($requiredFiles as $file) {
     if (!file_exists($file)) {
         error_log("Missing required file: $file");
-        http_response_code(500);
-        exit(json_encode([
-            'success' => false,
-            'message' => 'Server error: Missing critical dependency.'
-        ]));
+        sendJsonResponse(false, 'Server error: Missing critical dependency.', [], 500);
     }
     require_once $file;
 }
 
 use Dotenv\Dotenv;
 
-// Load environment variables
-$dotenv = Dotenv::createImmutable(__DIR__, ['.env']);
-$dotenv->safeLoad();
+// ---- Dotenv Safe Load ----
+try {
+    $dotenv = Dotenv::createImmutable(__DIR__, ['.env']);
+    $dotenv->safeLoad();
+} catch (Throwable $e) {
+    error_log("Dotenv error: " . $e->getMessage());
+    sendJsonResponse(false, 'Configuration error.', [], 500);
+}
 
-// Configure error handling
+// ---- Error Handling ----
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 ini_set('error_log', __DIR__ . '/logs/error_log.log');
 error_reporting(E_ALL);
 
-// File-based cache configuration
+// ---- Cache Setup ----
 $cacheDir = __DIR__ . '/cache';
 if (!file_exists($cacheDir)) {
     mkdir($cacheDir, 0777, true);
 }
 $cacheTTL = (int)($_ENV['CACHE_TTL'] ?? 300);
 
-/**
- * Sends a JSON response with appropriate HTTP status.
- *
- * @param bool $success
- * @param string $message
- * @param array $data
- * @param int $statusCode
- * @return void
- */
+// ---- JSON Response Helper ----
 function sendJsonResponse(bool $success, string $message, array $data, int $statusCode): void
 {
-    header('Content-Type: application/json; charset=utf-8');
     http_response_code($statusCode);
     echo json_encode(array_merge(['success' => $success, 'message' => $message], $data));
     exit;
 }
 
-/**
- * Stores data in cache.
- *
- * @param string $key
- * @param mixed $value
- * @param int $ttl
- * @return bool
- */
+// ---- File Size Formatter ----
+function formatFileSize(int $bytes): string
+{
+    if ($bytes === 0) return '0 Bytes';
+    $units = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    $power = floor(log($bytes, 1024));
+    return round($bytes / pow(1024, $power), 2) . ' ' . $units[$power];
+}
+
+// ---- Cache Functions ----
 function cacheStore(string $key, $value, int $ttl): bool
 {
     global $cacheDir;
@@ -67,12 +65,6 @@ function cacheStore(string $key, $value, int $ttl): bool
     return file_put_contents($filename, $data, LOCK_EX) !== false;
 }
 
-/**
- * Fetches data from cache.
- *
- * @param string $key
- * @return mixed
- */
 function cacheFetch(string $key)
 {
     global $cacheDir;
@@ -87,43 +79,26 @@ function cacheFetch(string $key)
     return false;
 }
 
-/**
- * Checks if cache exists and is valid.
- *
- * @param string $key
- * @return bool
- */
 function cacheExists(string $key): bool
 {
     global $cacheDir;
     $filename = $cacheDir . '/' . md5($key) . '.cache';
     if (file_exists($filename)) {
         $content = unserialize(file_get_contents($filename));
-        if ($content['expires'] > time()) {
-            return true;
-        }
+        if ($content['expires'] > time()) return true;
         unlink($filename);
     }
     return false;
 }
 
-/**
- * Fetches file details including access information and activity history.
- *
- * @param PDO $pdo
- * @param int $fileId
- * @param int $userId
- * @return array
- */
+// ---- Fetch File Details ----
 function fetchFileDetails(PDO $pdo, int $fileId, int $userId): array
 {
     $cacheKey = "file_details_{$fileId}_{$userId}";
-    if (cacheExists($cacheKey)) {
-        return cacheFetch($cacheKey);
-    }
+    if (cacheExists($cacheKey)) return cacheFetch($cacheKey);
 
     try {
-        // Fetch file details
+        // File details
         $stmt = $pdo->prepare("
             SELECT f.file_id, f.file_name, f.file_path, f.copy_type, f.upload_date, 
                    COALESCE(dt.type_name, 'Unknown Type') AS document_type,
@@ -141,20 +116,7 @@ function fetchFileDetails(PDO $pdo, int $fileId, int $userId): array
             sendJsonResponse(false, 'File not found or access denied.', [], 403);
         }
 
-        // Fetch access information (users and departments)
-        $accessStmt = $pdo->prepare("
-            SELECT DISTINCT COALESCE(u.username, d.department_name) AS access_entity
-            FROM files f
-            LEFT JOIN users u ON f.user_id = u.user_id
-            LEFT JOIN users_department ud ON f.department_id = ud.department_id OR f.sub_department_id = ud.department_id
-            LEFT JOIN departments d ON ud.department_id = d.department_id
-            WHERE f.file_id = ? AND f.access_level IN ('sub_department', 'college')
-        ");
-        $accessStmt->execute([$fileId]);
-        $accessList = $accessStmt->fetchAll(PDO::FETCH_COLUMN);
-        $accessInfo = $accessList ? implode(', ', $accessList) : ($file['access_level'] === 'personal' ? 'Personal' : 'None');
-
-        // Fetch file activity history
+        // History (last 50)
         $historyStmt = $pdo->prepare("
             SELECT t.transaction_id, t.transaction_status, t.transaction_time, t.description,
                    COALESCE(u.username, 'System') AS actor,
@@ -169,36 +131,17 @@ function fetchFileDetails(PDO $pdo, int $fileId, int $userId): array
         $historyStmt->execute([$fileId]);
         $historyRaw = $historyStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Process activity history
         $history = array_map(function ($entry) {
-            $action = '';
-            switch ($entry['description']) {
-                case strpos($entry['description'], 'sent') !== false:
-                    $action = "Sent to " . ($entry['target_department'] ?? $entry['actor']);
-                    break;
-                case strpos($entry['description'], 'received') !== false:
-                    $action = "Received by " . ($entry['target_department'] ?? $entry['actor']);
-                    break;
-                case strpos($entry['description'], 'copied') !== false:
-                    $action = "Copied by " . ($entry['target_department'] ?? $entry['actor']);
-                    break;
-                case strpos($entry['description'], 'renamed') !== false:
-                    $action = "Renamed to '" . ($entry['description'] ? substr($entry['description'], strpos($entry['description'], ':') + 2) : 'Unknown') . "'";
-                    break;
-                default:
-                    $action = $entry['description'] ?: 'Unknown action';
-            }
             return [
-                'action' => $action,
+                'action' => $entry['description'] ?: 'Unknown action',
                 'timestamp' => $entry['transaction_time']
             ];
         }, $historyRaw);
 
-        // Calculate file size (if soft copy and file exists)
+        // File size (soft copies only)
         $fileSize = 'N/A';
         if ($file['copy_type'] === 'soft_copy' && $file['file_path'] && file_exists($file['file_path'])) {
-            $bytes = filesize($file['file_path']);
-            $fileSize = formatFileSize($bytes);
+            $fileSize = formatFileSize(filesize($file['file_path']));
         }
 
         $details = [
@@ -209,9 +152,7 @@ function fetchFileDetails(PDO $pdo, int $fileId, int $userId): array
             'upload_date' => $file['upload_date'],
             'document_type' => $file['document_type'],
             'uploader' => $file['uploader'],
-            'access_info' => $accessInfo,
             'file_size' => $fileSize,
-            'physical_storage' => $file['file_path'] ?: 'None',
             'history' => $history
         ];
 
@@ -220,58 +161,34 @@ function fetchFileDetails(PDO $pdo, int $fileId, int $userId): array
     } catch (PDOException $e) {
         error_log("Error fetching file details for file {$fileId}: " . $e->getMessage());
         sendJsonResponse(false, 'Failed to fetch file details.', [], 500);
-        return [];
     }
 }
 
-/**
- * Formats file size in bytes to a human-readable format.
- *
- * @param int $bytes
- * @return string
- */
-function formatFileSize(int $bytes): string
-{
-    if ($bytes === 0) {
-        return '0 Bytes';
-    }
-    $units = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    $power = floor(log($bytes, 1024));
-    $size = round($bytes / pow(1024, $power), 2);
-    return $size . ' ' . $units[$power];
-}
-
+// ---- Main Execution ----
 try {
-    // Validate request method
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         sendJsonResponse(false, 'Invalid request method.', [], 405);
     }
 
-    // Validate CSRF token
+    if (!isset($_SESSION['user_id'])) {
+        sendJsonResponse(false, 'Unauthorized access.', [], 401);
+    }
+
     $csrfToken = $_POST['csrf_token'] ?? '';
     if (!hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
         sendJsonResponse(false, 'Invalid CSRF token.', [], 403);
     }
 
-    // Validate user session
-    if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['role'])) {
-        sendJsonResponse(false, 'Unauthorized access.', [], 401);
-    }
-
-    // Validate input
     $fileId = filter_input(INPUT_POST, 'file_id', FILTER_VALIDATE_INT);
     if ($fileId === false || $fileId <= 0) {
         sendJsonResponse(false, 'Invalid file ID.', [], 400);
     }
 
     $userId = (int)$_SESSION['user_id'];
-
     global $pdo;
 
-    // Fetch file details
     $fileDetails = fetchFileDetails($pdo, $fileId, $userId);
 
-    // Send response
     sendJsonResponse(true, 'File details retrieved successfully.', ['data' => $fileDetails], 200);
 } catch (Exception $e) {
     error_log("Error in get_file_details.php: " . $e->getMessage());

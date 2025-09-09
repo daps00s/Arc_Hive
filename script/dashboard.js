@@ -491,7 +491,6 @@ $(document).ready(function() {
             notyf.error('Please enter a search query');
         }
     });
-
     function fetchDepartments() {
         $.ajax({
             url: 'api/file_operations.php',
@@ -518,7 +517,6 @@ $(document).ready(function() {
             }
         });
     }
-
     // Fetch sub-departments
     function fetchSubDepartments(deptId) {
         $.ajax({
@@ -691,45 +689,181 @@ $(document).ready(function() {
     // Initial fetch for uploaded files
     fetchUploadedFiles();
 
-    // Fetch notifications
-    function fetchNotifications() {
-        $.ajax({
-            url: 'api/file_operations.php',
-            method: 'POST',
-            data: {
-                action: 'fetch_notifications',
-                csrf_token: csrfToken
-            },
-            success: function(data) {
-                console.log('Notifications response:', data);
-                if (data.success && data.notifications) {
-                    const sidebar = $('.notifications-sidebar').empty().append('<h3>Notifications</h3><button class="mark-all-read">Mark all as read</button>');
-                    data.notifications.forEach(notification => {
+// Fetch notifications
+function fetchNotifications() {
+    $.ajax({
+        url: 'api/file_operations.php',
+        method: 'POST',
+        data: {
+            action: 'fetch_notifications',
+            csrf_token: csrfToken
+        },
+        success: function(data) {
+            console.log('Notifications response:', data);
+            if (data.success && data.notifications) {
+                const offcanvasBody = $('#notificationsOffcanvas .offcanvas-body').empty();
+                offcanvasBody.append('<button class="btn mark-all-read w-100 mb-3">Mark all as read</button>');
+                // Filter notifications: exclude 'notification' type with "You have received a file"
+                const filteredNotifications = data.notifications.filter(notification => 
+                    !(notification.transaction_type === 'notification' && 
+                      notification.message.startsWith('You have received a file'))
+                );
+                if (filteredNotifications.length === 0) {
+                    offcanvasBody.append('<p class="text-muted text-center no-notifications">No notifications available.</p>');
+                } else {
+                    const listGroup = $('<div class="list-group"></div>');
+                    filteredNotifications.forEach(notification => {
+                        const isFileSent = notification.transaction_type === 'file_sent';
+                        const isPending = notification.transaction_status === 'pending';
                         const item = `
-                            <div class="notification-item ${notification.transaction_status === 'pending' ? 'pending' : ''}" 
+                            <div class="list-group-item list-group-item-action ${isFileSent && isPending ? 'notification-item-pending clickable-notification' : ''}" 
                                  data-notification-id="${notification.id}" 
-                                 data-file-id="${notification.file_id}">
-                                <p>${notification.message}</p>
-                                <small>${new Date(notification.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</small>
-                                ${notification.transaction_status === 'pending' ? `
-                                    <div class="notification-actions">
-                                        <button class="accept-notification">Accept</button>
-                                        <button class="reject-notification">Reject</button>
-                                    </div>
-                                ` : ''}
+                                 data-file-id="${notification.file_id}"
+                                 data-file-name="${notification.file_name}">
+                                <p class="notification-message mb-1">${notification.message} (File: ${notification.file_name})</p>
+                                <small class="text-muted">${new Date(notification.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' })}</small>
                             </div>
                         `;
-                        sidebar.append(item);
+                        listGroup.append(item);
                     });
-                    $('.notification-badge').text(data.notifications.filter(n => n.transaction_status === 'pending').length || '');
+                    offcanvasBody.append(listGroup);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Notifications fetch error:', status, error, xhr.responseText);
-                notyf.error('Failed to fetch notifications');
+                $('.notification-badge').text(filteredNotifications.filter(n => n.transaction_status === 'pending').length || '');
+            } else {
+                notyf.error(data.message || 'Failed to fetch notifications');
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error('Notifications fetch error:', status, error, xhr.responseText);
+            notyf.error('Failed to fetch notifications');
+        }
+    });
+}
+
+// Handle clickable notification to open recipient file modal
+$(document).on('click', '.clickable-notification', function() {
+    const notificationId = $(this).data('notification-id');
+    const fileId = $(this).data('file-id');
+    const fileName = $(this).data('file-name');
+    const isPending = $(this).hasClass('notification-item-pending');
+
+    console.log('Clickable notification triggered:', { notificationId, fileId, fileName, isPending });
+
+    if (!notificationId || !fileId) {
+        console.error('Missing notification or file data:', { notificationId, fileId, fileName });
+        notyf.error('Invalid notification or file data');
+        return;
     }
+
+    // Close any open modal
+    if (!$('#recipientFileModal').hasClass('hidden')) {
+        console.log('Recipient modal already open, closing first');
+        $('#recipientFileModal').addClass('hidden');
+    }
+
+    // Clear previous content
+    $('#recipientFileModalPreview').empty();
+    $('#recipientFileModalButtons').empty();
+
+    // Fetch file preview
+    $.ajax({
+        url: 'api/file_operations.php',
+        method: 'POST',
+        data: {
+            action: 'fetch_file_preview',
+            file_id: fileId,
+            csrf_token: csrfToken
+        },
+        success: function(data) {
+            console.log('File preview response for notification:', data);
+            const $preview = $('#recipientFileModalPreview').empty();
+            if (data.success && data.file_path) {
+                const fileType = data.file_type || '';
+                const filePath = data.file_path;
+                const fileName = data.file_name || 'Unknown File';
+
+                if (fileType.startsWith('image/')) {
+                    const img = $('<img>').attr({
+                        src: filePath,
+                        alt: 'Preview of ' + fileName,
+                        class: 'file-preview-image'
+                    });
+                    $preview.append(img);
+                } else if (fileType === 'text/plain') {
+                    $.get(filePath, function(text) {
+                        const pre = $('<pre>').text(text).css({
+                            'max-height': '400px',
+                            'overflow-y': 'auto',
+                            'background': '#f8f8f8',
+                            'padding': '10px',
+                            'border-radius': '4px'
+                        });
+                        $preview.append(pre);
+                    }).fail(function(xhr, status, error) {
+                        console.error('Text file fetch error for notification:', { status, error, response: xhr.responseText });
+                        $preview.append('<p class="error">Failed to load text content: ' + (xhr.responseText || 'Unknown error') + '</p>');
+                    });
+                } else if (fileType === 'application/pdf') {
+                    $preview.append(
+                        `<embed src="${filePath}" type="application/pdf" width="100%" height="400px">` +
+                        `<p>PDF preview not supported in some browsers. <a href="${filePath}" target="_blank">Download PDF</a></p>`
+                    );
+                } else {
+                    $preview.append(
+                        `<i class="fas fa-file fa-3x"></i><p>Preview not available for this file type (${fileType}).</p>`
+                    );
+                }
+
+                // Add Accept/Deny buttons for pending notifications
+                const $actionButtons = $('#recipientFileModalButtons').empty();
+                if (isPending) {
+                    $actionButtons.append(`
+                        <button class="btn btn-success accept-notification" data-notification-id="${notificationId}" data-file-id="${fileId}">Accept</button>
+                        <button class="btn btn-danger reject-notification" data-notification-id="${notificationId}" data-file-id="${fileId}">Deny</button>
+                    `);
+                }
+
+                // Show modal
+                console.log('Showing recipientFileModal');
+                $('#recipientFileModal').removeClass('hidden');
+            } else {
+                console.error('Preview failed for notification:', { message: data.message, response: data });
+                $preview.append('<p class="error">Failed to load file preview: ' + (data.message || 'Unknown error') + '</p>');
+                notyf.error('Failed to load file preview: ' + (data.message || 'Unknown error'));
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('File preview AJAX error for notification:', { status, error, response: xhr.responseText });
+            $('#recipientFileModalPreview').empty().append('<p class="error">Failed to load file preview: Server error - ' + (xhr.responseText || 'Unknown error') + '</p>');
+            notyf.error('Failed to load file preview: Server error');
+        }
+    });
+});
+
+// Mark all as read
+$(document).on('click', '.mark-all-read', function() {
+    $.ajax({
+        url: 'api/file_operations.php',
+        method: 'POST',
+        data: {
+            action: 'mark_all_notifications_read',
+            csrf_token: csrfToken
+        },
+        success: function(response) {
+            console.log('Mark all read response:', response);
+            if (response.success) {
+                notyf.success('All notifications marked as read');
+                fetchNotifications();
+            } else {
+                notyf.error(response.message || 'Failed to mark notifications as read');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Mark all read error:', status, error, xhr.responseText);
+            notyf.error('Failed to mark notifications as read');
+        }
+    });
+});
 
     // Poll notifications every 30 seconds
     setInterval(fetchNotifications, 30000);
@@ -741,61 +875,67 @@ $(document).ready(function() {
     });
 
     // Notification actions
-    $(document).on('click', '.accept-notification', function() {
-        const notificationId = $(this).closest('.notification-item').data('notification-id');
-        const fileId = $(this).closest('.notification-item').data('file-id');
-        $.ajax({
-            url: 'api/file_operations.php',
-            method: 'POST',
-            data: {
-                action: 'accept_file',
-                notification_id: notificationId,
-                file_id: fileId,
-                csrf_token: csrfToken
-            },
-            success: function(response) {
-                console.log('Accept file response:', response);
-                if (response.success) {
-                    notyf.success('File accepted');
-                    fetchNotifications();
-                } else {
-                    notyf.error(response.message || 'Failed to accept file');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Accept file error:', status, error, xhr.responseText);
-                notyf.error('Failed to accept file');
-            }
-        });
-    });
 
-    $(document).on('click', '.reject-notification', function() {
-        const notificationId = $(this).closest('.notification-item').data('notification-id');
-        const fileId = $(this).closest('.notification-item').data('file-id');
-        $.ajax({
-            url: 'api/file_operations.php',
-            method: 'POST',
-            data: {
-                action: 'reject_file',
-                notification_id: notificationId,
-                file_id: fileId,
-                csrf_token: csrfToken
-            },
-            success: function(response) {
-                console.log('Reject file response:', response);
-                if (response.success) {
-                    notyf.success('File rejected');
-                    fetchNotifications();
-                } else {
-                    notyf.error(response.message || 'Failed to reject file');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Reject file error:', status, error, xhr.responseText);
-                notyf.error('Failed to reject file');
+
+// Accept notification handler
+$(document).on('click', '.accept-notification', function() {
+    const notificationId = $(this).data('notification-id');
+    const fileId = $(this).data('file-id');
+    $.ajax({
+        url: 'api/file_operations.php',
+        method: 'POST',
+        data: {
+            action: 'accept_file',
+            notification_id: notificationId,
+            file_id: fileId,
+            csrf_token: csrfToken
+        },
+        success: function(response) {
+            console.log('Accept file response:', response);
+            if (response.success) {
+                notyf.success('File accepted');
+                $('#recipientFileModal').addClass('hidden');
+                fetchNotifications();
+            } else {
+                notyf.error(response.message || 'Failed to accept file');
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error('Accept file error:', status, error, xhr.responseText);
+            notyf.error('Failed to accept file');
+        }
     });
+});
+
+// Reject notification handler
+$(document).on('click', '.reject-notification', function() {
+    const notificationId = $(this).data('notification-id');
+    const fileId = $(this).data('file-id');
+    $.ajax({
+        url: 'api/file_operations.php',
+        method: 'POST',
+        data: {
+            action: 'reject_file',
+            notification_id: notificationId,
+            file_id: fileId,
+            csrf_token: csrfToken
+        },
+        success: function(response) {
+            console.log('Reject file response:', response);
+            if (response.success) {
+                notyf.success('File rejected');
+                $('#recipientFileModal').addClass('hidden');
+                fetchNotifications();
+            } else {
+                notyf.error(response.message || 'Failed to reject file');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Reject file error:', status, error, xhr.responseText);
+            notyf.error('Failed to reject file');
+        }
+    });
+});
 
     // Close notifications sidebar when clicking outside
     $(document).on('click', function(e) {
@@ -825,16 +965,344 @@ $(document).ready(function() {
         }
     });
 
-    // File menu button clicks
-    $(document).on('click', '.file-menu button', function(e) {
-        e.stopPropagation();
-        const $fileItem = $(this).closest('.file-item');
-        const fileId = $fileItem.data('file-id');
-        const action = $(this).attr('class');
-        $('.file-menu').addClass('hidden');
+// File menu button clicks
+$(document).on('click', '.file-menu button', function(e) {
+    e.stopPropagation();
+    const $fileItem = $(this).closest('.file-item');
+    const fileId = $fileItem.data('file-id');
+    const action = $(this).attr('class');
 
-        if (action === 'file-info') {
-            window.populateFileInfoSidebar(fileId, csrfToken);
+    if (action === 'file-info') {
+        // Fetch file preview using fetch_file_preview endpoint
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'fetch_file_preview',
+                file_id: fileId,
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('File preview response:', data);
+                const $preview = $('#filePreview').empty();
+                if (data.success && data.file_path) {
+                    const fileType = data.file_type || '';
+                    const filePath = data.file_path;
+                    const fileName = data.file_name || 'Unknown File';
+
+                    if (fileType.startsWith('image/')) {
+                        // Display image preview
+                        const img = $('<img>').attr({
+                            src: filePath,
+                            alt: 'Preview of ' + fileName,
+                            class: 'file-preview-image'
+                        });
+                        $preview.append(img);
+                    } else if (fileType === 'text/plain') {
+                        // Fetch and display text content
+                        $.get(filePath, function(text) {
+                            const pre = $('<pre>').text(text).css({
+                                'max-height': '400px',
+                                'overflow-y': 'auto',
+                                'background': '#f8f8f8',
+                                'padding': '10px',
+                                'border-radius': '4px'
+                            });
+                            $preview.append(pre);
+                        }).fail(function() {
+                            $preview.append('<p class="error">Failed to load text content</p>');
+                        });
+                    } else if (fileType === 'application/pdf') {
+                        // Display PDF preview using embed
+                        $preview.append(
+                            `<embed src="${filePath}" type="application/pdf" width="100%" height="400px">` +
+                            `<p>PDF preview not supported in some browsers. <a href="${filePath}" target="_blank">Download PDF</a></p>`
+                        );
+                    } else {
+                        $preview.append(
+                            `<i class="fas fa-file fa-3x"></i><p>Preview not available for this file type (${fileType}).</p>`
+                        );
+                    }
+                } else {
+                    console.error('Preview failed:', data.message || 'No file path returned');
+                    $preview.append('<p class="error">Failed to load file preview: ' + (data.message || 'Unknown error') + '</p>');
+                }
+
+                // Fetch file details for the details tab
+                $.ajax({
+                    url: 'api/file_operations.php',
+                    method: 'POST',
+                    data: {
+                        action: 'fetch_file_info',
+                        file_id: fileId,
+                        csrf_token: csrfToken
+                    },
+                    success: function(data) {
+                        console.log('File info response:', data);
+                        if (data.success) {
+                            const $detailsTab = $('#detailsTab').empty();
+                            $detailsTab.append('<div class="file-info-section"><strong>Access:</strong> ' + (data.file.access_level || 'Unknown') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>QR Code:</strong> ' + (data.file.qr_path ? 'Available' : 'Not Available') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>File Type:</strong> ' + (data.file.file_type || data.file.document_type || 'Unknown') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>File Size:</strong> ' + 
+                                (data.file.file_size ? (data.file.file_size / 1024).toFixed(2) + ' KB' : 'N/A') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>Category:</strong> ' + (data.file.document_type || 'Unknown') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>Uploader:</strong> ' + (data.file.uploader_name || 'Unknown') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>Upload Date:</strong> ' + 
+                                (data.file.upload_date ? new Date(data.file.upload_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>Physical Location:</strong> ' + (data.file.physical_location || 'None') + '</div>');
+                            $detailsTab.append('<div class="file-info-section"><strong>Document Type:</strong> ' + (data.file.document_type || 'Unknown') + '</div>');
+                            if (data.formatted_fields && data.formatted_fields.length > 0) {
+                                let fieldsHtml = '<div class="file-info-section"><strong>Fields:</strong><ul class="fields-list">';
+                                data.formatted_fields.forEach(field => {
+                                    fieldsHtml += `<li>${field.key}: ${field.value}</li>`;
+                                });
+                                fieldsHtml += '</ul></div>';
+                                $detailsTab.append(fieldsHtml);
+                            } else {
+                                $detailsTab.append('<div class="file-info-section"><strong>Fields:</strong> None</div>');
+                            }
+                            $('#fileSentTo').text(data.activity.sent_to ? data.activity.sent_to.join(', ') : 'None');
+                            $('#fileReceivedBy').text(data.activity.received_by ? data.activity.received_by.join(', ') : 'None');
+                            $('#fileCopiedBy').text(data.activity.copied_by ? data.activity.copied_by.join(', ') : 'None');
+                            $('#fileRenamedTo').text(data.activity.renamed_to || 'None');
+                            $('#fileInfoSidebar')
+                                .removeClass('hidden')
+                                .css({ right: '-400px' })
+                                .animate({ right: '0' }, 300)
+                                .attr('aria-hidden', 'false');
+                        } else {
+                            notyf.error(data.message || 'Failed to load file information');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('File info fetch error:', status, error, xhr.responseText);
+                        notyf.error('Failed to load file information');
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('File preview fetch error:', status, error, xhr.responseText);
+                $('#filePreview').empty().append('<p class="error">Failed to load file preview: Server error</p>');
+                notyf.error('Failed to load file preview');
+            }
+        });
+    }
+    $('.file-menu').addClass('hidden');
+});
+
+    // --- New Code for Send File Modal ---
+
+    let sendingFiles = []; // Store loaded files for sorting/re-rendering
+
+    // Load files for sending
+    function loadFilesForSending() {
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'load_files_for_sending',
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('Files for sending response:', data);
+                if (data.success) {
+                    sendingFiles = data.files;
+                    renderSendingFiles(sendingFiles);
+                } else {
+                    notyf.error(data.message || 'Failed to load files for sending');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Files for sending fetch error:', status, error, xhr.responseText);
+                notyf.error('Failed to load files for sending');
+            }
+        });
+    }
+
+    // Render files in the modal (preserves selections during re-render)
+    function renderSendingFiles(files) {
+        const grid = $('#fileSelectionGrid').empty();
+        if (files.length === 0) {
+            grid.append('<p class="no-files">No files available to send.</p>');
+            return;
         }
+        files.forEach(file => {
+            const meta = `
+                Type: ${file.document_type || 'Unknown'} | 
+                Uploaded: ${new Date(file.upload_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} | 
+                Dept: ${file.department_name || 'None'}
+            `;
+            const item = `
+                <div class="file-item selectable" data-file-id="${file.file_id}">
+                    <p class="file-name">${file.file_name}</p>
+                    <p class="file-meta">${meta}</p>
+                </div>
+            `;
+            grid.append(item);
+        });
+    }
+
+    // Load recipients (users and departments)
+    function loadRecipients() {
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'load_recipients',
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('Recipients response:', data);
+                if (data.success) {
+                    const list = $('#recipientList').empty();
+                    // Users
+                    data.users.forEach(user => {
+                        const item = `
+                            <div class="recipient-item selectable" data-type="user" data-id="${user.user_id}">
+                                <span>${user.username}</span>
+                                <span class="recipient-type">User</span>
+                            </div>
+                        `;
+                        list.append(item);
+                    });
+                    // Departments
+                    data.departments.forEach(dept => {
+                        const item = `
+                            <div class="recipient-item selectable" data-type="department" data-id="${dept.department_id}">
+                                <span>${dept.department_name}</span>
+                                <span class="recipient-type">Department</span>
+                            </div>
+                        `;
+                        list.append(item);
+                    });
+                } else {
+                    notyf.error(data.message || 'Failed to load recipients');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Recipients fetch error:', status, error, xhr.responseText);
+                notyf.error('Failed to load recipients');
+            }
+        });
+    }
+
+    // Handle selection for files and recipients (minimal UI: just toggle class)
+    $(document).on('click', '.selectable', function() {
+        $(this).toggleClass('selected');
     });
+
+    // Client-side sorting for files in send modal (minimal: date/dept/personal filters, preserves selections)
+    $('#sendFileModal #fileSort').on('change', function() {
+        const sort = $(this).val();
+        const selectedIds = $('#fileSelectionGrid .selected').map(function() { return $(this).data('file-id'); }).get(); // Preserve selections
+
+        let sortedFiles = [...sendingFiles];
+        if (sort === 'date-desc') {
+            sortedFiles.sort((a, b) => new Date(b.upload_date) - new Date(a.upload_date));
+        } else if (sort === 'date-asc') {
+            sortedFiles.sort((a, b) => new Date(a.upload_date) - new Date(b.upload_date));
+        } else if (sort === 'department') {
+            sortedFiles = sortedFiles.filter(f => f.department_name && !f.parent_department_id) // Assume top-level depts
+                .sort((a, b) => (a.department_name || '').localeCompare(b.department_name || ''));
+        } else if (sort === 'sub-department') {
+            sortedFiles = sortedFiles.filter(f => f.department_name && f.parent_department_id) // Assume sub-depts
+                .sort((a, b) => (a.department_name || '').localeCompare(b.department_name || ''));
+        } else if (sort === 'personal') {
+            sortedFiles = sortedFiles.filter(f => !f.department_name);
+        }
+
+        renderSendingFiles(sortedFiles);
+        // Re-apply selections
+        selectedIds.forEach(id => {
+            $(`#fileSelectionGrid [data-file-id="${id}"]`).addClass('selected');
+        });
+    });
+
+    // Search recipients (updates list dynamically)
+    $('#recipientSearch').on('input', debounce(function() {
+        const query = $(this).val().trim();
+        if (query.length < 2) {
+            loadRecipients(); // Reset to full list if query too short
+            return;
+        }
+        $.ajax({
+            url: 'api/file_operations.php',
+            method: 'POST',
+            data: {
+                action: 'search_recipients',
+                query: query,
+                csrf_token: csrfToken
+            },
+            success: function(data) {
+                console.log('Search recipients response:', data);
+                if (data.success) {
+                    const list = $('#recipientList').empty();
+                    data.results.forEach(result => {
+                        const item = `
+                            <div class="recipient-item selectable" data-type="${result.type}" data-id="${result.id}">
+                                <span>${result.name}</span>
+                                <span class="recipient-type">${result.type.charAt(0).toUpperCase() + result.type.slice(1)}</span>
+                            </div>
+                        `;
+                        list.append(item);
+                    });
+                } else {
+                    notyf.error(data.message || 'No results found');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Search recipients error:', status, error, xhr.responseText);
+                notyf.error('Failed to search recipients');
+            }
+        });
+    }, 300));
+
+    // Submit send file form
+    $('#sendFileForm').on('submit', function(e) {
+        e.preventDefault();
+        const selectedFiles = $('#fileSelectionGrid .selected').map(function() {
+            return $(this).data('file-id');
+        }).get();
+        const selectedRecipients = $('#recipientList .selected').map(function() {
+            return `${$(this).data('type')}:${$(this).data('id')}`;
+        }).get();
+        const message = $('textarea[name="message"]', this).val();
+
+        if (selectedFiles.length === 0) {
+            notyf.error('Please select at least one file to send');
+            return;
+        }
+        if (selectedRecipients.length === 0) {
+            notyf.error('Please select at least one recipient');
+            return;
+        }
+
+        $.ajax({
+            url: 'api/send_file_handler.php',
+            method: 'POST',
+            data: {
+                file_ids: JSON.stringify(selectedFiles),
+                recipients: JSON.stringify(selectedRecipients),
+                message: message,
+                csrf_token: csrfToken
+            },
+            success: function(response) {
+                console.log('Send file response:', response);
+                if (response.success) {
+                    notyf.success(`Files sent successfully to ${response.recipient_count} recipients`);
+                    $('#sendFileModal').addClass('hidden');
+                    // Optional: Refresh notifications or files
+                    fetchNotifications();
+                } else {
+                    notyf.error(response.message || 'Failed to send files');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Send file error:', status, error, xhr.responseText);
+                notyf.error('Failed to send files: Server error');
+            }
+        });
+    });
+
 });

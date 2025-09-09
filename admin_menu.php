@@ -19,6 +19,10 @@
         <i class="fas fa-users"></i>
         <span class="link-text">User Management</span>
     </a>
+        <a href="admin_logs.php">
+        <i class="fas fa-users"></i>
+        <span class="link-text">User Logs</span>
+    </a>
     <a href="department_management.php">
         <i class="fas fa-building"></i>
         <span class="link-text">Department Management</span>

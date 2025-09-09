@@ -5,6 +5,22 @@ const notyf = new Notyf({
     ripple: true
 });
 
+// Load jQuery UI for autocomplete CHANGE THIS IF ERROR
+    if (!$.ui || !$.ui.autocomplete) {
+        $.getScript('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js', function() {
+            $('<link>')
+                .appendTo('head')
+                .attr({
+                    type: 'text/css', 
+                    rel: 'stylesheet',
+                    href: 'https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'
+                });
+            setupSearchAutocomplete();
+        });
+    } else {
+        setupSearchAutocomplete();
+    }
+
 // Utility function for debouncing
 function debounce(func, wait) {
     let timeout;
