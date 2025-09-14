@@ -3,7 +3,7 @@
         'name' => 'rivzr/arc-hive-defense',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6c5827c00adcb5a9816ccef8244276aff0bb8d4d',
+        'reference' => '23af3e9c2408c37fc696afd4073532939bd2ca6d',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -298,6 +298,15 @@
             'aliases' => array(),
             'dev_requirement' => true,
         ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.10.0',
+            'version' => '6.10.0.0',
+            'reference' => 'bf74d75a1fde6beaa34a0ddae2ec5fce0f72a144',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'phpoffice/math' => array(
             'pretty_version' => '0.3.0',
             'version' => '0.3.0.0',
@@ -511,7 +520,7 @@
         'rivzr/arc-hive-defense' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6c5827c00adcb5a9816ccef8244276aff0bb8d4d',
+            'reference' => '23af3e9c2408c37fc696afd4073532939bd2ca6d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
