@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -31,7 +30,7 @@ abstract class AbstractStyle
     /**
      * XML writer.
      *
-     * @var XMLWriter
+     * @var \PhpOffice\PhpWord\Shared\XMLWriter
      */
     private $xmlWriter;
 
@@ -61,7 +60,7 @@ abstract class AbstractStyle
     /**
      * Get XML Writer.
      *
-     * @return XMLWriter
+     * @return \PhpOffice\PhpWord\Shared\XMLWriter
      */
     protected function getXmlWriter()
     {
@@ -115,7 +114,7 @@ abstract class AbstractStyle
         if ($value !== null) {
             $class = 'PhpOffice\\PhpWord\\Writer\\Word2007\\Style\\' . $name;
 
-            /** @var AbstractStyle $writer */
+            /** @var \PhpOffice\PhpWord\Writer\Word2007\Style\AbstractStyle $writer */
             $writer = new $class($xmlWriter, $value);
             $writer->write();
         }

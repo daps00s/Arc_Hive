@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -28,7 +27,7 @@ class Line extends AbstractElement
     /**
      * Line style.
      *
-     * @var ?LineStyle
+     * @var \PhpOffice\PhpWord\Style\Line
      */
     private $style;
 
@@ -45,7 +44,7 @@ class Line extends AbstractElement
     /**
      * Get line style.
      *
-     * @return ?LineStyle
+     * @return \PhpOffice\PhpWord\Style\Line
      */
     public function getStyle()
     {

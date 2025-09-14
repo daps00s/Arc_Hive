@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -86,16 +85,6 @@ class Field extends AbstractElement
             'properties' => ['StyleIdentifier' => ''],
             'options' => ['PreserveFormat'],
         ],
-        'FILENAME' => [
-            'properties' => [
-                'format' => ['Upper', 'Lower', 'FirstCap', 'Caps'],
-            ],
-            'options' => ['Path', 'PreserveFormat'],
-        ],
-        'REF' => [
-            'properties' => ['name' => ''],
-            'options' => ['f', 'h', 'n', 'p', 'r', 't', 'w'],
-        ],
     ];
 
     /**
@@ -129,16 +118,16 @@ class Field extends AbstractElement
     /**
      * Font style.
      *
-     * @var Font|string
+     * @var \PhpOffice\PhpWord\Style\Font|string
      */
     protected $fontStyle;
 
     /**
      * Set Font style.
      *
-     * @param array|Font|string $style
+     * @param array|\PhpOffice\PhpWord\Style\Font|string $style
      *
-     * @return Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function setFontStyle($style = null)
     {
@@ -159,7 +148,7 @@ class Field extends AbstractElement
     /**
      * Get Font style.
      *
-     * @return Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function getFontStyle()
     {
@@ -173,7 +162,7 @@ class Field extends AbstractElement
      * @param array $properties
      * @param array $options
      * @param null|string|TextRun $text
-     * @param array|Font|string $fontStyle
+     * @param array|\PhpOffice\PhpWord\Style\Font|string $fontStyle
      */
     public function __construct($type = null, $properties = [], $options = [], $text = null, $fontStyle = null)
     {
@@ -279,7 +268,7 @@ class Field extends AbstractElement
     /**
      * Set Field text.
      *
-     * @param null|string|TextRun $text
+     * @param string|TextRun $text
      *
      * @return null|string|TextRun
      */

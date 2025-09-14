@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -31,10 +30,7 @@ use PhpOffice\PhpWord\Style\Language;
  */
 class Settings extends AbstractPart
 {
-    /**
-     * @var array<string>
-     */
-    private $booleanProperties = [
+    private static $booleanProperties = [
         'mirrorMargins',
         'hideSpellingErrors',
         'hideGrammaticalErrors',
@@ -45,7 +41,6 @@ class Settings extends AbstractPart
         'updateFields',
         'autoHyphenation',
         'doNotHyphenateCaps',
-        'bookFoldPrinting',
     ];
 
     /**
@@ -65,8 +60,12 @@ class Settings extends AbstractPart
                 $value = $xmlReader->getAttribute('w:val', $node);
                 $method = 'set' . $name;
 
-                if (in_array($name, $this->booleanProperties)) {
-                    $docSettings->$method($value !== 'false');
+                if (in_array($name, $this::$booleanProperties)) {
+                    if ($value == 'false') {
+                        $docSettings->$method(false);
+                    } else {
+                        $docSettings->$method(true);
+                    }
                 } elseif (method_exists($this, $method)) {
                     $this->$method($xmlReader, $phpWord, $node);
                 } elseif (method_exists($docSettings, $method)) {

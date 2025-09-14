@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -18,14 +17,10 @@
 
 namespace PhpOffice\PhpWord\Collection;
 
-use PhpOffice\PhpWord\Element\Chart;
-
 /**
  * Charts collection.
  *
  * @since 0.12.0
- *
- * @extends AbstractCollection<Chart>
  */
 class Charts extends AbstractCollection
 {

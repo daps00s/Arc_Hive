@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -30,21 +29,21 @@ class Row extends AbstractElement
     /**
      * Row height.
      *
-     * @var ?int
+     * @var int
      */
     private $height;
 
     /**
      * Row style.
      *
-     * @var ?RowStyle
+     * @var \PhpOffice\PhpWord\Style\Row
      */
     private $style;
 
     /**
      * Row cells.
      *
-     * @var Cell[]
+     * @var \PhpOffice\PhpWord\Element\Cell[]
      */
     private $cells = [];
 
@@ -66,7 +65,7 @@ class Row extends AbstractElement
      * @param int $width
      * @param mixed $style
      *
-     * @return Cell
+     * @return \PhpOffice\PhpWord\Element\Cell
      */
     public function addCell($width = null, $style = null)
     {
@@ -80,7 +79,7 @@ class Row extends AbstractElement
     /**
      * Get all cells.
      *
-     * @return Cell[]
+     * @return \PhpOffice\PhpWord\Element\Cell[]
      */
     public function getCells()
     {
@@ -90,7 +89,7 @@ class Row extends AbstractElement
     /**
      * Get row style.
      *
-     * @return ?RowStyle
+     * @return \PhpOffice\PhpWord\Style\Row
      */
     public function getStyle()
     {
@@ -100,7 +99,7 @@ class Row extends AbstractElement
     /**
      * Get row height.
      *
-     * @return ?int
+     * @return int
      */
     public function getHeight()
     {

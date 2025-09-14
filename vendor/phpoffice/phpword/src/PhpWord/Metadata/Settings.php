@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -94,14 +93,14 @@ class Settings
     /**
      * Spelling and Grammatical Checking State.
      *
-     * @var ProofState
+     * @var \PhpOffice\PhpWord\ComplexType\ProofState
      */
     private $proofState;
 
     /**
      * Document Editing Restrictions.
      *
-     * @var Protection
+     * @var \PhpOffice\PhpWord\Metadata\Protection
      */
     private $documentProtection;
 
@@ -115,7 +114,7 @@ class Settings
     /**
      * Theme Font Languages.
      *
-     * @var ?Language
+     * @var Language
      */
     private $themeFontLang;
 
@@ -150,7 +149,7 @@ class Settings
     /**
      * The allowed amount of whitespace before hyphenation is applied.
      *
-     * @var null|float|int
+     * @var null|float
      */
     private $hyphenationZone;
 
@@ -160,13 +159,6 @@ class Settings
      * @var null|bool
      */
     private $doNotHyphenateCaps;
-
-    /**
-     * Enable or disable book-folded printing.
-     *
-     * @var bool
-     */
-    private $bookFoldPrinting = false;
 
     /**
      * @return Protection
@@ -221,7 +213,7 @@ class Settings
     /**
      * Hide spelling errors.
      *
-     * @param ?bool $hideSpellingErrors
+     * @param bool $hideSpellingErrors
      */
     public function setHideSpellingErrors($hideSpellingErrors): void
     {
@@ -241,7 +233,7 @@ class Settings
     /**
      * Hide grammatical errors.
      *
-     * @param ?bool $hideGrammaticalErrors
+     * @param bool $hideGrammaticalErrors
      */
     public function setHideGrammaticalErrors($hideGrammaticalErrors): void
     {
@@ -257,7 +249,7 @@ class Settings
     }
 
     /**
-     * @param ?bool $evenAndOddHeaders
+     * @param bool $evenAndOddHeaders
      */
     public function setEvenAndOddHeaders($evenAndOddHeaders): void
     {
@@ -267,7 +259,7 @@ class Settings
     /**
      * Get the Visibility of Annotation Types.
      *
-     * @return TrackChangesView
+     * @return \PhpOffice\PhpWord\ComplexType\TrackChangesView
      */
     public function getRevisionView()
     {
@@ -276,6 +268,8 @@ class Settings
 
     /**
      * Set the Visibility of Annotation Types.
+     *
+     * @param TrackChangesView $trackChangesView
      */
     public function setRevisionView(?TrackChangesView $trackChangesView = null): void
     {
@@ -291,7 +285,7 @@ class Settings
     }
 
     /**
-     * @param ?bool $trackRevisions
+     * @param bool $trackRevisions
      */
     public function setTrackRevisions($trackRevisions): void
     {
@@ -307,7 +301,7 @@ class Settings
     }
 
     /**
-     * @param ?bool $doNotTrackMoves
+     * @param bool $doNotTrackMoves
      */
     public function setDoNotTrackMoves($doNotTrackMoves): void
     {
@@ -323,7 +317,7 @@ class Settings
     }
 
     /**
-     * @param ?bool $doNotTrackFormatting
+     * @param bool $doNotTrackFormatting
      */
     public function setDoNotTrackFormatting($doNotTrackFormatting): void
     {
@@ -370,20 +364,22 @@ class Settings
 
     /**
      * Returns the Language.
+     *
+     * @return Language
      */
-    public function getThemeFontLang(): ?Language
+    public function getThemeFontLang()
     {
         return $this->themeFontLang;
     }
 
     /**
-     * Sets the Language for this document.
+     * sets the Language for this document.
+     *
+     * @param Language $themeFontLang
      */
-    public function setThemeFontLang(Language $themeFontLang): self
+    public function setThemeFontLang($themeFontLang): void
     {
         $this->themeFontLang = $themeFontLang;
-
-        return $this;
     }
 
     /**
@@ -395,7 +391,7 @@ class Settings
     }
 
     /**
-     * @param ?bool $updateFields
+     * @param bool $updateFields
      */
     public function setUpdateFields($updateFields): void
     {
@@ -455,7 +451,7 @@ class Settings
     }
 
     /**
-     * @return null|float|int
+     * @return null|float
      */
     public function getHyphenationZone()
     {
@@ -463,7 +459,7 @@ class Settings
     }
 
     /**
-     * @param null|float|int $hyphenationZone Measurement unit is twip
+     * @param float $hyphenationZone Measurement unit is twip
      */
     public function setHyphenationZone($hyphenationZone): void
     {
@@ -484,17 +480,5 @@ class Settings
     public function setDoNotHyphenateCaps($doNotHyphenateCaps): void
     {
         $this->doNotHyphenateCaps = (bool) $doNotHyphenateCaps;
-    }
-
-    public function hasBookFoldPrinting(): bool
-    {
-        return $this->bookFoldPrinting;
-    }
-
-    public function setBookFoldPrinting(bool $bookFoldPrinting): self
-    {
-        $this->bookFoldPrinting = $bookFoldPrinting;
-
-        return $this;
     }
 }

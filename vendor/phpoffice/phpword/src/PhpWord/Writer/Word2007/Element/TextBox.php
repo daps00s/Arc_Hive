@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -51,13 +50,6 @@ class TextBox extends Image
 
         if ($style->getBgColor()) {
             $xmlWriter->writeAttribute('fillcolor', $style->getBgColor());
-        } else {
-            $xmlWriter->writeAttribute('filled', 'f');
-        }
-
-        if (!$style->getBorderColor()) {
-            $xmlWriter->writeAttribute('stroked', 'f');
-            $xmlWriter->writeAttribute('strokecolor', 'white');
         }
 
         $styleWriter->write();

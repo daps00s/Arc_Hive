@@ -385,36 +385,48 @@ $escapedQuery = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
                                 </div>
                             </section>
                         <?php endif; ?>
-                        <?php if (!empty($non_owned_matches)): ?>
-                            <section class="non-owned-files-section">
-                                <h2>Other Department Files (Name/Type Matches Only)</h2>
-                                <div class="results-grid">
-                                    <?php foreach ($non_owned_matches as $result): ?>
-                                        <article class="result-item non-owned-file"
-                                            data-file-id="<?= htmlspecialchars($result['file_id'], ENT_QUOTES, 'UTF-8') ?>"
-                                            data-owner-id="<?= htmlspecialchars($result['owner_id'], ENT_QUOTES, 'UTF-8') ?>"
-                                            role="region"
-                                            aria-label="Search result for restricted file <?= htmlspecialchars($result['file_name'], ENT_QUOTES, 'UTF-8') ?>">
-                                            <div class="result-header">
-                                                <h3><?= htmlspecialchars($result['file_name'], ENT_QUOTES, 'UTF-8') ?></h3>
-                                                <button class="kebab-menu" aria-label="File options" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-v"></i>
-                                                </button>
-                                                <div class="file-menu hidden" role="menu">
-                                                    <button class="request-file" role="menuitem">Request Access</button>
-                                                    <button class="file-info" role="menuitem">File Info</button>
-                                                </div>
-                                            </div>
-                                            <p class="result-meta">
-                                                Type: <?= htmlspecialchars($result['document_type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8') ?> |
-                                                Uploaded: <?= date('M d, Y', strtotime($result['upload_date'])) ?> |
-                                                Dept: <?= htmlspecialchars($result['department_name'] ?? 'None', ENT_QUOTES, 'UTF-8') ?>
-                                            </p>
-                                        </article>
-                                    <?php endforeach; ?>
-                                </div>
-                            </section>
-                        <?php endif; ?>
+                       <?php if (!empty($non_owned_matches)): ?>
+    <section class="non-owned-files-section">
+        <h2>Other Department Files (Name/Type Matches Only)</h2>
+        <div class="results-grid">
+            <?php foreach ($non_owned_matches as $result):
+                // Check for pending request
+                $stmt = $pdo->prepare("
+                    SELECT 1 FROM transactions
+                    WHERE file_id = ? AND user_id = ? AND transaction_type = 'request' AND transaction_status = 'pending'
+                ");
+                $stmt->execute([$result['file_id'], $userId]);
+                $hasPendingRequest = $stmt->fetchColumn();
+            ?>
+                <article class="result-item non-owned-file"
+                    data-file-id="<?= htmlspecialchars($result['file_id'], ENT_QUOTES, 'UTF-8') ?>"
+                    data-owner-id="<?= htmlspecialchars($result['owner_id'], ENT_QUOTES, 'UTF-8') ?>"
+                    role="region"
+                    aria-label="Search result for restricted file <?= htmlspecialchars($result['file_name'], ENT_QUOTES, 'UTF-8') ?>">
+                    <div class="result-header">
+                        <h3><?= htmlspecialchars($result['file_name'], ENT_QUOTES, 'UTF-8') ?></h3>
+                        <button class="kebab-menu" aria-label="File options" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="file-menu hidden" role="menu">
+                            <button class="request-file" role="menuitem" 
+                                data-file-id="<?= htmlspecialchars($result['file_id'], ENT_QUOTES, 'UTF-8') ?>" 
+                                <?= $hasPendingRequest ? 'disabled' : '' ?>>
+                                <?= $hasPendingRequest ? 'Request Pending' : 'Request Access' ?>
+                            </button>
+                            <button class="file-info" role="menuitem">File Info</button>
+                        </div>
+                    </div>
+                    <p class="result-meta">
+                        Type: <?= htmlspecialchars($result['document_type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8') ?> |
+                        Uploaded: <?= date('M d, Y', strtotime($result['upload_date'])) ?> |
+                        Dept: <?= htmlspecialchars($result['department_name'] ?? 'None', ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+<?php endif; ?>
                     </div>
                     <?php if ($totalPages > 1): ?>
                         <nav class="pagination" role="navigation" aria-label="Pagination">

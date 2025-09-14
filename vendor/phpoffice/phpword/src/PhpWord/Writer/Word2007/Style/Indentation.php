@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -43,9 +42,6 @@ class Indentation extends AbstractStyle
 
         $firstLine = $style->getFirstLine();
         $xmlWriter->writeAttributeIf(null !== $firstLine, 'w:firstLine', $this->convertTwip($firstLine));
-
-        $firstLineChars = $style->getFirstLineChars();
-        $xmlWriter->writeAttributeIf(0 !== $firstLineChars, 'w:firstLineChars', $this->convertTwip($firstLineChars));
 
         $hanging = $style->getHanging();
         $xmlWriter->writeAttributeIf(null !== $hanging, 'w:hanging', $this->convertTwip($hanging));

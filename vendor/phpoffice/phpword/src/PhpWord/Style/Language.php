@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -257,9 +256,7 @@ final class Language extends AbstractStyle
         if ($locale !== null && strlen($locale) === 2) {
             return strtolower($locale) . '-' . strtoupper($locale);
         }
-        if ($locale === 'und') {
-            return 'en-EN';
-        }
+
         if ($locale !== null && $locale !== 'zxx' && strstr($locale, '-') === false) {
             throw new InvalidArgumentException($locale . ' is not a valid language code');
         }

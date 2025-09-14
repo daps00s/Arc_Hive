@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -149,13 +148,7 @@ class Document extends AbstractPart
 
         $sections = $this->getParentWriter()->getPhpWord()->getSections();
         $evenOdd = $this->getParentWriter()->getPhpWord()->getSettings()->hasEvenAndOddHeaders();
-        $sectOwed = false;
         foreach ($sections as $section) {
-            if ($sectOwed) {
-                $content .= '\sect' . PHP_EOL;
-            } else {
-                $sectOwed = true;
-            }
             $styleWriter = new SectionStyleWriter($section->getStyle());
             $styleWriter->setParentWriter($this->getParentWriter());
             $content .= $styleWriter->write();
@@ -163,12 +156,12 @@ class Document extends AbstractPart
 
             foreach ($section->getHeaders() as $header) {
                 $type = $header->getType();
-                if ($evenOdd || $type !== Footer::EVEN) {
+                if ($evenOdd || $type !== FOOTER::EVEN) {
                     $content .= '{\\header';
                     if ($type === Footer::FIRST) {
                         $content .= 'f';
                     } elseif ($evenOdd) {
-                        $content .= ($type === Footer::EVEN) ? 'l' : 'r';
+                        $content .= ($type === FOOTER::EVEN) ? 'l' : 'r';
                     }
                     foreach ($header->getElements() as $element) {
                         $cl = get_class($element);
@@ -183,12 +176,12 @@ class Document extends AbstractPart
             }
             foreach ($section->getFooters() as $footer) {
                 $type = $footer->getType();
-                if ($evenOdd || $type !== Footer::EVEN) {
+                if ($evenOdd || $type !== FOOTER::EVEN) {
                     $content .= '{\\footer';
                     if ($type === Footer::FIRST) {
                         $content .= 'f';
                     } elseif ($evenOdd) {
-                        $content .= ($type === Footer::EVEN) ? 'l' : 'r';
+                        $content .= ($type === FOOTER::EVEN) ? 'l' : 'r';
                     }
                     foreach ($footer->getElements() as $element) {
                         $cl = get_class($element);
@@ -204,6 +197,8 @@ class Document extends AbstractPart
 
             $elementWriter = new Container($this->getParentWriter(), $section);
             $content .= $elementWriter->write();
+
+            $content .= '\sect' . PHP_EOL;
         }
 
         return $content;

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -33,7 +32,7 @@ class ODText extends AbstractReader implements ReaderInterface
      *
      * @param string $docFile
      *
-     * @return PhpWord
+     * @return \PhpOffice\PhpWord\PhpWord
      */
     public function load($docFile)
     {
@@ -54,12 +53,17 @@ class ODText extends AbstractReader implements ReaderInterface
 
     /**
      * Read document part.
+     *
+     * @param array $relationships
+     * @param string $partName
+     * @param string $docFile
+     * @param string $xmlFile
      */
-    private function readPart(PhpWord $phpWord, array $relationships, string $partName, string $docFile, string $xmlFile): void
+    private function readPart(PhpWord $phpWord, $relationships, $partName, $docFile, $xmlFile): void
     {
         $partClass = "PhpOffice\\PhpWord\\Reader\\ODText\\{$partName}";
         if (class_exists($partClass)) {
-            /** @var ODText\AbstractPart $part Type hint */
+            /** @var \PhpOffice\PhpWord\Reader\ODText\AbstractPart $part Type hint */
             $part = new $partClass($docFile, $xmlFile);
             $part->setRels($relationships);
             $part->read($phpWord);
@@ -68,8 +72,12 @@ class ODText extends AbstractReader implements ReaderInterface
 
     /**
      * Read all relationship files.
+     *
+     * @param string $docFile
+     *
+     * @return array
      */
-    private function readRelationships(string $docFile): array
+    private function readRelationships($docFile)
     {
         $rels = [];
         $xmlFile = 'META-INF/manifest.xml';

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -36,6 +35,8 @@ class RTF extends AbstractWriter implements WriterInterface
 
     /**
      * Create new instance.
+     *
+     * @param \PhpOffice\PhpWord\PhpWord $phpWord
      */
     public function __construct(?PhpWord $phpWord = null)
     {
@@ -45,7 +46,7 @@ class RTF extends AbstractWriter implements WriterInterface
         foreach ($this->parts as $partName) {
             $partClass = static::class . '\\Part\\' . $partName;
             if (class_exists($partClass)) {
-                /** @var RTF\Part\AbstractPart $part Type hint */
+                /** @var \PhpOffice\PhpWord\Writer\RTF\Part\AbstractPart $part Type hint */
                 $part = new $partClass();
                 $part->setParentWriter($this);
                 $this->writerParts[strtolower($partName)] = $part;
@@ -55,8 +56,10 @@ class RTF extends AbstractWriter implements WriterInterface
 
     /**
      * Save content to file.
+     *
+     * @param string $filename
      */
-    public function save(string $filename): void
+    public function save($filename = null): void
     {
         $this->writeFile($this->openFile($filename), $this->getContent());
     }

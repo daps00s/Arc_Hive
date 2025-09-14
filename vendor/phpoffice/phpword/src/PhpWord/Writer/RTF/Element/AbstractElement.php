@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -25,7 +24,8 @@ use PhpOffice\PhpWord\Shared\Text as SharedText;
 use PhpOffice\PhpWord\Style;
 use PhpOffice\PhpWord\Style\Font as FontStyle;
 use PhpOffice\PhpWord\Style\Paragraph as ParagraphStyle;
-use PhpOffice\PhpWord\Writer\RTF as WriterRTF;
+use PhpOffice\PhpWord\Writer\AbstractWriter;
+use PhpOffice\PhpWord\Writer\HTML\Element\AbstractElement as HTMLAbstractElement;
 use PhpOffice\PhpWord\Writer\RTF\Style\Font as FontStyleWriter;
 use PhpOffice\PhpWord\Writer\RTF\Style\Paragraph as ParagraphStyleWriter;
 
@@ -34,60 +34,26 @@ use PhpOffice\PhpWord\Writer\RTF\Style\Paragraph as ParagraphStyleWriter;
  *
  * @since 0.11.0
  */
-abstract class AbstractElement
+abstract class AbstractElement extends HTMLAbstractElement
 {
-    /**
-     * Parent writer.
-     *
-     * @var WriterRTF
-     */
-    protected $parentWriter;
-
-    /**
-     * Element.
-     *
-     * @var Element
-     */
-    protected $element;
-
-    /**
-     * Without paragraph.
-     *
-     * @var bool
-     */
-    protected $withoutP = false;
-
-    /**
-     * Write element.
-     *
-     * @return string
-     */
-    abstract public function write();
-
     /**
      * Font style.
      *
-     * @var FontStyle
+     * @var \PhpOffice\PhpWord\Style\Font
      */
     protected $fontStyle;
 
     /**
      * Paragraph style.
      *
-     * @var ParagraphStyle
+     * @var \PhpOffice\PhpWord\Style\Paragraph
      */
     protected $paragraphStyle;
 
-    /**
-     * @var \PhpOffice\PhpWord\Escaper\EscaperInterface
-     */
-    protected $escaper;
-
-    public function __construct(WriterRTF $parentWriter, Element $element, bool $withoutP = false)
+    public function __construct(AbstractWriter $parentWriter, Element $element, $withoutP = false)
     {
-        $this->parentWriter = $parentWriter;
-        $this->element = $element;
-        $this->withoutP = $withoutP;
+        parent::__construct($parentWriter, $element, $withoutP);
+
         $this->escaper = new Rtf();
     }
 
@@ -96,7 +62,7 @@ abstract class AbstractElement
      */
     protected function getStyles(): void
     {
-        /** @var WriterRTF $parentWriter Type hint */
+        /** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
         $parentWriter = $this->parentWriter;
 
         /** @var \PhpOffice\PhpWord\Element\Text $element Type hint */
@@ -189,7 +155,7 @@ abstract class AbstractElement
             return '';
         }
 
-        /** @var WriterRTF $parentWriter Type hint */
+        /** @var \PhpOffice\PhpWord\Writer\RTF $parentWriter Type hint */
         $parentWriter = $this->parentWriter;
 
         // Create style writer and set color/name index

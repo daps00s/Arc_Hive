@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -78,15 +77,13 @@ class Styles extends AbstractPart
     /**
      * Write default font and other default styles.
      *
-     * @param Style\AbstractStyle[] $styles
+     * @param \PhpOffice\PhpWord\Style\AbstractStyle[] $styles
      */
     private function writeDefaultStyles(XMLWriter $xmlWriter, $styles): void
     {
         $phpWord = $this->getParentWriter()->getPhpWord();
         $fontName = $phpWord->getDefaultFontName();
-        $asianFontName = $phpWord->getDefaultAsianFontName();
         $fontSize = $phpWord->getDefaultFontSize();
-        $fontColor = $phpWord->getDefaultFontColor();
         $language = $phpWord->getSettings()->getThemeFontLang();
         $latinLanguage = ($language == null || $language->getLatin() === null) ? 'en-US' : $language->getLatin();
 
@@ -97,12 +94,9 @@ class Styles extends AbstractPart
         $xmlWriter->startElement('w:rFonts');
         $xmlWriter->writeAttribute('w:ascii', $fontName);
         $xmlWriter->writeAttribute('w:hAnsi', $fontName);
-        $xmlWriter->writeAttribute('w:eastAsia', $asianFontName);
+        $xmlWriter->writeAttribute('w:eastAsia', $fontName);
         $xmlWriter->writeAttribute('w:cs', $fontName);
         $xmlWriter->endElement(); // w:rFonts
-        $xmlWriter->startElement('w:color');
-        $xmlWriter->writeAttribute('w:val', $fontColor);
-        $xmlWriter->endElement();
         $xmlWriter->startElement('w:sz');
         $xmlWriter->writeAttribute('w:val', $fontSize * 2);
         $xmlWriter->endElement(); // w:sz
@@ -131,7 +125,7 @@ class Styles extends AbstractPart
         if (isset($styles['Normal'])) {
             $normalStyle = $styles['Normal'];
             // w:pPr
-            if ($normalStyle instanceof FontStyle && $normalStyle->getParagraph() != null) {
+            if ($normalStyle instanceof Fontstyle && $normalStyle->getParagraph() != null) {
                 $styleWriter = new ParagraphStyleWriter($xmlWriter, $normalStyle->getParagraph());
                 $styleWriter->write();
             } elseif ($normalStyle instanceof ParagraphStyle) {

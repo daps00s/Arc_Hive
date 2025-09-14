@@ -446,59 +446,71 @@ $filesReceived = $results[4] ?? [];
                     </form>
                 </div>
             </div>
-            <div id="sendFileModal" class="modal hidden">
-                <div class="modal-content">
-                    <h3>Send File</h3>
-                    <button class="close-modal"><i class="fas fa-times"></i></button>
-                    <form id="sendFileForm">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                        <div class="modal-section">
-                            <label>Select Files</label>
-                            <div class="files-grid scrollable" id="fileSelectionGrid">
-                                <?php if (empty($filesUploaded)): ?>
-                                    <p class="no-files">No files available to send.</p>
-                                <?php else: ?>
-                                    <?php foreach ($filesUploaded as $file): ?>
-                                        <div class="file-item selectable" data-file-id="<?= htmlspecialchars($file['file_id']) ?>">
-                                            <p class="file-name"><?= htmlspecialchars($file['file_name']) ?></p>
-                                            <p class="file-meta">
-                                                Type: <?= htmlspecialchars($file['document_type'] ?? 'Unknown') ?> |
-                                                Uploaded: <?= date('M d, Y', strtotime($file['upload_date'])) ?> |
-                                                Dept: <?= htmlspecialchars($file['department_name'] ?? 'None') ?>
-                                            </p>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </div>
-                            <div class="files-controls">
-                                <select id="fileSort">
-                                    <option value="date-desc">Newest First</option>
-                                    <option value="date-asc">Oldest First</option>
-                                    <option value="department">By Department</option>
-                                    <option value="sub-department">By Sub-Department</option>
-                                    <option value="personal">Personal</option>
-                                </select>
-                                <div class="view-buttons">
-                                    <button class="view-button active" data-view="grid" aria-label="Grid View"><i class="fas fa-th"></i></button>
-                                    <button class="view-button" data-view="list" aria-label="List View"><i class="fas fa-list"></i></button>
-                                </div>
-                            </div>
+           <div id="sendFileModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Send File</h3>
+        <button class="close-modal"><i class="fas fa-times"></i></button>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-step active" data-step="1">1. Select Files</div>
+            <div class="progress-step" data-step="2">2. Choose Recipients</div>
+        </div>
+        
+        <form id="sendFileForm">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+            
+            <!-- Step 1: File Selection -->
+            <div class="modal-step" data-step="1">
+                <div class="modal-section">
+                    <label>Select Files to Send</label>
+                    <input type="text" id="fileSearchInput" placeholder="Search your files..." class="search-input">
+                    <div class="files-controls">
+                        <select id="sendFileSort">
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="department">By Department</option>
+                            <option value="sub-department">By Sub-Department</option>
+                            <option value="personal">Personal</option>
+                        </select>
+                        <div class="view-buttons">
+                            <button type="button" class="view-button active" data-view="grid" aria-label="Grid View"><i class="fas fa-th"></i></button>
+                            <button type="button" class="view-button" data-view="list" aria-label="List View"><i class="fas fa-list"></i></button>
                         </div>
-                        <div class="modal-section">
-                            <label>Select Recipients</label>
-                            <input type="text" id="recipientSearch" placeholder="Search users or departments...">
-                            <div id="recipientList" class="recipient-list"></div>
-                        </div>
-                        <div class="modal-section">
-                            <label>Message (Optional)</label>
-                            <textarea name="message" placeholder="Add a message..." rows="4"></textarea>
-                        </div>
-                        <div class="modal-actions">
-                            <button type="submit" class="submit-button">Send</button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="files-grid scrollable grid-view" id="fileSelectionGrid" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Files will be loaded dynamically -->
+                    </div>
+                </div>
+                <button type="button" class="next-step send-next-step">Next</button>
+            </div>
+            
+            <!-- Step 2: Recipient Selection -->
+            <div class="modal-step hidden" data-step="2">
+                <div class="modal-section">
+                    <label>Select Recipients</label>
+                    <input type="text" id="recipientSearch" placeholder="Search users or departments...">
+                    <div id="recipientList" class="recipient-list scrollable" style="max-height: 250px; overflow-y: auto;"></div>
+                    
+                    <div class="selected-recipients-container" style="margin-top: 15px;">
+                        <label>Selected Recipients:</label>
+                        <div id="selectedRecipients" class="selected-recipients-chips"></div>
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <label>Message (Optional)</label>
+                    <textarea name="message" placeholder="Add a message..." rows="4"></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="prev-step send-prev-step">Previous</button>
+                    <button type="submit" class="submit-button">Send</button>
                 </div>
             </div>
+        </form>
+    </div>
+</div>
             <div id="qrScannerModal" class="modal hidden">
                 <div class="modal-content">
                     <h3>Scan QR Code</h3>
@@ -515,7 +527,7 @@ $filesReceived = $results[4] ?? [];
                     </div>
                 </div>
             </div>
-                <div id="recipientFileModal" class="modal hidden">
+    <div id="recipientFileModal" class="modal hidden">
     <div class="modal-content">
         <h3>File Preview</h3>
         <button class="close-modal" id="closeRecipientFileModal"><i class="fas fa-times"></i></button>

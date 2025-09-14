@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -32,7 +31,7 @@ class Section extends AbstractContainer
     /**
      * Section style.
      *
-     * @var ?SectionStyle
+     * @var \PhpOffice\PhpWord\Style\Section
      */
     private $style;
 
@@ -61,7 +60,7 @@ class Section extends AbstractContainer
      * Create new instance.
      *
      * @param int $sectionCount
-     * @param null|array|\PhpOffice\PhpWord\Style|string $style
+     * @param null|array|\PhpOffice\PhpWord\Style $style
      */
     public function __construct($sectionCount, $style = null)
     {
@@ -88,7 +87,7 @@ class Section extends AbstractContainer
     /**
      * Get section style.
      *
-     * @return ?SectionStyle
+     * @return \PhpOffice\PhpWord\Style\Section
      */
     public function getStyle()
     {
@@ -155,6 +154,8 @@ class Section extends AbstractContainer
 
     /**
      * Set the footnote properties.
+     *
+     * @param FootnoteProperties $footnoteProperties
      */
     public function setFootnoteProperties(?FootnoteProperties $footnoteProperties = null): void
     {
@@ -197,14 +198,14 @@ class Section extends AbstractContainer
      */
     private function addHeaderFooter($type = Header::AUTO, $header = true)
     {
-        $containerClass = substr(static::class, 0, strrpos(static::class, '\\') ?: 0) . '\\' .
+        $containerClass = substr(static::class, 0, strrpos(static::class, '\\')) . '\\' .
             ($header ? 'Header' : 'Footer');
         $collectionArray = $header ? 'headers' : 'footers';
         $collection = &$this->$collectionArray;
 
         if (in_array($type, [Header::AUTO, Header::FIRST, Header::EVEN])) {
             $index = count($collection);
-            /** @var AbstractContainer $container Type hint */
+            /** @var \PhpOffice\PhpWord\Element\AbstractContainer $container Type hint */
             $container = new $containerClass($this->sectionId, ++$index, $type);
             $container->setPhpWord($this->phpWord);
 

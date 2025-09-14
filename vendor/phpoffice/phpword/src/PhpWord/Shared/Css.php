@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -40,6 +39,10 @@ class Css
     {
         $cssContent = str_replace(["\r", "\n"], '', $this->cssContent);
         preg_match_all('/(.+?)\s?\{\s?(.+?)\s?\}/', $cssContent, $cssExtracted);
+        // Check the number of extracted
+        if (count($cssExtracted) != 3) {
+            return;
+        }
         // Check if there are x selectors and x rules
         if (count($cssExtracted[1]) != count($cssExtracted[2])) {
             return;

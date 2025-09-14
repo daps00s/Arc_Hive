@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -18,14 +17,10 @@
 
 namespace PhpOffice\PhpWord\Collection;
 
-use PhpOffice\PhpWord\Element\Endnote;
-
 /**
  * Endnotes collection.
  *
  * @since 0.10.0
- *
- * @extends AbstractCollection<Endnote>
  */
 class Endnotes extends AbstractCollection
 {

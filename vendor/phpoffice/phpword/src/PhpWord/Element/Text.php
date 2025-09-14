@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -30,21 +29,21 @@ class Text extends AbstractElement
     /**
      * Text content.
      *
-     * @var ?string
+     * @var string
      */
     protected $text;
 
     /**
      * Text style.
      *
-     * @var Font|string
+     * @var \PhpOffice\PhpWord\Style\Font|string
      */
     protected $fontStyle;
 
     /**
      * Paragraph style.
      *
-     * @var Paragraph|string
+     * @var \PhpOffice\PhpWord\Style\Paragraph|string
      */
     protected $paragraphStyle;
 
@@ -65,10 +64,10 @@ class Text extends AbstractElement
     /**
      * Set Text style.
      *
-     * @param array|Font|string $style
-     * @param array|Paragraph|string $paragraphStyle
+     * @param array|\PhpOffice\PhpWord\Style\Font|string $style
+     * @param array|\PhpOffice\PhpWord\Style\Paragraph|string $paragraphStyle
      *
-     * @return Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function setFontStyle($style = null, $paragraphStyle = null)
     {
@@ -91,7 +90,7 @@ class Text extends AbstractElement
     /**
      * Get Text style.
      *
-     * @return Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function getFontStyle()
     {
@@ -101,9 +100,9 @@ class Text extends AbstractElement
     /**
      * Set Paragraph style.
      *
-     * @param array|Paragraph|string $style
+     * @param array|\PhpOffice\PhpWord\Style\Paragraph|string $style
      *
-     * @return Paragraph|string
+     * @return \PhpOffice\PhpWord\Style\Paragraph|string
      */
     public function setParagraphStyle($style = null)
     {
@@ -124,7 +123,7 @@ class Text extends AbstractElement
     /**
      * Get Paragraph style.
      *
-     * @return Paragraph|string
+     * @return \PhpOffice\PhpWord\Style\Paragraph|string
      */
     public function getParagraphStyle()
     {
@@ -147,8 +146,10 @@ class Text extends AbstractElement
 
     /**
      * Get Text content.
+     *
+     * @return string
      */
-    public function getText(): ?string
+    public function getText()
     {
         return $this->text;
     }

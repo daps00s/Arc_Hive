@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -18,8 +17,6 @@
 
 namespace PhpOffice\PhpWord;
 
-use PhpOffice\PhpWord\Element\Text;
-use PhpOffice\PhpWord\Element\TextRun;
 use PhpOffice\PhpWord\Exception\Exception;
 use PhpOffice\PhpWord\Reader\ReaderInterface;
 use PhpOffice\PhpWord\Writer\WriterInterface;
@@ -36,7 +33,7 @@ abstract class IOFactory
      */
     public static function createWriter(PhpWord $phpWord, $name = 'Word2007')
     {
-        if ($name !== 'WriterInterface' && !in_array($name, ['ODText', 'RTF', 'Word2007', 'HTML', 'PDF', 'EPub3'], true)) {
+        if ($name !== 'WriterInterface' && !in_array($name, ['ODText', 'RTF', 'Word2007', 'HTML', 'PDF'], true)) {
             throw new Exception("\"{$name}\" is not a valid writer.");
         }
 
@@ -62,9 +59,9 @@ abstract class IOFactory
      *
      * @param string $type
      * @param string $name
-     * @param PhpWord $phpWord
+     * @param \PhpOffice\PhpWord\PhpWord $phpWord
      *
-     * @return ReaderInterface|WriterInterface
+     * @return \PhpOffice\PhpWord\Reader\ReaderInterface|\PhpOffice\PhpWord\Writer\WriterInterface
      */
     private static function createObject($type, $name, $phpWord = null)
     {
@@ -82,51 +79,14 @@ abstract class IOFactory
      * @param string $filename The name of the file
      * @param string $readerName
      *
-     * @return PhpWord $phpWord
+     * @return \PhpOffice\PhpWord\PhpWord $phpWord
      */
     public static function load($filename, $readerName = 'Word2007')
     {
-        /** @var ReaderInterface $reader */
+        /** @var \PhpOffice\PhpWord\Reader\ReaderInterface $reader */
         $reader = self::createReader($readerName);
 
         return $reader->load($filename);
-    }
-
-    /**
-     * Loads PhpWord ${variable} from file.
-     *
-     * @param string $filename The name of the file
-     *
-     * @return array The extracted variables
-     */
-    public static function extractVariables(string $filename, string $readerName = 'Word2007'): array
-    {
-        /** @var ReaderInterface $reader */
-        $reader = self::createReader($readerName);
-        $document = $reader->load($filename);
-        $extractedVariables = [];
-        foreach ($document->getSections() as $section) {
-            $concatenatedText = '';
-            foreach ($section->getElements() as $element) {
-                if ($element instanceof TextRun) {
-                    foreach ($element->getElements() as $textElement) {
-                        if ($textElement instanceof Text) {
-                            $text = $textElement->getText();
-                            $concatenatedText .= $text;
-                        }
-                    }
-                }
-            }
-            preg_match_all('/\$\{([^}]+)\}/', $concatenatedText, $matches);
-            if (!empty($matches[1])) {
-                foreach ($matches[1] as $match) {
-                    $trimmedMatch = trim($match);
-                    $extractedVariables[] = $trimmedMatch;
-                }
-            }
-        }
-
-        return $extractedVariables;
     }
 
     /**

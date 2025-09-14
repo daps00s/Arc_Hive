@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -28,21 +27,21 @@ class Table extends AbstractElement
     /**
      * Table style.
      *
-     * @var ?TableStyle
+     * @var \PhpOffice\PhpWord\Style\Table
      */
     private $style;
 
     /**
      * Table rows.
      *
-     * @var Row[]
+     * @var \PhpOffice\PhpWord\Element\Row[]
      */
     private $rows = [];
 
     /**
      * Table width.
      *
-     * @var ?int
+     * @var int
      */
     private $width;
 
@@ -62,7 +61,7 @@ class Table extends AbstractElement
      * @param int $height
      * @param mixed $style
      *
-     * @return Row
+     * @return \PhpOffice\PhpWord\Element\Row
      */
     public function addRow($height = null, $style = null)
     {
@@ -79,7 +78,7 @@ class Table extends AbstractElement
      * @param int $width
      * @param mixed $style
      *
-     * @return Cell
+     * @return \PhpOffice\PhpWord\Element\Cell
      */
     public function addCell($width = null, $style = null)
     {
@@ -93,7 +92,7 @@ class Table extends AbstractElement
     /**
      * Get all rows.
      *
-     * @return Row[]
+     * @return \PhpOffice\PhpWord\Element\Row[]
      */
     public function getRows()
     {
@@ -103,7 +102,7 @@ class Table extends AbstractElement
     /**
      * Get table style.
      *
-     * @return null|string|TableStyle
+     * @return \PhpOffice\PhpWord\Style\Table
      */
     public function getStyle()
     {
@@ -113,7 +112,7 @@ class Table extends AbstractElement
     /**
      * Get table width.
      *
-     * @return ?int
+     * @return int
      */
     public function getWidth()
     {
@@ -141,7 +140,7 @@ class Table extends AbstractElement
 
         $rowCount = count($this->rows);
         for ($i = 0; $i < $rowCount; ++$i) {
-            /** @var Row $row Type hint */
+            /** @var \PhpOffice\PhpWord\Element\Row $row Type hint */
             $row = $this->rows[$i];
             $cellCount = count($row->getCells());
             if ($columnCount < $cellCount) {

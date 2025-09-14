@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -73,7 +72,7 @@ final class TrackChangesView
     /**
      * Set Display Visual Indicator Of Markup Area.
      *
-     * @param ?bool $markup
+     * @param bool $markup
      *            Set to true to show markup
      */
     public function setMarkup($markup): void
@@ -94,7 +93,7 @@ final class TrackChangesView
     /**
      * Set Display Comments.
      *
-     * @param ?bool $comments
+     * @param bool $comments
      *            Set to true to show comments
      */
     public function setComments($comments): void
@@ -115,7 +114,7 @@ final class TrackChangesView
     /**
      * Set Display Content Revisions.
      *
-     * @param ?bool $insDel
+     * @param bool $insDel
      *            Set to true to show content revisions
      */
     public function setInsDel($insDel): void
@@ -157,7 +156,7 @@ final class TrackChangesView
     /**
      * Set Display Ink Annotations.
      *
-     * @param ?bool $inkAnnotations
+     * @param bool $inkAnnotations
      *            Set to true to show ink annotations
      */
     public function setInkAnnotations($inkAnnotations): void

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -17,9 +16,6 @@
  */
 
 namespace PhpOffice\PhpWord\Style;
-
-use PhpOffice\PhpWord\Settings;
-use PhpOffice\PhpWord\Shared\Validate;
 
 /**
  * Font style.
@@ -109,7 +105,7 @@ class Font extends AbstractStyle
     /**
      * Font color.
      *
-     * @var null|string
+     * @var string
      */
     private $color;
 
@@ -220,21 +216,21 @@ class Font extends AbstractStyle
     /**
      * Paragraph style.
      *
-     * @var Paragraph
+     * @var \PhpOffice\PhpWord\Style\Paragraph
      */
     private $paragraph;
 
     /**
      * Shading.
      *
-     * @var Shading
+     * @var \PhpOffice\PhpWord\Style\Shading
      */
     private $shading;
 
     /**
      * Right to left languages.
      *
-     * @var ?bool
+     * @var bool
      */
     private $rtl;
 
@@ -249,7 +245,7 @@ class Font extends AbstractStyle
     /**
      * Languages.
      *
-     * @var null|Language
+     * @var \PhpOffice\PhpWord\Style\Language
      */
     private $lang;
 
@@ -272,24 +268,10 @@ class Font extends AbstractStyle
     private $position;
 
     /**
-     * Preservation of white space in html.
-     *
-     * @var string Value used for css white-space
-     */
-    private $whiteSpace = '';
-
-    /**
-     * Generic font as fallback for html.
-     *
-     * @var string generic font name
-     */
-    private $fallbackFont = '';
-
-    /**
      * Create new font style.
      *
      * @param string $type Type of font
-     * @param AbstractStyle|array|string $paragraph Paragraph styles definition
+     * @param array|\PhpOffice\PhpWord\Style\AbstractStyle|string $paragraph Paragraph styles definition
      */
     public function __construct($type = 'text', $paragraph = null)
     {
@@ -306,7 +288,7 @@ class Font extends AbstractStyle
      */
     public function getStyleValues()
     {
-        return [
+        $styles = [
             'name' => $this->getStyleName(),
             'basic' => [
                 'name' => $this->getName(),
@@ -337,9 +319,9 @@ class Font extends AbstractStyle
             'rtl' => $this->isRTL(),
             'shading' => $this->getShading(),
             'lang' => $this->getLang(),
-            'whiteSpace' => $this->getWhiteSpace(),
-            'fallbackFont' => $this->getFallbackFont(),
         ];
+
+        return $styles;
     }
 
     /**
@@ -426,8 +408,10 @@ class Font extends AbstractStyle
 
     /**
      * Get font color.
+     *
+     * @return string
      */
-    public function getColor(): ?string
+    public function getColor()
     {
         return $this->color;
     }
@@ -564,8 +548,10 @@ class Font extends AbstractStyle
 
     /**
      * Get strikethrough.
+     *
+     * @return bool
      */
-    public function isStrikethrough(): ?bool
+    public function isStrikethrough()
     {
         return $this->strikethrough;
     }
@@ -574,16 +560,20 @@ class Font extends AbstractStyle
      * Set strikethrough.
      *
      * @param bool $value
+     *
+     * @return self
      */
-    public function setStrikethrough($value = true): self
+    public function setStrikethrough($value = true)
     {
         return $this->setPairedVal($this->strikethrough, $this->doubleStrikethrough, $value);
     }
 
     /**
      * Get double strikethrough.
+     *
+     * @return bool
      */
-    public function isDoubleStrikethrough(): ?bool
+    public function isDoubleStrikethrough()
     {
         return $this->doubleStrikethrough;
     }
@@ -592,8 +582,10 @@ class Font extends AbstractStyle
      * Set double strikethrough.
      *
      * @param bool $value
+     *
+     * @return self
      */
-    public function setDoubleStrikethrough($value = true): self
+    public function setDoubleStrikethrough($value = true)
     {
         return $this->setPairedVal($this->doubleStrikethrough, $this->strikethrough, $value);
     }
@@ -681,7 +673,7 @@ class Font extends AbstractStyle
      *
      * @param string $value
      *
-     * @return Table
+     * @return \PhpOffice\PhpWord\Style\Table
      */
     public function setBgColor($value = null)
     {
@@ -811,7 +803,7 @@ class Font extends AbstractStyle
     /**
      * Get paragraph style.
      *
-     * @return Paragraph
+     * @return \PhpOffice\PhpWord\Style\Paragraph
      */
     public function getParagraph()
     {
@@ -835,17 +827,17 @@ class Font extends AbstractStyle
     /**
      * Get rtl.
      *
-     * @return ?bool
+     * @return bool
      */
     public function isRTL()
     {
-        return $this->rtl ?? Settings::isDefaultRtl();
+        return $this->rtl;
     }
 
     /**
      * Set rtl.
      *
-     * @param ?bool $value
+     * @param bool $value
      *
      * @return self
      */
@@ -859,7 +851,7 @@ class Font extends AbstractStyle
     /**
      * Get shading.
      *
-     * @return Shading
+     * @return \PhpOffice\PhpWord\Style\Shading
      */
     public function getShading()
     {
@@ -883,7 +875,7 @@ class Font extends AbstractStyle
     /**
      * Get language.
      *
-     * @return null|Language
+     * @return \PhpOffice\PhpWord\Style\Language
      */
     public function getLang()
     {
@@ -953,45 +945,5 @@ class Font extends AbstractStyle
         $this->position = $this->setIntVal($value, null);
 
         return $this;
-    }
-
-    /**
-     * Set html css white-space value. It is expected that only pre-wrap and normal (default) are useful.
-     *
-     * @param null|string $value Should be one of pre-wrap, normal, nowrap, pre, pre-line, initial, inherit
-     */
-    public function setWhiteSpace(?string $value): self
-    {
-        $this->whiteSpace = Validate::validateCSSWhiteSpace($value);
-
-        return $this;
-    }
-
-    /**
-     * Get html css white-space value.
-     */
-    public function getWhiteSpace(): string
-    {
-        return $this->whiteSpace;
-    }
-
-    /**
-     * Set generic font for fallback for html.
-     *
-     * @param string $value generic font name
-     */
-    public function setFallbackFont(?string $value): self
-    {
-        $this->fallbackFont = Validate::validateCSSGenericFont($value);
-
-        return $this;
-    }
-
-    /**
-     * Get html fallback generic font.
-     */
-    public function getFallbackFont(): string
-    {
-        return $this->fallbackFont;
     }
 }

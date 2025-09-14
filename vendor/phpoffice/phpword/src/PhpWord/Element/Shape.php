@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -37,7 +36,7 @@ class Shape extends AbstractElement
     /**
      * Shape style.
      *
-     * @var ?ShapeStyle
+     * @var \PhpOffice\PhpWord\Style\Shape
      */
     private $style;
 
@@ -81,7 +80,7 @@ class Shape extends AbstractElement
     /**
      * Get shape style.
      *
-     * @return ?ShapeStyle
+     * @return \PhpOffice\PhpWord\Style\Shape
      */
     public function getStyle()
     {

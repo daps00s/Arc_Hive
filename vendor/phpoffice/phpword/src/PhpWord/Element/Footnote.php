@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -30,7 +29,7 @@ class Footnote extends AbstractContainer
     /**
      * Paragraph style.
      *
-     * @var null|Paragraph|string
+     * @var \PhpOffice\PhpWord\Style\Paragraph|string
      */
     protected $paragraphStyle;
 
@@ -44,7 +43,7 @@ class Footnote extends AbstractContainer
     /**
      * Create new instance.
      *
-     * @param array|Paragraph|string $paragraphStyle
+     * @param array|\PhpOffice\PhpWord\Style\Paragraph|string $paragraphStyle
      */
     public function __construct($paragraphStyle = null)
     {
@@ -55,7 +54,7 @@ class Footnote extends AbstractContainer
     /**
      * Get paragraph style.
      *
-     * @return null|Paragraph|string
+     * @return \PhpOffice\PhpWord\Style\Paragraph|string
      */
     public function getParagraphStyle()
     {

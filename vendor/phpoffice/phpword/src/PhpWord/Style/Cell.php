@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -70,29 +69,9 @@ class Cell extends Border
     /**
      * Vertical align (top, center, both, bottom).
      *
-     * @var null|string
+     * @var string
      */
     private $vAlign;
-
-    /**
-     * @var null|int
-     */
-    private $paddingTop;
-
-    /**
-     * @var null|int
-     */
-    private $paddingBottom;
-
-    /**
-     * @var null|int
-     */
-    private $paddingLeft;
-
-    /**
-     * @var null|int
-     */
-    private $paddingRight;
 
     /**
      * Text Direction.
@@ -114,21 +93,21 @@ class Cell extends Border
      * - restart: Start/restart merged region
      * - continue: Continue merged region
      *
-     * @var null|string
+     * @var string
      */
     private $vMerge;
 
     /**
      * Shading.
      *
-     * @var Shading
+     * @var \PhpOffice\PhpWord\Style\Shading
      */
     private $shading;
 
     /**
      * Width.
      *
-     * @var ?int
+     * @var int
      */
     private $width;
 
@@ -140,16 +119,9 @@ class Cell extends Border
     private $unit = TblWidth::TWIP;
 
     /**
-     * Prevent text from wrapping in the cell.
-     *
-     * @var bool
-     */
-    private $noWrap = true;
-
-    /**
      * Get vertical align.
      *
-     * @return null|string
+     * @return string
      */
     public function getVAlign()
     {
@@ -159,18 +131,12 @@ class Cell extends Border
     /**
      * Set vertical align.
      *
-     * @param null|string $value
+     * @param string $value
      *
      * @return self
      */
     public function setVAlign($value = null)
     {
-        if ($value === null) {
-            $this->vAlign = null;
-
-            return $this;
-        }
-
         VerticalJc::validate($value);
         $this->vAlign = $this->setEnumVal($value, VerticalJc::values(), $this->vAlign);
 
@@ -196,14 +162,7 @@ class Cell extends Border
      */
     public function setTextDirection($value = null)
     {
-        $enum = [
-            self::TEXT_DIR_BTLR,
-            self::TEXT_DIR_TBRL,
-            self::TEXT_DIR_LRTB,
-            self::TEXT_DIR_LRTBV,
-            self::TEXT_DIR_TBRLV,
-            self::TEXT_DIR_TBLRV,
-        ];
+        $enum = [self::TEXT_DIR_BTLR, self::TEXT_DIR_TBRL];
         $this->textDirection = $this->setEnumVal($value, $enum, $this->textDirection);
 
         return $this;
@@ -262,7 +221,7 @@ class Cell extends Border
     /**
      * Get vertical merge (rowspan).
      *
-     * @return null|string
+     * @return string
      */
     public function getVMerge()
     {
@@ -272,18 +231,12 @@ class Cell extends Border
     /**
      * Set vertical merge (rowspan).
      *
-     * @param null|string $value
+     * @param string $value
      *
      * @return self
      */
     public function setVMerge($value = null)
     {
-        if ($value === null) {
-            $this->vMerge = null;
-
-            return $this;
-        }
-
         $enum = [self::VMERGE_RESTART, self::VMERGE_CONTINUE];
         $this->vMerge = $this->setEnumVal($value, $enum, $this->vMerge);
 
@@ -293,7 +246,7 @@ class Cell extends Border
     /**
      * Get shading.
      *
-     * @return Shading
+     * @return \PhpOffice\PhpWord\Style\Shading
      */
     public function getShading()
     {
@@ -317,7 +270,7 @@ class Cell extends Border
     /**
      * Get cell width.
      *
-     * @return ?int
+     * @return int
      */
     public function getWidth()
     {
@@ -356,104 +309,6 @@ class Cell extends Border
     public function setUnit($value)
     {
         $this->unit = $this->setEnumVal($value, [TblWidth::AUTO, TblWidth::PERCENT, TblWidth::TWIP], TblWidth::TWIP);
-
-        return $this;
-    }
-
-    /**
-     * Set noWrap.
-     */
-    public function setNoWrap(bool $value): self
-    {
-        $this->noWrap = $this->setBoolVal($value, true);
-
-        return $this;
-    }
-
-    /**
-     * Get noWrap.
-     */
-    public function getNoWrap(): bool
-    {
-        return $this->noWrap;
-    }
-
-    /**
-     * Get style padding-top.
-     */
-    public function getPaddingTop(): ?int
-    {
-        return $this->paddingTop;
-    }
-
-    /**
-     * Set style padding-top.
-     *
-     * @return $this
-     */
-    public function setPaddingTop(int $value): self
-    {
-        $this->paddingTop = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get style padding-bottom.
-     */
-    public function getPaddingBottom(): ?int
-    {
-        return $this->paddingBottom;
-    }
-
-    /**
-     * Set style padding-bottom.
-     *
-     * @return $this
-     */
-    public function setPaddingBottom(int $value): self
-    {
-        $this->paddingBottom = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get style padding-left.
-     */
-    public function getPaddingLeft(): ?int
-    {
-        return $this->paddingLeft;
-    }
-
-    /**
-     * Set style padding-left.
-     *
-     * @return $this
-     */
-    public function setPaddingLeft(int $value): self
-    {
-        $this->paddingLeft = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get style padding-right.
-     */
-    public function getPaddingRight(): ?int
-    {
-        return $this->paddingRight;
-    }
-
-    /**
-     * Set style padding-right.
-     *
-     * @return $this
-     */
-    public function setPaddingRight(int $value): self
-    {
-        $this->paddingRight = $value;
 
         return $this;
     }

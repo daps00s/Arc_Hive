@@ -506,3 +506,56 @@ operable program or batch file.
 [2025-09-09 07:09:33] [INFO] Inserted 3 pages into file_pages table
 [2025-09-09 07:09:33] [INFO] OCR completed for file ID 270 (pages: 3, execution time: 1.7674021720886s)
 [2025-09-09 07:09:33] [INFO] OCR processor finished
+[2025-09-09 15:09:25] [INFO] Starting OCR processor
+[2025-09-09 15:09:25] [INFO] Processing specific file ID: 271
+[2025-09-09 15:09:25] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\letter for graduates.pdf, type: application/pdf, status: completed
+[2025-09-09 15:09:25] [INFO] Processing file ID: 271, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\letter for graduates.pdf, type: pdf
+[2025-09-09 15:09:25] [INFO] Starting text extraction for file ID 271, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\letter for graduates.pdf
+[2025-09-09 15:09:25] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\letter for graduates.pdf
+[2025-09-09 15:09:27] [INFO] PDF contains text, extracting directly
+[2025-09-09 15:09:27] [INFO] Inserted 3 pages into file_pages table
+[2025-09-09 15:09:27] [INFO] OCR completed for file ID 271 (pages: 3, execution time: 1.7533421516418s)
+[2025-09-09 15:09:27] [INFO] OCR processor finished
+[2025-09-09 18:23:22] [INFO] Starting OCR processor
+[2025-09-09 18:23:22] [INFO] Processing specific file ID: 272
+[2025-09-09 18:23:22] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\search.pdf, type: application/pdf, status: completed
+[2025-09-09 18:23:22] [INFO] Processing file ID: 272, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\search.pdf, type: pdf
+[2025-09-09 18:23:22] [INFO] Starting text extraction for file ID 272, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\search.pdf
+[2025-09-09 18:23:22] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\search.pdf
+[2025-09-09 18:23:23] [INFO] PDF contains text, extracting directly
+[2025-09-09 18:23:23] [INFO] Inserted 3 pages into file_pages table
+[2025-09-09 18:23:23] [INFO] OCR completed for file ID 272 (pages: 3, execution time: 1.6066210269928s)
+[2025-09-09 18:23:23] [INFO] OCR processor finished
+[2025-09-10 12:31:11] [INFO] Starting OCR processor
+[2025-09-10 12:31:11] [INFO] Processing specific file ID: 274
+[2025-09-10 12:31:11] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\document test.pdf, type: application/pdf, status: completed
+[2025-09-10 12:31:11] [INFO] Processing file ID: 274, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\document test.pdf, type: pdf
+[2025-09-10 12:31:11] [INFO] Starting text extraction for file ID 274, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\document test.pdf
+[2025-09-10 12:31:11] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\document test.pdf
+[2025-09-10 12:31:12] [INFO] PDF contains text, extracting directly
+[2025-09-10 12:31:12] [INFO] Inserted 2 pages into file_pages table
+[2025-09-10 12:31:12] [INFO] OCR completed for file ID 274 (pages: 2, execution time: 1.4947981834412s)
+[2025-09-10 12:31:12] [INFO] OCR processor finished
+[2025-09-10 12:50:27] [INFO] Starting OCR processor
+[2025-09-10 12:50:27] [INFO] Processing specific file ID: 275
+[2025-09-10 12:50:27] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\searchfile.pdf, type: application/pdf, status: completed
+[2025-09-10 12:50:27] [INFO] Processing file ID: 275, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\searchfile.pdf, type: pdf
+[2025-09-10 12:50:27] [INFO] Starting text extraction for file ID 275, type: pdf (application/pdf), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\searchfile.pdf
+[2025-09-10 12:50:27] [INFO] Processing PDF file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\faye\User_1\searchfile.pdf
+[2025-09-10 12:50:27] [INFO] PDF contains text, extracting directly
+[2025-09-10 12:50:28] [INFO] Inserted 3 pages into file_pages table
+[2025-09-10 12:50:28] [INFO] OCR completed for file ID 275 (pages: 3, execution time: 0.71990919113159s)
+[2025-09-10 12:50:28] [INFO] OCR processor finished
+[2025-09-11 13:41:46] [INFO] Starting OCR processor
+[2025-09-11 13:41:46] [INFO] Processing specific file ID: 278
+[2025-09-11 13:41:46] [INFO] File found: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\images (7).jpg, type: image/jpeg, status: completed
+[2025-09-11 13:41:46] [INFO] Processing file ID: 278, path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\images (7).jpg, type: jpeg
+[2025-09-11 13:41:46] [INFO] Starting text extraction for file ID 278, type: jpeg (image/jpeg), path: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\images (7).jpg
+[2025-09-11 13:41:46] [INFO] Processing image file: C:\xampp\htdocs\GitHub\Arc_Hive-main\uploads\Uploads\Users\karl\User_1\images (7).jpg
+[2025-09-11 13:41:48] [INFO] Extracted text from image (0 chars)
+[2025-09-11 13:41:48] [INFO] Inserted 1 pages into file_pages table
+[2025-09-11 13:41:48] [ERROR] No text extracted for file ID 278: Extracted text is empty (execution time: 1.8009660243988s)
+[2025-09-11 13:41:48] [ERROR] OCR processing error for file ID 278: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\GitHub\Arc_Hive-main\api\ocr_processor.php(437): PDOStatement->execute(Array)
+#1 {main}
+[2025-09-11 13:41:48] [ERROR] OCR processing error: SQLSTATE[45000]: <<Unknown error>>: 1644 file_status can only be pending_ocr or ocr_failed for file_type pdf, jpeg, png, doc, or docx | Trace: #0 C:\xampp\htdocs\GitHub\Arc_Hive-main\api\ocr_processor.php(495): PDOStatement->execute(Array)
+#1 {main}

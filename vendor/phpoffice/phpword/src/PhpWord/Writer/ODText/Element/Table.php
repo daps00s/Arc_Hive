@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -36,7 +35,7 @@ class Table extends AbstractElement
     {
         $xmlWriter = $this->getXmlWriter();
         $element = $this->getElement();
-        if (!$element instanceof TableElement) {
+        if (!$element instanceof \PhpOffice\PhpWord\Element\Table) {
             return;
         }
         $rows = $element->getRows();
@@ -45,7 +44,7 @@ class Table extends AbstractElement
         if ($rowCount > 0) {
             $xmlWriter->startElement('table:table');
             $xmlWriter->writeAttribute('table:name', $element->getElementId());
-            $xmlWriter->writeAttribute('table:style-name', $element->getElementId());
+            $xmlWriter->writeAttribute('table:style', $element->getElementId());
 
             // Write columns
             $this->writeColumns($xmlWriter, $element);
@@ -78,7 +77,7 @@ class Table extends AbstractElement
     private function writeRow(XMLWriter $xmlWriter, RowElement $row): void
     {
         $xmlWriter->startElement('table:table-row');
-        /** @var RowElement $row Type hint */
+        /** @var \PhpOffice\PhpWord\Element\Row $row Type hint */
         foreach ($row->getCells() as $cell) {
             $xmlWriter->startElement('table:table-cell');
             $xmlWriter->writeAttribute('office:value-type', 'string');

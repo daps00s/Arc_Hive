@@ -875,8 +875,16 @@ select.error {
     background: var(--border-color);
 }
 
+.recipient-type {
+    font-size: 12px;
+    color: #666;
+    margin-left: auto;
+}
+
+
 .recipient-item.selected {
-    background: rgba(16, 185, 129, 0.1);
+    background-color: #e8f5e8;
+    border-color: #4caf50;
 }
 
 .recipient-chip {
@@ -1076,4 +1084,145 @@ select.error {
 
 .file-preview-container i {
     color: #666;
+}
+
+/* Add these styles to dashboard.css */
+
+/* Send Modal Specific Styles */
+.send-modal-step {
+    display: none;
+}
+
+.send-modal-step.active {
+    display: block;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.selected-recipients-container {
+    margin-top: 15px;
+}
+
+.selected-recipients-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.recipient-chip {
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 16px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.recipient-chip .remove-chip {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Scrollable areas */
+.scrollable {
+    overflow-y: auto;
+}
+
+/* Ensure file grid in modal has proper height */
+#fileSelectionGrid {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .send-modal-step {
+        padding: 15px;
+    }
+    
+    #fileSelectionGrid {
+        max-height: 250px;
+    }
+}
+
+/* Recipient selection styles */
+.recipient-item.selectable {
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+.recipient-item.selectable:hover {
+    background-color: #f5f5f5;
+}
+
+.recipient-item.selectable.selected {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+}
+
+.recipient-chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 5px 10px;
+    border-radius: 16px;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.remove-chip {
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #666;
+    padding: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.remove-chip:hover {
+    color: #f44336;
+}
+.file-preview iframe {
+    width: 100%;
+    height: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.file-preview p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 8px 0 0;
+}
+
+.file-preview p a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.file-preview p a:hover {
+    text-decoration: underline;
 }

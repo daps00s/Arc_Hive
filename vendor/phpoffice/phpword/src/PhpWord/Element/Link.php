@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -44,14 +43,14 @@ class Link extends AbstractElement
     /**
      * Font style.
      *
-     * @var null|Font|string
+     * @var \PhpOffice\PhpWord\Style\Font|string
      */
     private $fontStyle;
 
     /**
      * Paragraph style.
      *
-     * @var null|Paragraph|string
+     * @var \PhpOffice\PhpWord\Style\Paragraph|string
      */
     private $paragraphStyle;
 
@@ -99,8 +98,10 @@ class Link extends AbstractElement
 
     /**
      * Get link text.
+     *
+     * @return string
      */
-    public function getText(): string
+    public function getText()
     {
         return $this->text;
     }
@@ -108,7 +109,7 @@ class Link extends AbstractElement
     /**
      * Get Text style.
      *
-     * @return null|Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function getFontStyle()
     {
@@ -118,7 +119,7 @@ class Link extends AbstractElement
     /**
      * Get Paragraph style.
      *
-     * @return null|Paragraph|string
+     * @return \PhpOffice\PhpWord\Style\Paragraph|string
      */
     public function getParagraphStyle()
     {

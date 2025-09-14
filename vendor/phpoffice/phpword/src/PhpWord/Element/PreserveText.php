@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -30,21 +29,21 @@ class PreserveText extends AbstractElement
     /**
      * Text content.
      *
-     * @var null|array|string
+     * @var array|string
      */
     private $text;
 
     /**
      * Text style.
      *
-     * @var null|Font|string
+     * @var \PhpOffice\PhpWord\Style\Font|string
      */
     private $fontStyle;
 
     /**
      * Paragraph style.
      *
-     * @var null|Paragraph|string
+     * @var \PhpOffice\PhpWord\Style\Paragraph|string
      */
     private $paragraphStyle;
 
@@ -70,7 +69,7 @@ class PreserveText extends AbstractElement
     /**
      * Get Text style.
      *
-     * @return null|Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function getFontStyle()
     {
@@ -80,7 +79,7 @@ class PreserveText extends AbstractElement
     /**
      * Get Paragraph style.
      *
-     * @return null|Paragraph|string
+     * @return \PhpOffice\PhpWord\Style\Paragraph|string
      */
     public function getParagraphStyle()
     {
@@ -90,7 +89,7 @@ class PreserveText extends AbstractElement
     /**
      * Get Text content.
      *
-     * @return null|array|string
+     * @return array|string
      */
     public function getText()
     {

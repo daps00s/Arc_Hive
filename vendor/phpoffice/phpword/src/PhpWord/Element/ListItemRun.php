@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -33,7 +32,7 @@ class ListItemRun extends TextRun
     /**
      * ListItem Style.
      *
-     * @var ?ListItemStyle
+     * @var \PhpOffice\PhpWord\Style\ListItem
      */
     private $style;
 
@@ -67,7 +66,7 @@ class ListItemRun extends TextRun
     /**
      * Get ListItem style.
      *
-     * @return ?ListItemStyle
+     * @return \PhpOffice\PhpWord\Style\ListItem
      */
     public function getStyle()
     {

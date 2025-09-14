@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -25,6 +24,8 @@ interface WriterInterface
 {
     /**
      * Save PhpWord to file.
+     *
+     * @param string $filename
      */
-    public function save(string $filename): void;
+    public function save($filename = null);
 }

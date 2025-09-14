@@ -7,6 +7,10 @@ require '../notification.php';
 
 header('Content-Type: application/json');
 
+// DEBUG: Log received data
+error_log("File operations request received: " . print_r($_POST, true));
+error_log("Action received: " . ($_POST['action'] ?? 'NO ACTION'));
+
 function validate_csrf_token($token)
 {
     if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
@@ -414,68 +418,68 @@ try {
             ]);
             break;
 
-        case 'search_recipients':
-            validate_csrf_token($_POST['csrf_token']);
-            $query = isset($_POST['query']) ? trim($_POST['query']) : '';
-            
-            $results = [];
-            $searchTerm = '%' . $query . '%';
-            
-            try {
-                // Search users (exclude logged-in user)
-                $userQuery = "
-                    SELECT user_id AS id, username AS name, 'user' AS type
-                    FROM users
-                    WHERE user_id != ?" . ($query ? " AND (username LIKE ? OR email LIKE ?)" : "") . "
-                    ORDER BY username ASC
-                ";
-                $stmt = $pdo->prepare($userQuery);
-                $params = [$userId];
-                if ($query) {
-                    $params[] = $searchTerm;
-                    $params[] = $searchTerm;
-                }
-                $stmt->execute($params);
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $results = array_merge($results, $users);
-                error_log("Search recipients - Users found: " . count($users));
+case 'load_recipients':
+    validate_csrf_token($_POST['csrf_token']);
+    // Fetch all users except the logged-in user
+    $stmt = $pdo->prepare("
+        SELECT user_id, username
+        FROM users
+        WHERE user_id != ?
+        ORDER BY username ASC
+    ");
+    $stmt->execute([$userId]);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Search parent departments
-                $deptQuery = "
-                    SELECT department_id AS id, department_name AS name, 'department' AS type
-                    FROM departments
-                    WHERE parent_department_id IS NULL" . ($query ? " AND department_name LIKE ?" : "") . "
-                    ORDER BY department_name ASC
-                ";
-                $stmt = $pdo->prepare($deptQuery);
-                $stmt->execute($query ? [$searchTerm] : []);
-                $departments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $results = array_merge($results, $departments);
-                error_log("Search recipients - Departments found: " . count($departments));
+    // Fetch ALL departments including their types (college, office, etc.)
+    $stmt = $pdo->prepare("
+        SELECT 
+            d.department_id, 
+            d.department_name,
+            d.department_type,
+            d.parent_department_id,
+            d2.department_name AS parent_name
+        FROM departments d
+        LEFT JOIN departments d2 ON d.parent_department_id = d2.department_id
+        WHERE d.is_active = 1
+        ORDER BY 
+            CASE 
+                WHEN d.parent_department_id IS NULL THEN d.department_name
+                ELSE d2.department_name
+            END,
+            d.department_name ASC
+    ");
+    $stmt->execute();
+    $allDepts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Search sub-departments
-                $subDeptQuery = "
-                    SELECT d.department_id AS id, 
-                           CONCAT(d2.department_name, ' > ', d.department_name) AS name, 
-                           'sub_department' AS type
-                    FROM departments d
-                    LEFT JOIN departments d2 ON d.parent_department_id = d2.department_id
-                    WHERE d.parent_department_id IS NOT NULL" . ($query ? " AND (d.department_name LIKE ? OR d2.department_name LIKE ?)" : "") . "
-                    ORDER BY d.department_name ASC
-                ";
-                $stmt = $pdo->prepare($subDeptQuery);
-                $params = $query ? [$searchTerm, $searchTerm] : [];
-                $stmt->execute($params);
-                $subDepartments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $results = array_merge($results, $subDepartments);
-                error_log("Search recipients - Sub-departments found: " . count($subDepartments));
+    $allDepartments = [];
+    foreach ($allDepts as $dept) {
+        $type = 'department';
+        
+        // Determine department type
+        if (!empty($dept['department_type'])) {
+            $type = $dept['department_type']; // college, office, etc.
+        } elseif ($dept['parent_department_id']) {
+            $type = 'sub_department';
+        }
+        
+        // Format name with parent if it's a sub-department
+        $displayName = $dept['department_name'];
+        if ($dept['parent_department_id'] && $dept['parent_name']) {
+            $displayName = $dept['parent_name'] . ' > ' . $dept['department_name'];
+        }
+        
+        $allDepartments[] = [
+            'department_id' => $dept['department_id'],
+            'department_name' => $displayName,
+            'type' => $type
+        ];
+    }
 
-                send_response(true, 'Recipients search results fetched successfully', ['results' => $results]);
-            } catch (PDOException $e) {
-                error_log("Search recipients error: " . $e->getMessage());
-                send_response(false, 'Database error occurred', [], 500);
-            }
-            break;
+    send_response(true, 'Recipients fetched successfully', [
+        'users' => $users,
+        'departments' => $allDepartments
+    ]);
+    break;
 
         case 'fetch_uploaded_files':
             validate_csrf_token($_POST['csrf_token']);
@@ -645,6 +649,105 @@ try {
             }
             break;
 
+case 'request_access':
+    validate_csrf_token($_POST['csrf_token']);
+    $fileId = filter_var($_POST['file_id'], FILTER_VALIDATE_INT);
+    error_log("Processing request_access: file_id=$fileId, user_id=$userId");
+    if (!$fileId) {
+        error_log("Invalid file ID: file_id={$_POST['file_id']}, user_id=$userId");
+        send_response(false, 'Invalid file ID', [], 400);
+    }
+
+    // Verify file exists
+    $stmt = $pdo->prepare("
+        SELECT file_name, user_id
+        FROM files
+        WHERE file_id = ? AND file_status != 'deleted'
+    ");
+    $stmt->execute([$fileId]);
+    $file = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$file) {
+        error_log("File not found: file_id=$fileId, user_id=$userId");
+        send_response(false, 'File not found', [], 404);
+    }
+
+    // Check if request already exists
+    $stmt = $pdo->prepare("
+        SELECT 1 FROM transactions
+        WHERE file_id = ? AND user_id = ? AND transaction_type = 'request' AND transaction_status = 'pending'
+    ");
+    $stmt->execute([$fileId, $userId]);
+    if ($stmt->fetchColumn()) {
+        error_log("Duplicate access request: file_id=$fileId, user_id=$userId");
+        send_response(false, 'Access request already pending', [], 400);
+    }
+
+    // Fetch requester's users_department_id
+    $stmt = $pdo->prepare("
+        SELECT users_department_id 
+        FROM user_department_assignments 
+        WHERE user_id = ? 
+        LIMIT 1
+    ");
+    $stmt->execute([$userId]);
+    $usersDepartmentId = $stmt->fetchColumn();
+
+    if (!$usersDepartmentId) {
+        error_log("No department assignment for user: user_id=$userId");
+        send_response(false, 'User is not assigned to any department', [], 400);
+    }
+
+    $pdo->beginTransaction();
+    try {
+        // Insert request transaction
+        $stmt = $pdo->prepare("
+            INSERT INTO transactions (file_id, user_id, users_department_id, transaction_type, transaction_status, transaction_time, description)
+            VALUES (?, ?, ?, 'request', 'pending', NOW(), ?)
+        ");
+        $description = "Access request for file '{$file['file_name']}' by user ID $userId";
+        $stmt->execute([$fileId, $userId, $usersDepartmentId, $description]);
+        $requestTransactionId = $pdo->lastInsertId();
+        error_log("Inserted request transaction: transaction_id=$requestTransactionId, file_id=$fileId, user_id=$userId, users_department_id=$usersDepartmentId");
+
+        // Notify file owner
+        if ($file['user_id'] && $file['user_id'] != $userId) {
+            // Fetch owner's users_department_id
+            $stmt = $pdo->prepare("
+                SELECT users_department_id 
+                FROM user_department_assignments 
+                WHERE user_id = ? 
+                LIMIT 1
+            ");
+            $stmt->execute([$file['user_id']]);
+            $ownerUsersDepartmentId = $stmt->fetchColumn();
+
+            if (!$ownerUsersDepartmentId) {
+                error_log("No department assignment for owner: owner_id={$file['user_id']}");
+                $pdo->rollBack();
+                send_response(false, 'File owner is not assigned to any department', [], 400);
+            }
+
+            $stmt = $pdo->prepare("
+                INSERT INTO transactions (file_id, user_id, users_department_id, transaction_type, transaction_status, transaction_time, description)
+                VALUES (?, ?, ?, 'notification', 'received', NOW(), ?)
+            ");
+            $notificationDescription = "Access request for file '{$file['file_name']}' from user ID $userId";
+            $stmt->execute([$fileId, $file['user_id'], $ownerUsersDepartmentId, $notificationDescription]);
+            error_log("Inserted notification for owner: file_id=$fileId, owner_id={$file['user_id']}, users_department_id=$ownerUsersDepartmentId");
+        } else {
+            error_log("No owner to notify or owner is requester: file_id=$fileId, user_id=$userId");
+        }
+
+        $pdo->commit();
+        send_response(true, 'Access request sent successfully', ['transaction_id' => $requestTransactionId]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        error_log("Request access error: " . $e->getMessage() . " | file_id=$fileId, user_id=$userId");
+        send_response(false, 'Failed to send access request: ' . $e->getMessage(), [], 500);
+    }
+    break;
+
             case 'fetch_notifications':
     validate_csrf_token($_POST['csrf_token']);
     $stmt = $pdo->prepare("
@@ -792,18 +895,24 @@ case 'fetch_file_preview':
         send_response(false, 'File not found on server', [], 404);
     }
 
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'application/pdf'];
-    if (!in_array($file['file_type'], $allowedTypes)) {
-        error_log("Unsupported file type in fetch_file_preview: file_id=$fileId, type={$file['file_type']}, user_id=$userId");
-        send_response(false, 'Preview not supported for this file type', [], 400);
-    }
+    $allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'text/plain',
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/msword'
+];
+    $isPreviewable = in_array($file['file_type'], $allowedTypes);
 
-    send_response(true, 'File preview fetched', [
-        'file_id' => $file['file_id'],
-        'file_name' => $file['file_name'],
-        'file_path' => $filePath,
-        'file_type' => $file['file_type']
-    ]);
+send_response(true, $isPreviewable ? 'File preview fetched' : 'Preview not available for this file type', [
+    'file_id' => $file['file_id'],
+    'file_name' => $file['file_name'],
+    'file_path' => $isPreviewable ? $filePath : null,
+    'file_type' => $file['file_type'],
+    'is_previewable' => $isPreviewable
+]);
     break;
 
         default:

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -35,7 +34,7 @@ class SDT extends Text
     /**
      * Value.
      *
-     * @var null|bool|int|string
+     * @var bool|int|string
      */
     private $value;
 
@@ -101,7 +100,7 @@ class SDT extends Text
     /**
      * Get value.
      *
-     * @return null|bool|int|string
+     * @return bool|int|string
      */
     public function getValue()
     {
@@ -111,7 +110,7 @@ class SDT extends Text
     /**
      * Set value.
      *
-     * @param null|bool|int|string $value
+     * @param bool|int|string $value
      *
      * @return self
      */

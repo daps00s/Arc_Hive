@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -18,12 +17,8 @@
 
 namespace PhpOffice\PhpWord\Writer;
 
-use PhpOffice\Math\Writer\MathML;
-use PhpOffice\PhpWord\Element\AbstractElement;
-use PhpOffice\PhpWord\Element\Formula;
 use PhpOffice\PhpWord\Media;
 use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\Writer\ODText\Part\AbstractPart;
 
 /**
  * ODText writer.
@@ -33,12 +28,9 @@ use PhpOffice\PhpWord\Writer\ODText\Part\AbstractPart;
 class ODText extends AbstractWriter implements WriterInterface
 {
     /**
-     * @var AbstractElement[]
-     */
-    protected $objects = [];
-
-    /**
      * Create new ODText writer.
+     *
+     * @param \PhpOffice\PhpWord\PhpWord $phpWord
      */
     public function __construct(?PhpWord $phpWord = null)
     {
@@ -56,7 +48,7 @@ class ODText extends AbstractWriter implements WriterInterface
         foreach (array_keys($this->parts) as $partName) {
             $partClass = static::class . '\\Part\\' . $partName;
             if (class_exists($partClass)) {
-                /** @var AbstractPart $partObject Type hint */
+                /** @var \PhpOffice\PhpWord\Writer\ODText\Part\AbstractPart $partObject Type hint */
                 $partObject = new $partClass();
                 $partObject->setParentWriter($this);
                 $this->writerParts[strtolower($partName)] = $partObject;
@@ -69,8 +61,10 @@ class ODText extends AbstractWriter implements WriterInterface
 
     /**
      * Save PhpWord to file.
+     *
+     * @param string $filename
      */
-    public function save(string $filename): void
+    public function save($filename = null): void
     {
         $filename = $this->getTempFile($filename);
         $zip = $this->getZipArchive($filename);
@@ -83,28 +77,8 @@ class ODText extends AbstractWriter implements WriterInterface
 
         // Write parts
         foreach ($this->parts as $partName => $fileName) {
-            if ($fileName === '') {
-                continue;
-            }
-            $part = $this->getWriterPart($partName);
-            if (!$part instanceof AbstractPart) {
-                continue;
-            }
-
-            $part->setObjects($this->objects);
-
-            $zip->addFromString($fileName, $part->write());
-
-            $this->objects = $part->getObjects();
-        }
-
-        // Write objects charts
-        if (!empty($this->objects)) {
-            $writer = new MathML();
-            foreach ($this->objects as $idxObject => $object) {
-                if ($object instanceof Formula) {
-                    $zip->addFromString('Formula' . $idxObject . '/content.xml', $writer->write($object->getMath()));
-                }
+            if ($fileName != '') {
+                $zip->addFromString($fileName, $this->getWriterPart($partName)->write());
             }
         }
 

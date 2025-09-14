@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -54,7 +53,7 @@ class Container extends AbstractElement
             $elementClass = get_class($element);
             $writerClass = str_replace('PhpOffice\\PhpWord\\Element', $this->namespace, $elementClass);
             if (class_exists($writerClass)) {
-                /** @var AbstractElement $writer Type hint */
+                /** @var \PhpOffice\PhpWord\Writer\HTML\Element\AbstractElement $writer Type hint */
                 $writer = new $writerClass($this->parentWriter, $element, $withoutP);
                 $content .= $writer->write();
             }

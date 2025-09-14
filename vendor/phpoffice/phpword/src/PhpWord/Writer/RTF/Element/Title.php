@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -59,13 +58,8 @@ class Title extends Text
         /** @var \PhpOffice\PhpWord\Element\Title $element Type hint */
         $element = $this->element;
         $elementClass = str_replace('\\Writer\\RTF', '', static::class);
-        if (!$element instanceof $elementClass) {
+        if (!$element instanceof $elementClass || !is_string($element->getText())) {
             return '';
-        }
-
-        $textToWrite = $element->getText();
-        if ($textToWrite instanceof \PhpOffice\PhpWord\Element\TextRun) {
-            $textToWrite = $textToWrite->getText(); // gets text from TextRun
         }
 
         $this->getStyles();
@@ -77,7 +71,7 @@ class Title extends Text
         $style = $element->getStyle();
         if (is_string($style)) {
             $style = str_replace('Heading', '', $style);
-            if ("$style" !== '') {
+            if (is_numeric($style)) {
                 $style = (int) $style - 1;
                 if ($style >= 0 && $style <= 8) {
                     $content .= '{\\outlinelevel' . $style;
@@ -88,7 +82,7 @@ class Title extends Text
 
         $content .= '{';
         $content .= $this->writeFontStyle();
-        $content .= $this->writeText($textToWrite);
+        $content .= $this->writeText($element->getText());
         $content .= '}';
         $content .= $this->writeClosing();
         $content .= $endout;

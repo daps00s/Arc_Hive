@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -30,14 +29,14 @@ class TOC extends AbstractElement
     /**
      * TOC style.
      *
-     * @var TOCStyle
+     * @var \PhpOffice\PhpWord\Style\TOC
      */
     private $tocStyle;
 
     /**
      * Font style.
      *
-     * @var Font|string
+     * @var \PhpOffice\PhpWord\Style\Font|string
      */
     private $fontStyle;
 
@@ -95,7 +94,7 @@ class TOC extends AbstractElement
 
         $titles = $this->phpWord->getTitles()->getItems();
         foreach ($titles as $i => $title) {
-            /** @var Title $title Type hint */
+            /** @var \PhpOffice\PhpWord\Element\Title $title Type hint */
             $depth = $title->getDepth();
             if ($this->minDepth > $depth) {
                 unset($titles[$i]);
@@ -111,7 +110,7 @@ class TOC extends AbstractElement
     /**
      * Get TOC Style.
      *
-     * @return TOCStyle
+     * @return \PhpOffice\PhpWord\Style\TOC
      */
     public function getStyleTOC()
     {
@@ -121,7 +120,7 @@ class TOC extends AbstractElement
     /**
      * Get Font Style.
      *
-     * @return Font|string
+     * @return \PhpOffice\PhpWord\Style\Font|string
      */
     public function getStyleFont()
     {

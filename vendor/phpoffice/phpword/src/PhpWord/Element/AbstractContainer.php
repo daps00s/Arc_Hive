@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -19,7 +18,6 @@
 namespace PhpOffice\PhpWord\Element;
 
 use BadMethodCallException;
-use PhpOffice\Math\Math;
 use ReflectionClass;
 
 /**
@@ -36,7 +34,7 @@ use ReflectionClass;
  * @method Footnote addFootnote(mixed $pStyle = null)
  * @method Endnote addEndnote(mixed $pStyle = null)
  * @method CheckBox addCheckBox(string $name, $text, mixed $fStyle = null, mixed $pStyle = null)
- * @method Title addTitle(mixed $text, int $depth = 1, int $pageNumber = null)
+ * @method Title addTitle(mixed $text, int $depth = 1)
  * @method TOC addTOC(mixed $fontStyle = null, mixed $tocStyle = null, int $minDepth = 1, int $maxDepth = 9)
  * @method PageBreak addPageBreak()
  * @method Table addTable(mixed $style = null)
@@ -49,8 +47,6 @@ use ReflectionClass;
  * @method Chart addChart(string $type, array $categories, array $values, array $style = null, $seriesName = null)
  * @method FormField addFormField(string $type, mixed $fStyle = null, mixed $pStyle = null)
  * @method SDT addSDT(string $type)
- * @method Formula addFormula(Math $math)
- * @method Ruby addRuby(TextRun $baseText, TextRun $rubyText, \PhpOffice\PhpWord\ComplexType\RubyProperties $properties)
  * @method \PhpOffice\PhpWord\Element\OLEObject addObject(string $source, mixed $style = null) deprecated, use addOLEObject instead
  *
  * @since 0.10.0
@@ -60,7 +56,7 @@ abstract class AbstractContainer extends AbstractElement
     /**
      * Elements collection.
      *
-     * @var AbstractElement[]
+     * @var \PhpOffice\PhpWord\Element\AbstractElement[]
      */
     protected $elements = [];
 
@@ -82,7 +78,7 @@ abstract class AbstractContainer extends AbstractElement
      * @param mixed $function
      * @param mixed $args
      *
-     * @return AbstractElement
+     * @return \PhpOffice\PhpWord\Element\AbstractElement
      */
     public function __call($function, $args)
     {
@@ -92,7 +88,6 @@ abstract class AbstractContainer extends AbstractElement
             'Footnote', 'Endnote', 'CheckBox', 'TextBox', 'Field',
             'Line', 'Shape', 'Title', 'TOC', 'PageBreak',
             'Chart', 'FormField', 'SDT', 'Comment',
-            'Formula', 'Ruby',
         ];
         $functions = [];
         foreach ($elements as $element) {
@@ -132,7 +127,7 @@ abstract class AbstractContainer extends AbstractElement
      *
      * @param string $elementName
      *
-     * @return AbstractElement
+     * @return \PhpOffice\PhpWord\Element\AbstractElement
      */
     protected function addElement($elementName)
     {
@@ -151,7 +146,7 @@ abstract class AbstractContainer extends AbstractElement
         $elementArgs = $args;
         array_shift($elementArgs); // Shift the $elementName off the beginning of array
 
-        /** @var AbstractElement $element Type hint */
+        /** @var \PhpOffice\PhpWord\Element\AbstractElement $element Type hint */
         $element = $reflection->newInstanceArgs($elementArgs);
 
         // Set parent container
@@ -167,7 +162,7 @@ abstract class AbstractContainer extends AbstractElement
     /**
      * Get all elements.
      *
-     * @return AbstractElement[]
+     * @return \PhpOffice\PhpWord\Element\AbstractElement[]
      */
     public function getElements()
     {
@@ -179,7 +174,7 @@ abstract class AbstractContainer extends AbstractElement
      *
      * @param int $index
      *
-     * @return null|AbstractElement
+     * @return null|\PhpOffice\PhpWord\Element\AbstractElement
      */
     public function getElement($index)
     {
@@ -193,13 +188,13 @@ abstract class AbstractContainer extends AbstractElement
     /**
      * Removes the element at requested index.
      *
-     * @param AbstractElement|int $toRemove
+     * @param int|\PhpOffice\PhpWord\Element\AbstractElement $toRemove
      */
     public function removeElement($toRemove): void
     {
         if (is_int($toRemove) && array_key_exists($toRemove, $this->elements)) {
             unset($this->elements[$toRemove]);
-        } elseif ($toRemove instanceof AbstractElement) {
+        } elseif ($toRemove instanceof \PhpOffice\PhpWord\Element\AbstractElement) {
             foreach ($this->elements as $key => $element) {
                 if ($element->getElementId() === $toRemove->getElementId()) {
                     unset($this->elements[$key]);
@@ -255,7 +250,7 @@ abstract class AbstractContainer extends AbstractElement
             'Footnote' => ['Section', 'TextRun', 'Cell', 'ListItemRun'],
             'Endnote' => ['Section', 'TextRun', 'Cell'],
             'PreserveText' => ['Section', 'Header', 'Footer', 'Cell'],
-            'Title' => ['Section', 'Cell', 'Header'],
+            'Title' => ['Section', 'Cell'],
             'TOC' => ['Section'],
             'PageBreak' => ['Section'],
             'Chart' => ['Section', 'Cell'],

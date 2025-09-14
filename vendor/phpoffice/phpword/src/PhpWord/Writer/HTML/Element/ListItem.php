@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -18,7 +17,7 @@
 
 namespace PhpOffice\PhpWord\Writer\HTML\Element;
 
-use PhpOffice\PhpWord\Writer\HTML;
+use PhpOffice\PhpWord\Settings;
 
 /**
  * ListItem element HTML writer.
@@ -38,7 +37,11 @@ class ListItem extends AbstractElement
             return '';
         }
 
-        $content = '<p>' . $this->parentWriter->escapeHTML($this->element->getTextObject()->getText()) . '</p>' . PHP_EOL;
+        if (Settings::isOutputEscapingEnabled()) {
+            $content = '<p>' . $this->escaper->escapeHtml($this->element->getTextObject()->getText()) . '</p>' . PHP_EOL;
+        } else {
+            $content = '<p>' . $this->element->getTextObject()->getText() . '</p>' . PHP_EOL;
+        }
 
         return $content;
     }

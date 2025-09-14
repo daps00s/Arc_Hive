@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -52,35 +51,35 @@ class Shape extends AbstractStyle
     /**
      * Frame.
      *
-     * @var Frame
+     * @var \PhpOffice\PhpWord\Style\Frame
      */
     private $frame;
 
     /**
      * Fill.
      *
-     * @var Fill
+     * @var \PhpOffice\PhpWord\Style\Fill
      */
     private $fill;
 
     /**
      * Outline.
      *
-     * @var Outline
+     * @var \PhpOffice\PhpWord\Style\Outline
      */
     private $outline;
 
     /**
      * Shadow.
      *
-     * @var Shadow
+     * @var \PhpOffice\PhpWord\Style\Shadow
      */
     private $shadow;
 
     /**
      * 3D extrusion.
      *
-     * @var Extrusion
+     * @var \PhpOffice\PhpWord\Style\Extrusion
      */
     private $extrusion;
 
@@ -145,7 +144,7 @@ class Shape extends AbstractStyle
     /**
      * Get frame.
      *
-     * @return Frame
+     * @return \PhpOffice\PhpWord\Style\Frame
      */
     public function getFrame()
     {
@@ -169,7 +168,7 @@ class Shape extends AbstractStyle
     /**
      * Get fill.
      *
-     * @return Fill
+     * @return \PhpOffice\PhpWord\Style\Fill
      */
     public function getFill()
     {
@@ -193,7 +192,7 @@ class Shape extends AbstractStyle
     /**
      * Get outline.
      *
-     * @return Outline
+     * @return \PhpOffice\PhpWord\Style\Outline
      */
     public function getOutline()
     {
@@ -217,7 +216,7 @@ class Shape extends AbstractStyle
     /**
      * Get shadow.
      *
-     * @return Shadow
+     * @return \PhpOffice\PhpWord\Style\Shadow
      */
     public function getShadow()
     {
@@ -241,7 +240,7 @@ class Shape extends AbstractStyle
     /**
      * Get 3D extrusion.
      *
-     * @return Extrusion
+     * @return \PhpOffice\PhpWord\Style\Extrusion
      */
     public function getExtrusion()
     {

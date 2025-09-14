@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -442,7 +441,7 @@ class DocInfo
      *
      * @param string $propertyName
      *
-     * @return ?string
+     * @return string
      */
     public function getCustomPropertyType($propertyName)
     {

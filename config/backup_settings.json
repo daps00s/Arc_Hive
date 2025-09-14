@@ -1,11 +1,6 @@
 {
     "backup_hour": 0,
     "backup_minute": 20,
-<<<<<<< Updated upstream
-    "backup_date": "2025-09-05",
-    "last_backup": "2025-09-04 10:39:58"
-=======
     "backup_date": "2025-09-07",
     "last_backup": "2025-09-06 00:47:47"
->>>>>>> Stashed changes
 }

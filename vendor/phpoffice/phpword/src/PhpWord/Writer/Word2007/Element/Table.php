@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -104,14 +103,8 @@ class Table extends AbstractElement
         }
 
         // Write cells
-        $cells = $row->getCells();
-        if (count($cells) === 0) {
-            // issue 2505 - Word treats doc as corrupt if row without cell
-            $this->writeCell($xmlWriter, new CellElement());
-        } else {
-            foreach ($cells as $cell) {
-                $this->writeCell($xmlWriter, $cell);
-            }
+        foreach ($row->getCells() as $cell) {
+            $this->writeCell($xmlWriter, $cell);
         }
 
         $xmlWriter->endElement(); // w:tr
